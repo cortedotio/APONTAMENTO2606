@@ -355,7 +355,7 @@ g<!DOCTYPE html>
   
   <div class="flex flex-wrap justify-center mb-8 gap-3"> <!-- Increased gap -->
     <button class="btn yellow" id="btnDisponibilidade" onclick="mostrar('disponibilidade')">Disponibilidade</button>
-    <button class="btn green" id="btnInicioAtividade" onclick="mostrar('inicio')">In?cio de Atividade</button>
+    <button class="btn green" id="btnInicioAtividade" onclick="mostrar('inicio')">Início de Atividade</button>
     <button class="btn red" id="btnEncerramentoAtividade" onclick="mostrar('fim')">Encerramento de Atividade</button>
     <button class="btn blue" id="btnCadastro" style="display:none;" onclick="mostrar('cadastro')">Cadastro</button>
     <button class="btn blue" id="btnRelatorio" style="display:none;" onclick="mostrar('relatorio')">Relat?rio</button>
@@ -363,7 +363,7 @@ g<!DOCTYPE html>
   </div>
   
   <div id="inicio" style="display:none; margin-top:20px;">
-    <h3>In?cio de Atividade</h3>
+    <h3>Início de Atividade</h3>
     <form id="formInicio">
       <div class="flex justify-end mb-4">
         <button class="btn red" type="button" onclick="limparFormulario('formInicio')">Limpar Formul?rio</button>
@@ -506,7 +506,7 @@ g<!DOCTYPE html>
       </div>
       <!-- END REFORMULATED CHECKLIST -->
 
-      <button class="btn blue mt-6" type="button" onclick="enviarInicio(event)">Salvar In?cio</button>
+      <button class="btn blue mt-6" type="button" onclick="enviarInicio(event)">Salvar Início</button>
     </form>
   </div>
   
@@ -651,7 +651,7 @@ g<!DOCTYPE html>
         <input type="password" id="adminPassword" required>
       </div>
       <button class="btn purple mt-6" onclick="handleLogin()">Entrar</button>
-      <p class="text-sm text-gray-600 mt-4">Use 'admin'/'admin123' para Administrador ou 'analista'/'user123' para Analista.</p>
+      <p class="text-sm text-gray-600 mt-4">Use 'admin'/'********' para Administrador ou 'analista'/'*****' para Analista.</p>
     </div>
 
     <div id="adminDashboard" style="display:none; margin-top:20px;">
@@ -766,7 +766,7 @@ g<!DOCTYPE html>
         <input type="text" id="filterFrotaRelatorioHoras" placeholder="Filtrar por Frota" oninput="this.value = this.value.toUpperCase(); popularTabelaHorasFrota()">
       </div>
       <div class="field flex-grow">
-        <label for="filterDataInicioRelatorioHoras">Data In?cio</label>
+        <label for="filterDataInicioRelatorioHoras">Data Início</label>
         <input type="date" id="filterDataInicioRelatorioHoras" onchange="popularTabelaHorasFrota()">
       </div>
       <div class="field flex-grow">
@@ -832,7 +832,7 @@ g<!DOCTYPE html>
                     <th scope="col" class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Frota</th>
                     <th scope="col" class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Operador</th>
                     <th scope="col" class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Atividade</th>
-                    <th scope="col" class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">In?cio</th>
+                    <th scope="col" class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Início</th>
                     <th scope="col" class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">H. Inicial</th>
                     <th scope="col" class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fim</th>
                     <th scope="col" class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">H. Final</th>
@@ -875,7 +875,7 @@ g<!DOCTYPE html>
                     <th scope="col" class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Atividade</th>
                     <th scope="col" class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Frota</th>
                     <th scope="col" class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Operador</th>
-                    <th scope="col" class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data In?cio</th>
+                    <th scope="col" class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Início</th>
                     <th scope="col" class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item Checklist</th>
                     <th scope="col" class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                     <th scope="col" class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Relato</th>
@@ -896,7 +896,7 @@ g<!DOCTYPE html>
         <input type="text" id="filterSetorRelatorioSetor" placeholder="Filtrar por Setor" oninput="this.value = this.value.toUpperCase(); popularTabelaRelatorioSetor()">
       </div>
       <div class="field flex-grow">
-        <label for="filterDataInicioRelatorioSetor">Data In?cio</label>
+        <label for="filterDataInicioRelatorioSetor">Data Início</label>
         <input type="date" id="filterDataInicioRelatorioSetor" onchange="popularTabelaRelatorioSetor()">
       </div>
       <div class="field flex-grow">
@@ -933,7 +933,7 @@ g<!DOCTYPE html>
         <input type="text" id="filterAtividadeRelatorioAtividade" placeholder="Filtrar por Atividade" oninput="this.value = this.value.toUpperCase(); popularTabelaRelatorioAtividade()">
       </div>
       <div class="field flex-grow">
-        <label for="filterDataInicioRelatorioAtividade">Data In?cio</label>
+        <label for="filterDataInicioRelatorioAtividade">Data Início</label>
         <input type="date" id="filterDataInicioRelatorioAtividade" onchange="popularTabelaRelatorioAtividade()">
       </div>
       <div class="field flex-grow">
@@ -1133,7 +1133,7 @@ g<!DOCTYPE html>
         </label>
         <label class="inline-flex items-center">
             <input type="radio" name="editType" value="inicio" class="form-radio" onchange="toggleEditMode('inicio')">
-            <span class="ml-2 text-gray-700 font-medium">Editar Dados de In?cio</span>
+            <span class="ml-2 text-gray-700 font-medium">Editar Dados de Início</span>
         </label>
     </div>
 
@@ -1163,7 +1163,7 @@ g<!DOCTYPE html>
 
       <!-- Fields for Editing START Record Data (Hidden by default, requires password) -->
       <div id="editInicioFields" style="display:none;">
-        <h4 class="text-left font-semibold text-gray-700 mb-3 border-b pb-2 mt-6">Dados de In?cio</h4>
+        <h4 class="text-left font-semibold text-gray-700 mb-3 border-b pb-2 mt-6">Dados de Início</h4>
         <div class="field">
             <label for="editCrachaInicio">Crach? Operador</label>
             <input type="text" id="editCrachaInicio" oninput="this.value = this.value.toUpperCase(); buscarOperador(this.value, 'editNomeOperador', 'editFotoOperador');">
@@ -1180,7 +1180,7 @@ g<!DOCTYPE html>
         </div>
         <!-- Password section for sensitive edits, placed after operator/frota -->
         <div id="editPasswordSection" class="mt-6 p-4 border border-yellow-300 bg-yellow-50 rounded-lg shadow-inner" style="display:none;">
-            <h4 class="text-md font-semibold text-yellow-800 mb-2">Desbloquear Edi??o de Dados de In?cio</h4>
+            <h4 class="text-md font-semibold text-yellow-800 mb-2">Desbloquear Edi??o de Dados de Início</h4>
             <div class="field">
                 <label for="editAdminPassword">Senha Admin</label>
                 <input type="password" id="editAdminPassword" placeholder="Digite a senha de administrador">
@@ -1443,7 +1443,7 @@ g<!DOCTYPE html>
 
   /**
    * Busca os dados do operador pelo crach? e preenche os campos de nome e foto.
-   * Para o formul?rio de in?cio, tamb?m gerencia a visibilidade do checklist.
+   * Para o formul?rio de início, tamb?m gerencia a visibilidade do checklist.
    * Para o formul?rio de fim, tamb?m aciona a busca por frotas ativas.
    * @param {string} cracha - O crach? do operador.
    * @param {string} nomeFieldId - O ID do campo de input para o nome do operador.
@@ -1518,7 +1518,7 @@ g<!DOCTYPE html>
     // Update the panel title
     document.getElementById('panelTitle').textContent =
       section === 'inicio'
-        ? 'IN?CIO DE ATIVIDADE'
+        ? 'INÍCIO DE ATIVIDADE'
         : section === 'disponibilidade'
           ? 'DISPONIBILIDADE'
           : section === 'fim'
@@ -2003,8 +2003,8 @@ g<!DOCTYPE html>
               let statusText = record.horimetroInconsistente ? 'INCONSISTENTE' : 'OK';
               let statusClass = record.horimetroInconsistente ? 'status-inconsistente' : 'status-ok';
 
-              // If it's a "ENCERRAMENTO SEM IN?CIO" record, always mark as INCONSISTENTE
-              if (record.atividade === 'ENCERRAMENTO SEM IN?CIO') {
+              // If it's a "ENCERRAMENTO SEM INÍCIO" record, always mark as INCONSISTENTE
+              if (record.atividade === 'ENCERRAMENTO SEM INÍCIO') {
                   statusText = 'INCONSISTENTE';
                   statusClass = 'status-inconsistente';
               }
@@ -2015,7 +2015,7 @@ g<!DOCTYPE html>
                   <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500" data-label="Frota">${record.frotaInicio}</td>
                   <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500" data-label="Operador">${record.nomeOperadorDisplay}</td>
                   <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500" data-label="Atividade">${record.atividade}</td>
-                  <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500" data-label="In?cio">${record.dataInicial} ${record.horaInicial}</td>
+                  <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500" data-label="Início">${record.dataInicial} ${record.horaInicial}</td>
                   <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500" data-label="H. Inicial">${record.horimetroInicial}</td>
                   <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500" data-label="Fim">${record.dataFinal || 'N/A'} ${record.horaFinal || 'N/A'}</td>
                   <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500" data-label="H. Final">${record.horimetroFinal || 'N/A'}</td>
@@ -2444,7 +2444,7 @@ g<!DOCTYPE html>
     // Check if frota is available
     const frotaCode = formDataObject.frotaInicio;
     if (frotasAtivas[frotaCode]) {
-        showAlert(`A FROTA ${frotaCode} J? EST? EM ATIVIDADE E N?O EST? DISPON?VEL PARA UM NOVO IN?CIO.`, true);
+        showAlert(`A FROTA ${frotaCode} J? EST? EM ATIVIDADE E N?O EST? DISPON?VEL PARA UM NOVO INÍCIO.`, true);
         return;
     }
 
@@ -2483,8 +2483,8 @@ g<!DOCTYPE html>
         correcaoConfirmada: correcaoConfirmada
     };
 
-    console.log('Dados de In?cio de Atividade:', frotasAtivas[formDataObject.frotaInicio]);
-    showAlert('IN?CIO DE ATIVIDADE REGISTRADO COM SUCESSO!');
+    console.log('Dados de Início de Atividade:', frotasAtivas[formDataObject.frotaInicio]);
+    showAlert('INÍCIO DE ATIVIDADE REGISTRADO COM SUCESSO!');
     limparFormulario('formInicio'); // Use the new clear form function
     popularDisponibilidade(); 
   }
@@ -2526,7 +2526,7 @@ g<!DOCTYPE html>
     if (!currentActivity) {
         // New logic: Ask to proceed if no start activity
         const confirmedProceed = await showConfirm(
-            `N?O H? ATIVIDADE DE IN?CIO REGISTRADA PARA A FROTA ${frotaFimCode}. DESEJA ENCERRAR MESMO ASSIM?`,
+            `N?O H? ATIVIDADE DE INÍCIO REGISTRADA PARA A FROTA ${frotaFimCode}. DESEJA ENCERRAR MESMO ASSIM?`,
             true // isWarning
         );
         if (!confirmedProceed) {
@@ -2546,9 +2546,9 @@ g<!DOCTYPE html>
             fotoEquipamentoDisplay: document.getElementById('fotoEquipFim').src,
             horimetroInicial: 0, 
             setor: 'N/A', 
-            atividade: 'ENCERRAMENTO SEM IN?CIO', 
+            atividade: 'ENCERRAMENTO SEM INÍCIO', 
             implemento: 'N/A', 
-            relatoProblema: 'Atividade encerrada sem registro de in?cio pr?vio.',
+            relatoProblema: 'Atividade encerrada sem registro de início pr?vio.',
             checklist: [{ item: 'N/A - Sem Checklist', status: 'N/A', relato: '' }] 
         };
         horimetroInconsistente = true; // Mark as inconsistent if no start record
@@ -2801,7 +2801,7 @@ g<!DOCTYPE html>
             <td class="px-2 py-2 whitespace-nowrap text-sm font-medium text-gray-900" data-label="ID Atividade">${record.id.substring(0, 8)}...</td>
             <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500" data-label="Frota">${record.frotaInicio}</td>
             <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500" data-label="Operador">${record.nomeOperadorDisplay}</td>
-            <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500" data-label="Data In?cio">${record.dataInicial}</td>
+            <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500" data-label="Data Início">${record.dataInicial}</td>
             <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500" data-label="Item Checklist">${item.item}</td>
             <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500" data-label="Status">${item.status}</td>
             <td class="px-2 py-2 whitespace-normal text-sm text-gray-500 max-w-xs" data-label="Relato">${item.relato || 'N/A'}</td>
@@ -2886,7 +2886,7 @@ g<!DOCTYPE html>
             activeFrotasForOperator.forEach(activity => {
                 const option = document.createElement('option');
                 option.value = activity.frotaInicio;
-                option.textContent = `${activity.frotaInicio} (${activity.atividade} - In?cio: ${activity.dataInicial} ${activity.horaInicial})`;
+                option.textContent = `${activity.frotaInicio} (${activity.atividade} - Início: ${activity.dataInicial} ${activity.horaInicial})`;
                 selectFrotaAtiva.appendChild(option);
             });
         }
@@ -3103,7 +3103,7 @@ g<!DOCTYPE html>
 
   /**
    * Toggles which fields are editable in the record edit modal based on the selected type
-   * and whether it's an "ENCERRAMENTO SEM IN?CIO" record or if admin password is used.
+   * and whether it's an "ENCERRAMENTO SEM INÍCIO" record or if admin password is used.
    * @param {string} type - 'inicio' or 'fim'.
    */
   function toggleEditMode(type) {
@@ -3130,7 +3130,7 @@ g<!DOCTYPE html>
       editFimFields.style.display = 'none';
       editInicioFields.style.display = 'block';
 
-      // Determine if 'inicio' fields should be immediately editable (if it's an "ENCERRAMENTO SEM IN?CIO" record)
+      // Determine if 'inicio' fields should be immediately editable (if it's an "ENCERRAMENTO SEM INÍCIO" record)
       const isNoStartRecord = currentEditingRecord.dataInicial === 'N/A';
 
       if (isNoStartRecord) {
@@ -3161,7 +3161,7 @@ g<!DOCTYPE html>
       // For this demo, we're using a hardcoded admin password.
       if (appUsers['admin'] && appUsers['admin'].password === password) {
           isInitialEditUnlocked = true;
-          showAlert('DADOS DE IN?CIO DESBLOQUEADOS PARA EDI??O.');
+          showAlert('DADOS DE INÍCIO DESBLOQUEADOS PARA EDI??O.');
           document.getElementById('editPasswordSection').style.display = 'none';
           // Enable all input elements within the 'editInicioFields' div
           const inicioInputs = document.getElementById('editInicioFields').querySelectorAll('input, select, textarea');
@@ -3263,7 +3263,7 @@ g<!DOCTYPE html>
         // Check if it's a "No Start" record OR if admin password was used for regular record
         const isNoStartRecord = currentEditingRecord.dataInicial === 'N/A';
         if (!isNoStartRecord && !isInitialEditUnlocked) {
-            showAlert('POR FAVOR, DESBLOQUEIE A EDI??O DE DADOS DE IN?CIO COM A SENHA DE ADMINISTRADOR.', true);
+            showAlert('POR FAVOR, DESBLOQUEIE A EDI??O DE DADOS DE INÍCIO COM A SENHA DE ADMINISTRADOR.', true);
             return;
         }
 
@@ -3279,7 +3279,7 @@ g<!DOCTYPE html>
 
         // Basic validation for start fields
         if (!newCrachaInicio || !newFrotaInicio || !newDataInicial || !newHoraInicial || isNaN(newHorimetroInicial) || !newSetor || !newAtividade || !newImplemento) {
-            showAlert('POR FAVOR, PREENCHA TODOS OS CAMPOS OBRIGAT?RIOS DO FORMUL?RIO DE EDI??O DE IN?CIO.', true);
+            showAlert('POR FAVOR, PREENCHA TODOS OS CAMPOS OBRIGAT?RIOS DO FORMUL?RIO DE EDI??O DE INÍCIO.', true);
             return;
         }
         
