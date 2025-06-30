@@ -411,10 +411,17 @@ g<!DOCTYPE html>
         <textarea name="relatoProblema" id="relatoProblema" rows="3" placeholder="Descreva o problema da manuten??o"></textarea>
       </div>
 
-      <div class="field">
-        <label for="implementoInicio">Implemento</label>
-        <select id="implementoInicio"></select>
-      </div>
+    <script>
+  const implementos = ['Arado', 'Grade', 'Semeadora', 'Pulverizador'];
+  const select = document.getElementById('implementoInicio');
+
+  implementos.forEach(imp => {
+    const option = document.createElement('option');
+    option.value = imp.toLowerCase();
+    option.textContent = imp;
+    select.appendChild(option);
+  });
+</script>
       
       <!-- REFORMULATED CHECKLIST -->
       <div class="checklist" id="safetyChecklist">
