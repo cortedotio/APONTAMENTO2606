@@ -303,7 +303,10 @@
 
 <!-- Main Fleet Management Panel -->
 <div class="card" id="gestaoDeFrotasPanel">
-    <h2>Gestão de Frotas</h2>
+    <div class="flex items-center gap-4 mb-4">
+        <img id="logoGestao" alt="Logotipo da Empresa" class="h-14">
+        <h2 class="flex-grow" style="margin-bottom: 0;">Gestão de Frotas</h2>
+    </div>
     <p class="text-gray-600 mb-8">Selecione uma das opções abaixo para gerenciar a frota de empilhadeiras.</p>
     <div class="flex flex-wrap justify-center items-center gap-4">
         <button class="btn blue" onclick="showApp('statusDeAtividadePanel')">Status de Atividade</button>
@@ -316,7 +319,10 @@
 <!-- Forklift Activity Application Panel (hidden by default) -->
 <div class="card" id="statusDeAtividadePanel" style="display:none;">
   <div class="flex justify-between items-center mb-6">
-    <h2 id="panelTitle">Status de Atividade</h2>
+    <div class="flex items-center gap-4">
+        <img id="logoStatus" alt="Logotipo da Empresa" class="h-14">
+        <h2 id="panelTitle" style="margin-bottom: 0;">Status de Atividade</h2>
+    </div>
     <div>
         <button class="btn purple" id="btnAdministrador" onclick="mostrar('administrador')">Administrador</button>
         <button class="btn red" onclick="showApp('gestaoDeFrotasPanel')">Voltar</button>
@@ -533,7 +539,7 @@
       <div class="field"><label for="adminUsername">Usuário</label><input type="text" id="adminUsername" required></div>
       <div class="field"><label for="adminPassword">Senha</label><input type="password" id="adminPassword" required></div>
       <button class="btn purple mt-6" onclick="handleLogin()">Entrar</button>
-      <p class="text-sm text-gray-600 mt-4">Tudo em um só lugar, para gerir sua frota. Entre em contato.</p>
+      <p class="text-sm text-gray-600 mt-4">Use 'admin'/'admin123' para Administrador ou 'analista'/'analista123' para Analista.</p>
     </div>
     <div id="adminDashboard" style="display:none; margin-top:20px;">
       <h4>Bem-vindo, <span id="loggedInUserRoleDisplay"></span>!</h4>
@@ -647,6 +653,8 @@ const DB_NAME = 'ForkliftAppDB';
 const DB_VERSION = 1;
 const request = indexedDB.open(DB_NAME, DB_VERSION);
 
+const logoBase64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAoHBwgHBgoICAgLCgoLDhgQDg0NDh0VFhEYIx8lJCIfIiEmKzcvJik0KSEiMEExNDk7Pj4+JS5ESUM8SDc9Pjv/2wBDAQoLCw4NDhwQEBw7KCIoOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozv/wAARCAFUAlgDASIAAhEBAxEB/8QAGwABAAMBAQEBAAAAAAAAAAAAAAECBAMFBgf/xAA5EAABAwIFAgQFAwQCAgMBAAAAAQIDBBEFEiExQVEGEyJhcYEHkaGxMkLB0RQjUmJy4fAVM4KS8f/EABgBAQEBAQEAAAAAAAAAAAAAAAABAgME/8QAHxEBAQEBAAMBAQEBAQAAAAAAAAABEQIhMRJBUQNB/9oADAMBAAIRAxEAPwD5y5rXNa5rXOa1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1-";
+
 request.onerror = (event) => {
   console.error("Database error:", event.target.errorCode);
   alert("Erro ao abrir o banco de dados. A aplicação pode não funcionar corretamente.");
@@ -670,6 +678,8 @@ request.onupgradeneeded = (event) => {
 request.onsuccess = (event) => {
   db = event.target.result;
   console.log("Banco de dados aberto com sucesso.");
+  document.getElementById('logoGestao').src = logoBase64;
+  document.getElementById('logoStatus').src = logoBase64;
   showApp('gestaoDeFrotasPanel'); // Show main menu on start
   populateSelects();
   checkLoginState();
