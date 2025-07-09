@@ -65,6 +65,8 @@
     .btn.darkblue { --color-light: #3F51B5; --color-dark: #303F9F; }
     .btn.teal { --color-light: #009688; --color-dark: #00796B; }
     .btn.orange { --color-light: #FF9800; --color-dark: #F57C00; }
+    /* Adicionado para botões escuros */
+    .btn.dark-primary { --color-light: #374151; --color-dark: #1F2937; } /* Cor mais escura para botões principais */
     .btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 12px rgba(0,0,0,0.15);
@@ -301,22 +303,27 @@
 </head>
 <body>
 
-<!-- Main Fleet Management Panel -->
+<!-- Painel Principal de Gestão de Frotas -->
 <div class="card" id="gestaoDeFrotasPanel">
     <div class="flex items-center gap-4 mb-4">
         <img id="logoGestao" alt="Logotipo da Empresa" class="h-14">
         <h2 class="flex-grow" style="margin-bottom: 0;">Gestão de Frotas</h2>
     </div>
     <p class="text-gray-600 mb-8">Selecione uma das opções abaixo para gerenciar a frota de empilhadeiras.</p>
-    <div class="flex flex-wrap justify-center items-center gap-4">
-        <button class="btn blue" onclick="showApp('statusDeAtividadePanel')">Status de Atividade</button>
-        <button class="btn teal" onclick="alert('Função em desenvolvimento.')">Gestao de Manutenção</button>
-        <button class="btn orange" onclick="alert('Função em desenvolvimento.')">Gestao de Abastecimento</button>
-        <button class="btn purple" onclick="alert('Função em desenvolvimento.')">Gestão de Pneus</button>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <button class="btn dark-primary" onclick="window.showApp('statusDeAtividadePanel')">Status de Atividade</button>
+        <button class="btn dark-primary" onclick="window.showApp('manutencaoPanel')">Gestão de Manutenção</button>
+        <button class="btn dark-primary" onclick="window.alert('Função em desenvolvimento.')">Gestão de Abastecimento</button>
+        <button class="btn dark-primary" onclick="window.alert('Função em desenvolvimento.')">Gestão de Pneus</button>
+        <button class="btn dark-primary" onclick="window.showApp('statusDeAtividadePanel', 'cadastro')">Cadastro</button>
+        <button class="btn dark-primary" onclick="window.showApp('statusDeAtividadePanel', 'relatorio')">Relatório</button>
+    </div>
+    <div class="flex justify-center mt-4">
+        <button class="btn dark-primary" onclick="window.showApp('statusDeAtividadePanel', 'administrador')">Gerenciamento</button>
     </div>
 </div>
 
-<!-- Forklift Activity Application Panel (hidden by default) -->
+<!-- Painel da Aplicação de Atividade de Empilhadeiras (oculto por padrão) -->
 <div class="card" id="statusDeAtividadePanel" style="display:none;">
   <div class="flex justify-between items-center mb-6">
     <div class="flex items-center gap-4">
@@ -324,36 +331,36 @@
         <h2 id="panelTitle" style="margin-bottom: 0;">Status de Atividade</h2>
     </div>
     <div>
-        <button class="btn purple" id="btnAdministrador" onclick="mostrar('administrador')">Administrador</button>
-        <button class="btn red" onclick="showApp('gestaoDeFrotasPanel')">Voltar</button>
+        <!-- Botão Administrador removido daqui, agora acessível via "Gerenciamento" na tela principal -->
+        <button class="btn red" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
     </div>
   </div>
   
   <div class="flex flex-wrap justify-center mb-8 gap-3">
-    <button class="btn yellow" id="btnDisponibilidade" onclick="mostrar('disponibilidade')">Disponibilidade</button>
-    <button class="btn green" id="btnInicioAtividade" onclick="mostrar('inicio')">Início de Atividade</button>
-    <button class="btn red" id="btnEncerramentoAtividade" onclick="mostrar('fim')">Encerramento de Atividade</button>
-    <button class="btn blue" id="btnCadastro" style="display:none;" onclick="mostrar('cadastro')">Cadastro</button>
-    <button class="btn blue" id="btnRelatorio" style="display:none;" onclick="mostrar('relatorio')">Relatório</button>
-    <button class="btn darkblue" id="btnDados" style="display:none;" onclick="mostrar('dados')">Dados</button>
+    <button class="btn yellow" id="btnDisponibilidade" onclick="window.mostrar('disponibilidade')">Disponibilidade</button>
+    <button class="btn green" id="btnInicioAtividade" onclick="window.mostrar('inicio')">Início de Atividade</button>
+    <button class="btn red" id="btnEncerramentoAtividade" onclick="window.mostrar('fim')">Encerramento de Atividade</button>
+    <button class="btn blue" id="btnCadastro" style="display:none;" onclick="window.mostrar('cadastro')">Cadastro</button>
+    <button class="btn blue" id="btnRelatorio" style="display:none;" onclick="window.mostrar('relatorio')">Relatório</button>
+    <button class="btn darkblue" id="btnDados" style="display:none;" onclick="window.mostrar('dados')">Dados</button>
   </div>
   
   <div id="inicio" style="display:none; margin-top:20px;">
     <h3>Início de Atividade</h3>
     <form id="formInicio">
       <div class="flex justify-end mb-4">
-        <button class="btn red" type="button" onclick="limparFormulario('formInicio')">Limpar Formulário</button>
+        <button class="btn red" type="button" onclick="window.limparFormulario('formInicio')">Limpar Formulário</button>
       </div>
       <div class="field">
         <label for="crachaInicio">Crachá</label>
-        <input type="text" name="crachaInicio" id="crachaInicio" oninput="this.value = this.value.toUpperCase(); buscarOperador(this.value,'nomeInicio','fotoInicio');" required>
+        <input type="text" name="crachaInicio" id="crachaInicio" oninput="this.value = this.value.toUpperCase(); window.buscarOperador(this.value,'nomeInicio','fotoInicio');" required>
         <label for="nomeInicio">Operador</label>
         <input type="text" id="nomeInicio" readonly>
         <img id="fotoInicio" src="https://placehold.co/100x100/A0AEC0/000000?text=OPERADOR" alt="Foto Operador">
       </div>
       <div class="field">
         <label for="dataInicial">Data Inicial</label>
-        <input type="date" name="dataInicial" id="dataInicial" required onclick="confirmarDataHora('dataInicial','horaInicial')">
+        <input type="date" name="dataInicial" id="dataInicial" required onclick="window.confirmarDataHora('dataInicial','horaInicial')">
       </div>
       <div class="field">
         <label for="horaInicial">Hora Inicial</label>
@@ -361,7 +368,7 @@
       </div>
       <div class="field">
         <label for="frotaInicio">Frota</label>
-        <input type="text" name="frotaInicio" id="frotaInicio" oninput="this.value = this.value.toUpperCase(); mostrarModeloFrota(this.value,'equipamentoInicio','fotoEquipInicio');" required>
+        <input type="text" name="frotaInicio" id="frotaInicio" oninput="this.value = this.value.toUpperCase(); window.mostrarModeloFrota(this.value,'equipamentoInicio','fotoEquipInicio');" required>
         <img id="fotoEquipInicio" src="https://placehold.co/100x100/A0AEC0/000000?text=FROTA" alt="Foto Frota">
       </div>
       <div class="field">
@@ -378,7 +385,7 @@
       </div>
       <div class="field">
         <label for="atividadeInicio">Atividade</label>
-        <select id="atividadeInicio" onchange="toggleRelatoProblema()" required></select>
+        <select id="atividadeInicio" onchange="window.toggleRelatoProblema()" required></select>
       </div>
       <div class="field" id="relatoProblemaField" style="display:none;">
         <label for="relatoProblema">Relato do Problema</label>
@@ -392,48 +399,48 @@
         <h4 class="font-bold uppercase text-center mb-4">Checklist de Segurança</h4>
         <div class="grid grid-cols-12 gap-2 items-center text-center font-bold text-gray-700 text-sm mb-2">
             <div class="col-span-1">OK</div>
-            <div class="col-span-6 text-left cursor-pointer" onclick="hideAllChecklistReports()">ITENS A CONFERIR</div>
+            <div class="col-span-6 text-left cursor-pointer" onclick="window.hideAllChecklistReports()">ITENS A CONFERIR</div>
             <div class="col-span-2">NÃO CONFORME</div>
             <div class="col-span-3 text-left">RELATAR</div>
         </div>
         <div class="grid grid-cols-12 gap-2 items-center mb-3">
             <div class="col-span-1 flex justify-center"><input type="radio" name="status_OleoMotor" value="OK" checked required></div>
             <div class="col-span-6 text-left text-sm">Óleo do Motor</div>
-            <div class="col-span-2 flex justify-center"><input type="radio" name="status_OleoMotor" value="NÃO CONFORME" data-target-textarea="relato_OleoMotor" onchange="toggleNonConformityReport(this)"></div>
+            <div class="col-span-2 flex justify-center"><input type="radio" name="status_OleoMotor" value="NÃO CONFORME" data-target-textarea="relato_OleoMotor" onchange="window.toggleNonConformityReport(this)"></div>
             <div class="col-span-3"><textarea name="relato_OleoMotor" id="relato_OleoMotor" rows="1" placeholder="Relatar não conformidade" class="hidden text-xs px-1 py-0.5 w-full border rounded"></textarea></div>
         </div>
         <div class="grid grid-cols-12 gap-2 items-center mb-3">
             <div class="col-span-1 flex justify-center"><input type="radio" name="status_OleoHidraulico" value="OK" checked required></div>
             <div class="col-span-6 text-left text-sm">Óleo Hidráulico</div>
-            <div class="col-span-2 flex justify-center"><input type="radio" name="status_OleoHidraulico" value="NÃO CONFORME" data-target-textarea="relato_OleoHidraulico" onchange="toggleNonConformityReport(this)"></div>
+            <div class="col-span-2 flex justify-center"><input type="radio" name="status_OleoHidraulico" value="NÃO CONFORME" data-target-textarea="relato_OleoHidraulico" onchange="window.toggleNonConformityReport(this)"></div>
             <div class="col-span-3"><textarea name="relato_OleoHidraulico" id="relato_OleoHidraulico" rows="1" placeholder="Relatar não conformidade" class="hidden text-xs px-1 py-0.5 w-full border rounded"></textarea></div>
         </div>
         <div class="grid grid-cols-12 gap-2 items-center mb-3">
             <div class="col-span-1 flex justify-center"><input type="radio" name="status_OleoTransmissao" value="OK" checked required></div>
             <div class="col-span-6 text-left text-sm">Óleo da Transmissão</div>
-            <div class="col-span-2 flex justify-center"><input type="radio" name="status_OleoTransmissao" value="NÃO CONFORME" data-target-textarea="relato_OleoTransmissao" onchange="toggleNonConformityReport(this)"></div>
+            <div class="col-span-2 flex justify-center"><input type="radio" name="status_OleoTransmissao" value="NÃO CONFORME" data-target-textarea="relato_OleoTransmissao" onchange="window.toggleNonConformityReport(this)"></div>
             <div class="col-span-3"><textarea name="relato_OleoTransmissao" id="relato_OleoTransmissao" rows="1" placeholder="Relatar não conformidade" class="hidden text-xs px-1 py-0.5 w-full border rounded"></textarea></div>
         </div>
         <div class="grid grid-cols-12 gap-2 items-center mb-3">
             <div class="col-span-1 flex justify-center"><input type="radio" name="status_Extintor" value="OK" checked required></div>
             <div class="col-span-6 text-left text-sm">Extintor</div>
-            <div class="col-span-2 flex justify-center"><input type="radio" name="status_Extintor" value="NÃO CONFORME" data-target-textarea="relato_Extintor" onchange="toggleNonConformityReport(this)"></div>
+            <div class="col-span-2 flex justify-center"><input type="radio" name="status_Extintor" value="NÃO CONFORME" data-target-textarea="relato_Extintor" onchange="window.toggleNonConformityReport(this)"></div>
             <div class="col-span-3"><textarea name="relato_Extintor" id="relato_Extintor" rows="1" placeholder="Relatar não conformidade" class="hidden text-xs px-1 py-0.5 w-full border rounded"></textarea></div>
         </div>
         <div class="grid grid-cols-12 gap-2 items-center mb-3">
             <div class="col-span-1 flex justify-center"><input type="radio" name="status_Pneus" value="OK" checked required></div>
             <div class="col-span-6 text-left text-sm">Pneus</div>
-            <div class="col-span-2 flex justify-center"><input type="radio" name="status_Pneus" value="NÃO CONFORME" data-target-textarea="relato_Pneus" onchange="toggleNonConformityReport(this)"></div>
+            <div class="col-span-2 flex justify-center"><input type="radio" name="status_Pneus" value="NÃO CONFORME" data-target-textarea="relato_Pneus" onchange="window.toggleNonConformityReport(this)"></div>
             <div class="col-span-3"><textarea name="relato_Pneus" id="relato_Pneus" rows="1" placeholder="Relatar não conformidade" class="hidden text-xs px-1 py-0.5 w-full border rounded"></textarea></div>
         </div>
         <div class="grid grid-cols-12 gap-2 items-center mb-3">
             <div class="col-span-1 flex justify-center"><input type="radio" name="status_ParteEletrica" value="OK" checked required></div>
             <div class="col-span-6 text-left text-sm">Parte Elétrica</div>
-            <div class="col-span-2 flex justify-center"><input type="radio" name="status_ParteEletrica" value="NÃO CONFORME" data-target-textarea="relato_ParteEletrica" onchange="toggleNonConformityReport(this)"></div>
+            <div class="col-span-2 flex justify-center"><input type="radio" name="status_ParteEletrica" value="NÃO CONFORME" data-target-textarea="relato_ParteEletrica" onchange="window.toggleNonConformityReport(this)"></div>
             <div class="col-span-3"><textarea name="relato_ParteEletrica" id="relato_ParteEletrica" rows="1" placeholder="Relatar não conformidade" class="hidden text-xs px-1 py-0.5 w-full border rounded"></textarea></div>
         </div>
       </div>
-      <button class="btn blue mt-6" type="button" onclick="enviarInicio(event)">Salvar Início</button>
+      <button class="btn blue mt-6" type="button" onclick="window.enviarInicio(event)">Salvar Início</button>
     </form>
   </div>
   
@@ -449,17 +456,17 @@
   <div id="fim" style="display:none; margin-top:20px;">
     <h3>Fim de Atividade</h3>
     <form id="formFim">
-      <div class="flex justify-end mb-4"><button class="btn red" type="button" onclick="limparFormulario('formFim')">Limpar Formulário</button></div>
+      <div class="flex justify-end mb-4"><button class="btn red" type="button" onclick="window.limparFormulario('formFim')">Limpar Formulário</button></div>
       <div class="field">
         <label for="crachaFim">Crachá</label>
-        <input type="text" name="crachaFim" id="crachaFim" oninput="this.value = this.value.toUpperCase(); handleCrachaFimChange();" required>
+        <input type="text" name="crachaFim" id="crachaFim" oninput="this.value = this.value.toUpperCase(); window.handleCrachaFimChange();" required>
         <label for="nomeFim">Operador</label>
         <input type="text" id="nomeFim" readonly>
         <img id="fotoFim" src="https://placehold.co/100x100/A0AEC0/000000?text=OPERADOR" alt="Foto Operador">
       </div>
       <div class="field">
         <label for="dataFinal">Data Final</label>
-        <input type="date" name="dataFinal" id="dataFinal" required onclick="confirmarDataHora('dataFinal', 'horaFinal')">
+        <input type="date" name="dataFinal" id="dataFinal" required onclick="window.confirmarDataHora('dataFinal', 'horaFinal')">
       </div>
       <div class="field">
         <label for="horaFinal">Hora Final</label>
@@ -467,13 +474,13 @@
       </div>
       <div class="field">
         <label for="frotaFim">Frota</label>
-        <input type="text" name="frotaFim" id="frotaFim" oninput="this.value = this.value.toUpperCase(); mostrarModeloFrota(this.value,'equipamentoFim','fotoEquipFim')" required>
+        <input type="text" name="frotaFim" id="frotaFim" oninput="this.value = this.value.toUpperCase(); window.mostrarModeloFrota(this.value,'equipamentoFim','fotoEquipFim')" required>
         <img id="fotoEquipFim" src="https://placehold.co/100x100/A0AEC0/000000?text=FROTA" alt="Foto Frota">
       </div>
       <div class="field" id="frotaSelectionContainer" style="display:none;">
           <label for="selectFrotaAtiva">Selecione a Frota:</label>
           <div id="multipleFrotaWarning" class="text-red-700 font-semibold mb-2" style="display:none;"></div>
-          <select id="selectFrotaAtiva" onchange="selecionarFrotaAtiva(this.value)"></select>
+          <select id="selectFrotaAtiva" onchange="window.selecionarFrotaAtiva(this.value)"></select>
       </div>
       <div class="field">
         <label for="equipamentoFim">Equipamento</label>
@@ -487,48 +494,48 @@
         <label for="observacoesFim">Observações</label>
         <textarea name="observacoesFim" id="observacoesFim" rows="3"></textarea>
       </div>
-      <button class="btn green mt-6" type="button" onclick="enviarFim(event)">Finalizar</button>
+      <button class="btn green mt-6" type="button" onclick="window.enviarFim(event)">Finalizar</button>
     </form>
   </div>
   
   <div id="cadastro" class="admin-panel">
     <h3>Cadastro</h3> 
     <div class="flex flex-wrap justify-center mb-6 gap-3">
-      <button class="btn blue" onclick="mostrarCadastro('cadastroOperador')">Operador</button>
-      <button class="btn blue" onclick="mostrarCadastro('cadastroFrota')">Frota</button>
-      <button class="btn blue" onclick="mostrarCadastro('cadastroSetor')">Setor</button>
-      <button class="btn blue" onclick="mostrarCadastro('cadastroAtividade')">Atividade</button>
-      <button class="btn blue" onclick="mostrarCadastro('cadastroImplemento')">Implemento</button>
+      <button class="btn blue" onclick="window.mostrarCadastro('cadastroOperador')">Operador</button>
+      <button class="btn blue" onclick="window.mostrarCadastro('cadastroFrota')">Frota</button>
+      <button class="btn blue" onclick="window.mostrarCadastro('cadastroSetor')">Setor</button>
+      <button class="btn blue" onclick="window.mostrarCadastro('cadastroAtividade')">Atividade</button>
+      <button class="btn blue" onclick="window.mostrarCadastro('cadastroImplemento')">Implemento</button>
     </div>
     <div id="cadastroOperador" style="display:none; margin-top:10px;">
       <h4>Cadastro de Operador</h4>
       <form><div class="field"><label for="crachaOperador">Crachá</label><input type="text" id="crachaOperador" oninput="this.value = this.value.toUpperCase()"></div>
       <div class="field"><label for="nomeOperador">Operador</label><input type="text" id="nomeOperador" oninput="this.value = this.value.toUpperCase()"></div>
       <div class="field"><label for="fotoOperador">Foto</label><input type="file" id="fotoOperador" accept="image/*" capture></div>
-      <div class="flex justify-start gap-4 mt-6"><button class="btn blue" type="button" onclick="salvarOperador()">Salvar</button><button class="btn blue" type="button" onclick="consultarOperador()">Consultar</button></div></form>
+      <div class="flex justify-start gap-4 mt-6"><button class="btn blue" type="button" onclick="window.salvarOperador()">Salvar</button><button class="btn blue" type="button" onclick="window.consultarOperador()">Consultar</button></div></form>
     </div>
     <div id="cadastroFrota" style="display:none; margin-top:10px;">
       <h4>Cadastro de Frota</h4>
       <form><div class="field"><label for="codigoFrota">Frota</label><input type="text" id="codigoFrota" oninput="this.value = this.value.toUpperCase()"></div>
       <div class="field"><label for="modeloFrota">Modelo</label><input type="text" id="modeloFrota" oninput="this.value = this.value.toUpperCase()"></div>
       <div class="field"><label for="fotoFrota">Foto</label><input type="file" id="fotoFrota" accept="image/*" capture></div>
-      <div class="flex justify-start gap-4 mt-6"><button class="btn blue" type="button" onclick="salvarFrota()">Salvar</button><button class="btn blue" type="button" onclick="consultarFrota()">Consultar</button></div></form>
+      <div class="flex justify-start gap-4 mt-6"><button class="btn blue" type="button" onclick="window.salvarFrota()">Salvar</button><button class="btn blue" type="button" onclick="window.consultarFrota()">Consultar</button></div></form>
     </div>
     <div id="cadastroSetor" style="display:none; margin-top:10px;">
       <h4>Cadastro de Setor</h4>
       <div class="field"><label for="nomeSetor">Setor</label><input type="text" id="nomeSetor" oninput="this.value = this.value.toUpperCase()"></div>
-      <div class="flex justify-start gap-4 mt-6"><button class="btn blue" onclick="salvarSetor()">Salvar</button><button class="btn blue" onclick="consultarSetor()">Consultar</button></div>
+      <div class="flex justify-start gap-4 mt-6"><button class="btn blue" onclick="window.salvarSetor()">Salvar</button><button class="btn blue" onclick="window.consultarSetor()">Consultar</button></div>
     </div>
     <div id="cadastroAtividade" style="display:none; margin-top:10px;">
       <h4>Cadastro de Atividade</h4>
       <div class="field"><label for="nomeAtividade">Atividade</label><input type="text" id="nomeAtividade" oninput="this.value = this.value.toUpperCase()"></div>
-      <div class="flex justify-start gap-4 mt-6"><button class="btn blue" onclick="salvarAtividade()">Salvar</button><button class="btn blue" onclick="consultarAtividade()">Consultar</button></div>
+      <div class="flex justify-start gap-4 mt-6"><button class="btn blue" type="button" onclick="window.salvarAtividade()">Salvar</button><button class="btn blue" type="button" onclick="window.consultarAtividade()">Consultar</button></div>
     </div>
     <div id="cadastroImplemento" style="display:none; margin-top:10px;">
       <h4>Cadastro de Implemento</h4>
       <div class="field"><label for="nomeImplemento">Implemento</label><input type="text" id="nomeImplemento" oninput="this.value = this.value.toUpperCase()"></div>
       <div class="field"><label for="siglaImplemento">Sigla</label><input type="text" id="siglaImplemento" required oninput="this.value = this.value.toUpperCase()"></div>
-      <div class="flex justify-start gap-4 mt-6"><button class="btn blue" onclick="salvarImplemento()">Salvar</button><button class="btn blue" onclick="consultarImplemento()">Consultar</button></div>
+      <div class="flex justify-start gap-4 mt-6"><button class="btn blue" onclick="window.salvarImplemento()">Salvar</button><button class="btn blue" onclick="window.consultarImplemento()">Consultar</button></div>
     </div>
   </div>
 
@@ -538,7 +545,7 @@
       <h4>Login de Administrador</h4>
       <div class="field"><label for="adminUsername">Usuário</label><input type="text" id="adminUsername" required></div>
       <div class="field"><label for="adminPassword">Senha</label><input type="password" id="adminPassword" required></div>
-      <button class="btn purple mt-6" onclick="handleLogin()">Entrar</button>
+      <button class="btn purple mt-6" onclick="window.handleLogin()">Entrar</button>
       <p class="text-sm text-gray-600 mt-4">Axyn: Menos custos, mais controle. Simples assim.</p>
     </div>
     <div id="adminDashboard" style="display:none; margin-top:20px;">
@@ -557,7 +564,7 @@
             <option value="administrador">Administrador</option>
           </select>
         </div>
-        <button class="btn blue mt-6" onclick="salvarUsuario()">Salvar Usuário</button>
+        <button class="btn blue mt-6" onclick="window.salvarUsuario()">Salvar Usuário</button>
         <h5 class="font-bold mt-8 mb-4 text-gray-700">Usuários Cadastrados:</h5>
         <div id="userListContainer" class="max-h-60 overflow-y-auto border border-gray-200 rounded-lg bg-white shadow-inner">
           <table class="min-w-full divide-y divide-gray-200">
@@ -572,7 +579,7 @@
           </table>
         </div>
       </div>
-      <button class="btn red mt-6" onclick="logout()">Sair</button>
+      <button class="btn red mt-6" onclick="window.logout()">Sair</button>
     </div>
   </div>
 
@@ -599,7 +606,9 @@
       <label for="relatorioDataFim">Data de Fim</label>
       <input type="date" id="relatorioDataFim">
     </div>
-    <button class="btn blue mt-4" onclick="gerarRelatorio()">Gerar Relatório</button>
+    <button class="btn blue mt-4" onclick="window.gerarRelatorio()">Gerar Relatório</button>
+    <!-- Botão Dados movido para cá -->
+    <button class="btn darkblue mt-4" onclick="window.mostrar('dados')">Dados</button>
     <div id="relatorioResultado" class="mt-6"></div>
   </div>
 
@@ -608,6 +617,89 @@
     <p class="text-gray-600 mb-4">Visualize e gerencie todos os lançamentos históricos. Alterações requerem senha de administrador.</p>
     <div id="dadosContent" class="mt-4"></div>
   </div>
+</div>
+
+<!-- Maintenance Panel -->
+<div class="card" id="manutencaoPanel" style="display:none;">
+    <div class="flex justify-between items-center mb-6">
+        <h3>Gestão de Manutenção</h3>
+        <button class="btn red" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
+    </div>
+    <div class="flex flex-wrap justify-center mb-6 gap-3">
+        <button class="btn blue" onclick="window.mostrarManutencaoSubpanel('formAbrirOS')">Abrir Ordem de Serviço</button>
+        <button class="btn green" onclick="window.mostrarManutencaoSubpanel('formPlanosManutencao')">Planos de Manutenção</button>
+        <button class="btn orange" onclick="window.mostrarManutencaoSubpanel('consultarOS')">Consultar Ordens de Serviço</button>
+    </div>
+
+    <div id="formAbrirOS" style="display:none;">
+        <h4>Abrir Ordem de Serviço</h4>
+        <form id="osForm">
+            <div class="field"><label for="osFrota">* Frota</label><input type="text" id="osFrota" oninput="this.value = this.value.toUpperCase(); window.mostrarModeloFrota(this.value, 'osModelo')" required><input type="text" id="osModelo" readonly placeholder="Modelo"></div>
+            <div class="field"><label for="osDataAbertura">Data Abertura</label><input type="text" id="osDataAbertura" readonly></div>
+            <div class="field"><label for="osSolicitante">* Solicitante</label><input type="text" id="osSolicitante" required></div>
+            <div class="field"><label for="osDescricao">* Descrição do Problema</label><textarea id="osDescricao" rows="3" required></textarea></div>
+            <div class="field"><label for="osTipo">* Tipo</label><select id="osTipo"><option value="Corretiva">Corretiva</option><option value="Preventiva">Preventiva</option></select></div>
+            <button class="btn blue mt-4" type="button" onclick="window.salvarOS()">Abrir OS</button>
+        </form>
+    </div>
+    <div id="formPlanosManutencao" style="display:none;">
+        <h4>Planos de Manutenção (em desenvolvimento)</h4>
+    </div>
+    <div id="consultarOS" style="display:none;">
+        <h4>Consultar Ordens de Serviço</h4>
+        <div id="osListContainer">
+            <p class="text-gray-600">Nenhuma Ordem de Serviço para exibir.</p>
+        </div>
+    </div>
+</div>
+
+
+<!-- Fueling Panel -->
+<div class="card" id="abastecimentoPanel" style="display:none;">
+    <div class="flex justify-between items-center mb-6">
+        <h3>Gestão de Abastecimento</h3>
+        <button class="btn red" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
+    </div>
+    <div class="flex flex-wrap justify-center mb-6 gap-3">
+      <button class="btn blue" onclick="window.mostrarAbastecimentoSubpanel('formAbastecimento')">Registrar Abastecimento</button>
+      <button class="btn green" onclick="window.mostrarAbastecimentoSubpanel('formCompraCombustivel')">Registrar Compra de Combustível</button>
+    </div>
+    <div id="formAbastecimento" style="display:none;">
+        <h4>Registrar Abastecimento</h4>
+        <form id="abastecimentoForm">
+            <div class="field"><label for="abastecimentoFrota">* Frota</label><input type="text" id="abastecimentoFrota" oninput="this.value = this.value.toUpperCase(); window.mostrarModeloFrota(this.value, 'abastecimentoModelo')" required><input type="text" id="abastecimentoModelo" readonly placeholder="Modelo"></div>
+            <div class="field"><label for="abastecimentoDoc">Documento/NF</label><input type="text" id="abastecimentoDoc" required></div>
+            <div class="field"><label for="abastecimentoEmpresa">Empresa</label><input type="text" id="abastecimentoEmpresa" required></div>
+            <div class="field"><label for="abastecimentoHorimetro">* Horímetro</label><input type="text" id="abastecimentoHorimetro" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" required></div>
+            <div class="field"><label for="abastecimentoData">* Data</label><input type="date" id="abastecimentoData" required></div>
+            <div class="field"><label for="abastecimentoHora">* Hora</label><input type="time" id="abastecimentoHora" required></div>
+            <div class="field"><label for="abastecimentoMotorista">* Crachá Motorista</label><input type="text" id="abastecimentoMotorista" oninput="this.value = this.value.toUpperCase(); window.buscarOperador(this.value, 'nomeMotorista')" required><input type="text" id="nomeMotorista" readonly placeholder="Nome do Motorista"></div>
+            <div class="field"><label for="abastecimentoFrentista">* Crachá Frentista</label><input type="text" id="abastecimentoFrentista" oninput="this.value = this.value.toUpperCase(); window.buscarOperador(this.value, 'nomeFrentista')" required><input type="text" id="nomeFrentista" readonly placeholder="Nome do Frentista"></div>
+            <div class="field"><label for="abastecimentoCodProduto">* Cód. Produto</label><input type="text" id="abastecimentoCodProduto" oninput="this.value = this.value.toUpperCase(); window.buscarProduto(this.value, 'nomeProduto')" required><input type="text" id="nomeProduto" readonly placeholder="Nome do Produto"></div>
+            <div class="field"><label for="abastecimentoLocal">* Local</label><select id="abastecimentoLocal" onchange="window.toggleVolumeRestante(this.value)"><option value="interno">Dentro da Empresa</option><option value="externo">Fora da Empresa</option></select></div>
+            <div class="field" id="volumeRestanteField"><label for="volumeRestante">Volume Restante</label><input type="text" id="volumeRestante" readonly></div>
+            <button class="btn blue mt-4" type="button" onclick="window.salvarAbastecimento()">Salvar</button>
+        </form>
+    </div>
+    <div id="formCompraCombustivel" style="display:none;">
+        <h4>Registrar Compra de Combustível</h4>
+        <form id="compraCombustivelForm">
+            <div class="field"><label for="compraCodProduto">* Cód. Produto</label><input type="text" id="compraCodProduto" oninput="this.value = this.value.toUpperCase();" required></div>
+            <div class="field"><label for="compraEmpresa">* Empresa Comprado</label><input type="text" id="compraEmpresa" required></div>
+            <div class="field"><label for="compraVolume">* Volume (L)</label><input type="text" id="compraVolume" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" required></div>
+            <div class="field"><label for="compraValor">* Valor (R$)</label><input type="text" id="compraValor" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" required></div>
+            <button class="btn green mt-4" type="button" onclick="window.salvarCompraCombustivel()">Salvar Compra</button>
+        </form>
+    </div>
+</div>
+
+<!-- Tires Panel -->
+<div class="card" id="pneusPanel" style="display:none;">
+    <div class="flex justify-between items-center mb-6">
+        <h3>Gestão de Pneus</h3>
+        <button class="btn red" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
+    </div>
+    <p class="text-gray-600 mb-8">Esta seção está em desenvolvimento.</p>
 </div>
 
 <!-- Confirmation Modal -->
@@ -653,92 +745,207 @@ const DB_NAME = 'ForkliftAppDB';
 const DB_VERSION = 1;
 const request = indexedDB.open(DB_NAME, DB_VERSION);
 
-const logoBase64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAoHBwgHBgoICAgLCgoLDhgQDg0NDh0VFhEYIx8lJCIfIiEmKzcvJik0KSEiMEExNDk7Pj4+JS5ESUM8SDc9Pjv/2wBDAQoLCw4NDhwQEBw7KCIoOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozv/wAARCAFUAlgDASIAAhEBAxEB/8QAGwABAAMBAQEBAAAAAAAAAAAAAAECBAMFBgf/xAA5EAABAwIFAgQFAwQCAgMBAAAAAQIDBBEFEiExQVEGEyJhcYEHkaGxMkLB0RQjUmJy4fAVM4KS8f/EABgBAQEBAQEAAAAAAAAAAAAAAAABAgME/8QAHxEBAQEBAAMBAQEBAQAAAAAAAAABEQIhMRJBUQNB/9oADAMBAAIRAxEAPwD5y5rXNa5rXOa1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1zWua1-";
+// Logotipo da Empresa
+const logoUrl = "https://firebasestorage.googleapis.com/v0/b/generative-ai-sandbox-b9894.appspot.com/o/ChatGPT%20Image%203%20de%20jul.%20de%202025%2C%2017_55_58.jpg?alt=media&token=25087595-5028-444f-83a3-6119f448c903";
 
+// Define os src das imagens do logotipo
+document.addEventListener('DOMContentLoaded', () => {
+    const logoGestao = document.getElementById('logoGestao');
+    if (logoGestao) {
+        logoGestao.src = logoUrl;
+    }
+    const logoStatus = document.getElementById('logoStatus');
+    if (logoStatus) {
+        logoStatus.src = logoUrl;
+    }
+});
+
+
+// Manipuladores de eventos IndexedDB
 request.onerror = (event) => {
-  console.error("Database error:", event.target.errorCode);
-  alert("Erro ao abrir o banco de dados. A aplicação pode não funcionar corretamente.");
-};
-
-request.onupgradeneeded = (event) => {
-  db = event.target.result;
-  db.createObjectStore('operadores', { keyPath: 'cracha' });
-  db.createObjectStore('frotas', { keyPath: 'codigo' });
-  db.createObjectStore('setores', { keyPath: 'id', autoIncrement: true });
-  db.createObjectStore('atividades', { keyPath: 'id', autoIncrement: true });
-  db.createObjectStore('implementos', { keyPath: 'id', autoIncrement: true });
-  db.createObjectStore('atividadesEmAndamento', { keyPath: 'id', autoIncrement: true });
-  const historicoStore = db.createObjectStore('historicoAtividades', { keyPath: 'id', autoIncrement: true });
-  historicoStore.createIndex('frota', 'frota', { unique: false });
-  historicoStore.createIndex('cracha', 'cracha', { unique: false });
-  historicoStore.createIndex('setor', 'setor', { unique: false });
-  db.createObjectStore('usuarios', { keyPath: 'username' });
+    console.error("Erro ao abrir o IndexedDB:", event.target.errorCode);
+    window.alert("Erro ao abrir o banco de dados. A aplicação pode não funcionar corretamente.");
 };
 
 request.onsuccess = (event) => {
-  db = event.target.result;
-  console.log("Banco de dados aberto com sucesso.");
-  document.getElementById('logoGestao').src = logoBase64;
-  document.getElementById('logoStatus').src = logoBase64;
-  showApp('gestaoDeFrotasPanel'); // Show main menu on start
-  populateSelects();
-  checkLoginState();
+    db = event.target.result;
+    console.log("IndexedDB aberto com sucesso.");
+    // Inicia o aplicativo após o IndexedDB estar pronto
+    window.showApp('gestaoDeFrotasPanel');
+    window.populateSelects();
+    window.checkLoginState();
+};
+
+request.onupgradeneeded = (event) => {
+    db = event.target.result;
+    console.log("Atualização de esquema do IndexedDB.");
+
+    // Cria object stores se não existirem
+    if (!db.objectStoreNames.contains('operadores')) {
+        db.createObjectStore('operadores', { keyPath: 'cracha' });
+    }
+    if (!db.objectStoreNames.contains('frotas')) {
+        db.createObjectStore('frotas', { keyPath: 'codigo' });
+    }
+    if (!db.objectStoreNames.contains('setores')) {
+        db.createObjectStore('setores', { keyPath: 'nome' }); // Changed to 'nome' as keyPath
+    }
+    if (!db.objectStoreNames.contains('atividades')) {
+        db.createObjectStore('atividades', { keyPath: 'nome' }); // Changed to 'nome' as keyPath
+    }
+    if (!db.objectStoreNames.contains('implementos')) {
+        db.createObjectStore('implementos', { keyPath: 'nome' }); // Changed to 'nome' as keyPath
+    }
+    if (!db.objectStoreNames.contains('atividadesEmAndamento')) {
+        db.createObjectStore('atividadesEmAndamento', { keyPath: 'id', autoIncrement: true });
+    }
+    if (!db.objectStoreNames.contains('historicoAtividades')) {
+        const historicoStore = db.createObjectStore('historicoAtividades', { keyPath: 'id', autoIncrement: true });
+        historicoStore.createIndex('frota', 'frota', { unique: false });
+        historicoStore.createIndex('cracha', 'cracha', { unique: false });
+        historicoStore.createIndex('setor', 'setor', { unique: false });
+    }
+    if (!db.objectStoreNames.contains('usuarios')) {
+        db.createObjectStore('usuarios', { keyPath: 'username' });
+    }
+    if (!db.objectStoreNames.contains('ordensServico')) {
+        db.createObjectStore('ordensServico', { keyPath: 'id', autoIncrement: true });
+    }
+    if (!db.objectStoreNames.contains('abastecimentos')) {
+        db.createObjectStore('abastecimentos', { keyPath: 'id', autoIncrement: true });
+    }
+    if (!db.objectStoreNames.contains('comprasCombustivel')) {
+        db.createObjectStore('comprasCombustivel', { keyPath: 'id', autoIncrement: true });
+    }
 };
 
 // --- NAVIGATION ---
-function showApp(panelId) {
+window.showApp = function(panelId, subPanelId = '') {
     document.getElementById('gestaoDeFrotasPanel').style.display = 'none';
     document.getElementById('statusDeAtividadePanel').style.display = 'none';
+    document.getElementById('manutencaoPanel').style.display = 'none'; // Ensure maintenance panel is hidden
+    document.getElementById('abastecimentoPanel').style.display = 'none'; // Ensure abastecimento panel is hidden
+    document.getElementById('pneusPanel').style.display = 'none'; // Ensure pneus panel is hidden
 
     document.getElementById(panelId).style.display = 'block';
     
     if (panelId === 'statusDeAtividadePanel') {
-        mostrar('disponibilidade');
+        window.mostrar(subPanelId || 'disponibilidade'); // Default to 'disponibilidade' if no subPanelId is provided
+    } else if (panelId === 'manutencaoPanel') {
+        window.mostrarManutencaoSubpanel('formAbrirOS'); // Default to 'Abrir OS'
+    } else if (panelId === 'abastecimentoPanel') {
+        window.mostrarAbastecimentoSubpanel('formAbastecimento'); // Default to 'Registrar Abastecimento'
     }
 }
 
-function mostrar(idToShow) {
+window.mostrar = function(idToShow) {
   const sections = ['inicio', 'disponibilidade', 'fim', 'cadastro', 'administrador', 'relatorio', 'dados'];
   const panelTitle = document.getElementById('panelTitle');
   
+  // Get all navigation buttons within statusDeAtividadePanel
+  const btnDisponibilidade = document.getElementById('btnDisponibilidade');
+  const btnInicioAtividade = document.getElementById('btnInicioAtividade');
+  const btnEncerramentoAtividade = document.getElementById('btnEncerramentoAtividade');
+  const btnCadastro = document.getElementById('btnCadastro');
+  const btnRelatorio = document.getElementById('btnRelatorio');
+  const btnDados = document.getElementById('btnDados');
+
+  // Hide all navigation buttons first
+  [btnDisponibilidade, btnInicioAtividade, btnEncerramentoAtividade, btnCadastro, btnRelatorio, btnDados].forEach(btn => {
+    if (btn) btn.style.display = 'none';
+  });
+
   sections.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = (id === idToShow) ? 'block' : 'none';
   });
 
+  // Now, selectively show buttons based on the active section
+  if (idToShow === 'disponibilidade' || idToShow === 'inicio' || idToShow === 'fim') {
+    btnDisponibilidade.style.display = 'inline-block';
+    btnInicioAtividade.style.display = 'inline-block';
+    btnEncerramentoAtividade.style.display = 'inline-block';
+  } else if (idToShow === 'relatorio') {
+    // When 'relatorio' is active, hide 'btnRelatorio' and show 'btnDados'
+    btnDados.style.display = 'inline-block';
+  }
+  // For 'cadastro' and 'dados' (when 'dados' is the active panel), no buttons from this nav bar should be shown.
+  // For 'administrador', no buttons from this nav bar should be shown.
+
   switch(idToShow) {
-    case 'disponibilidade': panelTitle.textContent = 'Status de Atividade'; updateDisponibilidade(); break;
-    case 'inicio': panelTitle.textContent = 'Iniciar Atividade'; break;
-    case 'fim': panelTitle.textContent = 'Encerrar Atividade'; break;
-    case 'cadastro': panelTitle.textContent = 'Gerenciar Cadastros'; mostrarCadastro('cadastroOperador'); break;
-    case 'administrador': panelTitle.textContent = 'Painel Administrativo'; break;
-    case 'relatorio': panelTitle.textContent = 'Relatórios'; break;
-    case 'dados': panelTitle.textContent = 'Gerenciar Dados'; mostrarBancoDeDados(); break;
+    case 'disponibilidade': panelTitle.textContent = 'Status de Atividade'; window.updateDisponibilidade(); break;
+    case 'inicio': panelTitle.textContent = 'Iniciar Atividade'; window.populateSelects(); window.populateCurrentDateTime('dataInicial', 'horaInicial'); break;
+    case 'fim': panelTitle.textContent = 'Encerrar Atividade'; window.populateCurrentDateTime('dataFinal', 'horaFinal'); break;
+    case 'cadastro': panelTitle.textContent = 'Gerenciar Cadastros'; window.mostrarCadastro('cadastroOperador'); break;
+    case 'administrador': panelTitle.textContent = 'Painel Administrativo'; window.checkLoginState(); break;
+    case 'relatorio': panelTitle.textContent = 'Relatórios'; document.getElementById('relatorioResultado').innerHTML = ''; break;
+    case 'dados': panelTitle.textContent = 'Gerenciar Dados'; window.mostrarBancoDeDados(); break;
   }
 }
+
+window.mostrarManutencaoSubpanel = function(subPanelId) {
+    const subPanelsManutencao = ['formAbrirOS', 'formPlanosManutencao', 'consultarOS'];
+    subPanelsManutencao.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
+
+    const targetPanel = document.getElementById(subPanelId);
+    if (targetPanel) {
+        targetPanel.style.display = 'block';
+    }
+
+    if (subPanelId === 'formAbrirOS') {
+        window.populateCurrentDateTime('osDataAbertura');
+    } else if (subPanelId === 'consultarOS') {
+        window.consultarOrdensServico();
+    }
+}
+
+window.mostrarAbastecimentoSubpanel = function(subPanelId) {
+    const subPanelsAbastecimento = ['formAbastecimento', 'formCompraCombustivel'];
+    subPanelsAbastecimento.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
+
+    const targetPanel = document.getElementById(subPanelId);
+    if (targetPanel) {
+        targetPanel.style.display = 'block';
+    }
+
+    if (subPanelId === 'formAbastecimento') {
+        window.populateCurrentDateTime('abastecimentoData', 'abastecimentoHora');
+        window.toggleVolumeRestante(document.getElementById('abastecimentoLocal').value);
+    }
+}
+
 
 // --- AUTHENTICATION & USER STATE ---
 let currentUser = null;
 
-function checkLoginState() {
+window.checkLoginState = function() {
     const loggedInUser = sessionStorage.getItem('loggedInUser');
     if (loggedInUser) {
         currentUser = JSON.parse(loggedInUser);
-        showAdminDashboard();
+        window.showAdminDashboard();
+    } else {
+        document.getElementById('adminLogin').style.display = 'block';
+        document.getElementById('adminDashboard').style.display = 'none';
     }
 }
 
 // --- GENERIC HELPER FUNCTIONS ---
-function saveData(storeName, data, successMessage) {
-    if (!db) { alert("Banco de dados não está pronto."); return; }
+window.saveData = function(storeName, data, successMessage) {
+    if (!db) { window.alert("Banco de dados não está pronto."); return; }
     const transaction = db.transaction([storeName], 'readwrite');
     const store = transaction.objectStore(storeName);
     const request = store.put(data);
-    request.onsuccess = () => { alert(successMessage); };
-    request.onerror = (event) => { console.error(`Error saving to ${storeName}:`, event.target.error); alert(`Erro ao salvar em ${storeName}.`); };
+    request.onsuccess = () => { window.alert(successMessage); };
+    request.onerror = (event) => { console.error(`Error saving to ${storeName}:`, event.target.error); window.alert(`Erro ao salvar em ${storeName}.`); };
 }
 
-function getAllData(storeName) {
+window.getAllData = function(storeName) {
     return new Promise((resolve, reject) => {
         if (!db) return reject("Banco de dados não está pronto.");
         const request = db.transaction([storeName], 'readonly').objectStore(storeName).getAll();
@@ -747,7 +954,7 @@ function getAllData(storeName) {
     });
 }
 
-function fileToBase64(file) {
+window.fileToBase64 = function(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -756,12 +963,12 @@ function fileToBase64(file) {
     });
 }
 
-async function populateSelects() {
+window.populateSelects = async function() {
     try {
         const [setores, atividades, implementos] = await Promise.all([
-            getAllData('setores'),
-            getAllData('atividades'),
-            getAllData('implementos')
+            window.getAllData('setores'),
+            window.getAllData('atividades'),
+            window.getAllData('implementos')
         ]);
 
         const setorSelect = document.getElementById('setorInicio');
@@ -778,7 +985,7 @@ async function populateSelects() {
     }
 }
 
-function limparFormulario(formId) {
+window.limparFormulario = function(formId) {
     const form = document.getElementById(formId);
     if (!form) return;
     form.reset();
@@ -788,51 +995,91 @@ function limparFormulario(formId) {
         document.getElementById('fotoInicio').src = 'https://placehold.co/100x100/A0AEC0/000000?text=OPERADOR';
         document.getElementById('fotoEquipInicio').src = 'https://placehold.co/100x100/A0AEC0/000000?text=FROTA';
         document.getElementById('relatoProblemaField').style.display = 'none';
-        hideAllChecklistReports();
+        window.hideAllChecklistReports();
     } else if (formId === 'formFim') {
         document.getElementById('nomeFim').value = '';
         document.getElementById('equipamentoFim').value = '';
         document.getElementById('fotoFim').src = 'https://placehold.co/100x100/A0AEC0/000000?text=OPERADOR';
         document.getElementById('fotoEquipFim').src = 'https://placehold.co/100x100/A0AEC0/000000?text=FROTA';
         document.getElementById('frotaSelectionContainer').style.display = 'none';
+    } else if (formId === 'osForm') {
+        document.getElementById('osModelo').value = '';
+    } else if (formId === 'abastecimentoForm') {
+        document.getElementById('abastecimentoModelo').value = '';
+        document.getElementById('nomeMotorista').value = '';
+        document.getElementById('nomeFrentista').value = '';
+        document.getElementById('nomeProduto').value = '';
     }
 }
 
-function confirmarDataHora(dateInputId, timeInputId) {
+window.populateCurrentDateTime = function(dateInputId, timeInputId) {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+
     const dateInput = document.getElementById(dateInputId);
-    if (dateInput.value && dateInputId === 'dataInicial') return; 
+    if (dateInput) {
+        dateInput.value = `${year}-${month}-${day}`;
+    }
+    const timeInput = document.getElementById(timeInputId);
+    if (timeInput) {
+        timeInput.value = `${hours}:${minutes}`;
+    }
+}
 
-    showModal(
-        'Data e Hora Atuais',
-        'Deseja preencher a data e a hora com o momento atual?',
-        () => { // onConfirm callback
-            const now = new Date();
-            const timeInput = document.getElementById(timeInputId);
-            
-            const year = now.getFullYear();
-            const month = (now.getMonth() + 1).toString().padStart(2, '0');
-            const day = now.getDate().toString().padStart(2, '0');
-            dateInput.value = `${year}-${month}-${day}`;
+window.confirmarDataHora = function(dateInputId, timeInputId) {
+    const dateInput = document.getElementById(dateInputId);
+    const timeInput = document.getElementById(timeInputId);
 
-            const hours = now.getHours().toString().padStart(2, '0');
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            timeInput.value = `${hours}:${minutes}`;
+    // Only prompt to fill if both are empty
+    if (!dateInput.value && !timeInput.value) {
+        window.showModal(
+            'Data e Hora Atuais',
+            'Deseja preencher a data e a hora com o momento atual?',
+            () => { // onConfirm callback
+                window.populateCurrentDateTime(dateInputId, timeInputId);
+            }
+        );
+    } else {
+        // If values exist, perform validation
+        const selectedDate = dateInput.value;
+        const selectedTime = timeInput.value;
+
+        if (!selectedDate || !selectedTime) {
+            return true; // Allow if only one is filled, or if already validated
         }
-    );
+
+        const selectedDateTime = new Date(`${selectedDate}T${selectedTime}`);
+        const now = new Date();
+
+        if (selectedDateTime > now) {
+            window.showModal("Data/Hora Inválida", "A data e hora não podem ser futuras.", () => {
+                dateInput.value = '';
+                timeInput.value = '';
+            }, true);
+            return false;
+        }
+    }
+    return true;
 }
 
 // --- MODAL FUNCTIONS ---
 let modalConfirmCallback = null;
-function showModal(title, message, onConfirm, isWarning = false) {
+window.showModal = function(title, message, onConfirm, isWarning = false) {
     document.getElementById('modalTitle').textContent = title;
     document.getElementById('modalMessage').textContent = message;
     document.getElementById('modalContent').classList.toggle('modal-warning-background', isWarning);
     modalConfirmCallback = onConfirm;
+    document.getElementById('modalConfirmBtn').style.display = onConfirm ? 'inline-block' : 'none'; // Show confirm only if callback exists
+    document.getElementById('modalCancelBtn').textContent = onConfirm ? 'Cancelar' : 'Fechar'; // Change text
     document.getElementById('confirmationModal').style.display = 'flex';
 }
-document.getElementById('modalConfirmBtn').onclick = () => { if (typeof modalConfirmCallback === 'function') modalConfirmCallback(); closeModal(); };
-document.getElementById('modalCancelBtn').onclick = () => closeModal();
-function closeModal() { document.getElementById('confirmationModal').style.display = 'none'; modalConfirmCallback = null; }
+document.getElementById('modalConfirmBtn').onclick = () => { if (typeof modalConfirmCallback === 'function') modalConfirmCallback(); window.closeModal(); };
+document.getElementById('modalCancelBtn').onclick = () => window.closeModal();
+window.closeModal = function() { document.getElementById('confirmationModal').style.display = 'none'; modalConfirmCallback = null; }
 
 document.getElementById('listModalCloseBtn').onclick = () => {
     document.getElementById('listModal').style.display = 'none';
@@ -843,7 +1090,7 @@ document.getElementById('editModalCancelBtn').onclick = () => {
 };
 
 
-async function showListModal(title, data, headers, storeName) {
+window.showListModal = async function(title, data, headers, storeName) {
     const modal = document.getElementById('listModal');
     const titleEl = document.getElementById('listModalTitle');
     const contentEl = document.getElementById('listModalContent');
@@ -891,12 +1138,12 @@ async function showListModal(title, data, headers, storeName) {
         const editBtn = document.createElement('button');
         editBtn.textContent = 'Alterar';
         editBtn.className = 'btn blue text-xs p-1';
-        editBtn.onclick = () => handleEdit(storeName, item);
+        editBtn.onclick = () => window.handleEdit(storeName, item);
         
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Excluir';
         deleteBtn.className = 'btn red text-xs p-1';
-        deleteBtn.onclick = () => handleDelete(storeName, item[db.transaction(storeName).objectStore(storeName).keyPath]);
+        deleteBtn.onclick = () => window.handleDelete(storeName, item[db.transaction(storeName).objectStore(storeName).keyPath]);
         
         actionsCell.appendChild(editBtn);
         actionsCell.appendChild(deleteBtn);
@@ -907,57 +1154,61 @@ async function showListModal(title, data, headers, storeName) {
 }
 
 // --- CADASTRO (REGISTRATION) FUNCTIONS ---
-function mostrarCadastro(subpanel) {
+window.mostrarCadastro = function(subpanel) {
     ['cadastroOperador', 'cadastroFrota', 'cadastroSetor', 'cadastroAtividade', 'cadastroImplemento'].forEach(p => {
         document.getElementById(p).style.display = p === subpanel ? 'block' : 'none';
     });
 }
-async function salvarOperador() {
+window.salvarOperador = async function() {
     const cracha = document.getElementById('crachaOperador').value.trim();
     const nome = document.getElementById('nomeOperador').value.trim();
     const fotoFile = document.getElementById('fotoOperador').files[0];
-    if (!cracha || !nome) { alert("Crachá e Nome são obrigatórios."); return; }
-    const foto = fotoFile ? await fileToBase64(fotoFile) : null;
-    saveData('operadores', { cracha, nome, foto }, "Operador salvo com sucesso!");
+    if (!cracha || !nome) { window.alert("Crachá e Nome são obrigatórios."); return; }
+    const foto = fotoFile ? await window.fileToBase64(fotoFile) : null;
+    window.saveData('operadores', { cracha, nome, foto }, "Operador salvo com sucesso!");
     document.getElementById('cadastroOperador').querySelector('form').reset();
 }
-async function salvarFrota() {
+window.salvarFrota = async function() {
     const codigo = document.getElementById('codigoFrota').value.trim();
     const modelo = document.getElementById('modeloFrota').value.trim();
     const fotoFile = document.getElementById('fotoFrota').files[0];
-    if (!codigo || !modelo) { alert("Código e Modelo são obrigatórios."); return; }
-    const foto = fotoFile ? await fileToBase64(fotoFile) : null;
-    saveData('frotas', { codigo, modelo, foto }, "Frota salva com sucesso!");
+    if (!codigo || !modelo) { window.alert("Código e Modelo são obrigatórios."); return; }
+    const foto = fotoFile ? await window.fileToBase64(fotoFile) : null;
+    window.saveData('frotas', { codigo, modelo, foto }, "Frota salva com sucesso!");
     document.getElementById('cadastroFrota').querySelector('form').reset();
 }
-function salvarSetor() {
+window.salvarSetor = function() {
     const nome = document.getElementById('nomeSetor').value.trim();
-    if (!nome) { alert("Nome do setor é obrigatório."); return; }
-    saveData('setores', { nome }, "Setor salvo com sucesso!");
+    if (!nome) { window.alert("Nome do setor é obrigatório."); return; }
+    window.saveData('setores', { nome }, "Setor salvo com sucesso!");
     document.getElementById('nomeSetor').value = '';
-    populateSelects();
+    window.populateSelects();
 }
-function salvarAtividade() {
+window.salvarAtividade = function() {
     const nome = document.getElementById('nomeAtividade').value.trim();
-    if (!nome) { alert("Nome da atividade é obrigatório."); return; }
-    saveData('atividades', { nome }, "Atividade salva com sucesso!");
+    if (!nome) { window.alert("Nome da atividade é obrigatório."); return; }
+    window.saveData('atividades', { nome }, "Atividade salva com sucesso!");
     document.getElementById('nomeAtividade').value = '';
-    populateSelects();
+    window.populateSelects();
 }
-function salvarImplemento() {
+window.salvarImplemento = function() {
     const nome = document.getElementById('nomeImplemento').value.trim();
     const sigla = document.getElementById('siglaImplemento').value.trim();
-    if (!nome || !sigla) { alert("Nome e Sigla são obrigatórios."); return; }
-    saveData('implementos', { nome, sigla }, "Implemento salvo com sucesso!");
+    if (!nome || !sigla) { window.alert("Nome e Sigla são obrigatórios."); return; }
+    window.saveData('implementos', { nome, sigla }, "Implemento salvo com sucesso!");
     document.getElementById('nomeImplemento').value = '';
     document.getElementById('siglaImplemento').value = '';
-    populateSelects();
+    window.populateSelects();
 }
 
 // --- INÍCIO/FIM DE ATIVIDADE FUNCTIONS ---
-function buscarOperador(cracha, nomeFieldId, fotoFieldId) {
+window.buscarOperador = function(cracha, nomeFieldId, fotoFieldId) {
     return new Promise((resolve, reject) => {
-        if (!db || !cracha) return resolve(null);
+        if (!db || !cracha) {
+            document.getElementById(nomeFieldId).value = '';
+            document.getElementById(fotoFieldId).src = 'https://placehold.co/100x100/A0AEC0/000000?text=OPERADOR';
+            return resolve(null);
+        }
         const request = db.transaction(['operadores']).objectStore('operadores').get(cracha);
         request.onsuccess = () => {
             const op = request.result;
@@ -965,12 +1216,21 @@ function buscarOperador(cracha, nomeFieldId, fotoFieldId) {
             document.getElementById(fotoFieldId).src = op?.foto || 'https://placehold.co/100x100/A0AEC0/000000?text=OPERADOR';
             resolve(op);
         };
-        request.onerror = (e) => reject(e);
+        request.onerror = (e) => {
+            console.error("Erro ao buscar operador:", e);
+            document.getElementById(nomeFieldId).value = 'Erro na busca';
+            document.getElementById(fotoFieldId).src = 'https://placehold.co/100x100/A0AEC0/000000?text=ERRO';
+            reject(e);
+        };
     });
 }
-function mostrarModeloFrota(codigo, modeloFieldId, fotoFieldId) {
+window.mostrarModeloFrota = function(codigo, modeloFieldId, fotoFieldId) {
     return new Promise((resolve, reject) => {
-        if (!db || !codigo) return resolve(null);
+        if (!db || !codigo) {
+            document.getElementById(modeloFieldId).value = '';
+            document.getElementById(fotoFieldId).src = 'https://placehold.co/100x100/A0AEC0/000000?text=FROTA';
+            return resolve(null);
+        }
         const request = db.transaction(['frotas']).objectStore('frotas').get(codigo);
         request.onsuccess = () => {
             const frota = request.result;
@@ -978,10 +1238,15 @@ function mostrarModeloFrota(codigo, modeloFieldId, fotoFieldId) {
             document.getElementById(fotoFieldId).src = frota?.foto || 'https://placehold.co/100x100/A0AEC0/000000?text=FROTA';
             resolve(frota);
         };
-        request.onerror = (e) => reject(e);
+        request.onerror = (e) => {
+            console.error("Erro ao buscar frota:", e);
+            document.getElementById(modeloFieldId).value = 'Erro na busca';
+            document.getElementById(fotoFieldId).src = 'https://placehold.co/100x100/A0AEC0/000000?text=ERRO';
+            reject(e);
+        };
     });
 }
-function toggleRelatoProblema() {
+window.toggleRelatoProblema = function() {
     const atividade = document.getElementById('atividadeInicio').value;
     const relatoField = document.getElementById('relatoProblemaField');
     const relatoTextarea = document.getElementById('relatoProblema');
@@ -989,13 +1254,13 @@ function toggleRelatoProblema() {
     relatoField.style.display = isMaintenance ? 'flex' : 'none';
     relatoTextarea.required = isMaintenance;
 }
-function toggleNonConformityReport(radio) {
+window.toggleNonConformityReport = function(radio) {
     const textarea = document.getElementById(radio.dataset.targetTextarea);
     textarea.classList.toggle('hidden', radio.value !== 'NÃO CONFORME');
     textarea.required = radio.value === 'NÃO CONFORME';
     if(radio.value !== 'NÃO CONFORME') textarea.value = '';
 }
-function hideAllChecklistReports() {
+window.hideAllChecklistReports = function() {
     document.querySelectorAll('#safetyChecklist textarea').forEach(textarea => {
         textarea.classList.add('hidden');
         textarea.required = false;
@@ -1006,12 +1271,12 @@ function hideAllChecklistReports() {
     });
 }
 
-async function enviarInicio(event) {
+window.enviarInicio = async function(event) {
     event.preventDefault();
     
-    const frotaCadastrada = await mostrarModeloFrota(document.getElementById('frotaInicio').value, 'equipamentoInicio', 'fotoEquipInicio');
+    const frotaCadastrada = await window.mostrarModeloFrota(document.getElementById('frotaInicio').value, 'equipamentoInicio', 'fotoEquipInicio');
     if (!frotaCadastrada) {
-        showModal('Erro', 'Frota não cadastrada. Verifique o código da frota e tente novamente.', () => {}, true);
+        window.showModal('Erro', 'Frota não cadastrada. Verifique o código da frota e tente novamente.', () => {}, true);
         return;
     }
 
@@ -1033,16 +1298,16 @@ async function enviarInicio(event) {
     }
 
     if (missingFields.length > 0) {
-        showModal('Campos Obrigatórios', 'Por favor, preencha os seguintes campos:\n\n- ' + missingFields.join('\n- '), () => {}, true);
+        window.showModal('Campos Obrigatórios', 'Por favor, preencha os seguintes campos:\n\n- ' + missingFields.join('\n- '), () => {}, true);
         return;
     }
 
     const cracha = document.getElementById('crachaInicio').value;
     const frota = document.getElementById('frotaInicio').value;
-    const atividadesEmAndamento = await getAllData('atividadesEmAndamento');
+    const atividadesEmAndamento = await window.getAllData('atividadesEmAndamento');
 
     if (atividadesEmAndamento.some(item => item.frota === frota)) {
-        showModal('Erro', `A frota ${frota} já está em atividade.`, () => {}, true);
+        window.showModal('Erro', `A frota ${frota} já está em atividade.`, () => {}, true);
         return;
     }
 
@@ -1051,7 +1316,7 @@ async function enviarInicio(event) {
             cracha, operador: document.getElementById('nomeInicio').value,
             dataInicial: document.getElementById('dataInicial').value, horaInicial: document.getElementById('horaInicial').value,
             frota, equipamento: document.getElementById('equipamentoInicio').value,
-            horimetroInicial: document.getElementById('horimetroInicial').value, setor: document.getElementById('setorInicio').value,
+            horimetroInicial: parseFloat(document.getElementById('horimetroInicial').value), setor: document.getElementById('setorInicio').value,
             atividade: document.getElementById('atividadeInicio').value, implemento: document.getElementById('implementoInicio').value,
             relatoProblema: document.getElementById('relatoProblema').value, checklist: {}
         };
@@ -1061,29 +1326,29 @@ async function enviarInicio(event) {
         });
 
         if (nonConformityFound) {
-            showModal('Atenção: Não Conformidade', `Foram encontradas não conformidades no checklist.\nA frota será marcada para manutenção. Continuar?`, () => {
+            window.showModal('Atenção: Não Conformidade', `Foram encontradas não conformidades no checklist.\nA frota será marcada para manutenção. Continuar?`, () => {
                 dados.atividade = 'MANUTENÇÃO';
-                saveData('atividadesEmAndamento', dados, 'Atividade de manutenção iniciada!');
-                limparFormulario('formInicio');
-                mostrar('disponibilidade');
+                window.saveData('atividadesEmAndamento', dados, 'Atividade de manutenção iniciada!');
+                window.limparFormulario('formInicio');
+                window.mostrar('disponibilidade');
             }, true);
         } else {
-             saveData('atividadesEmAndamento', dados, 'Atividade iniciada com sucesso!');
-             limparFormulario('formInicio');
-             mostrar('disponibilidade');
+             window.saveData('atividadesEmAndamento', dados, 'Atividade iniciada com sucesso!');
+             window.limparFormulario('formInicio');
+             window.mostrar('disponibilidade');
         }
     };
 
     if (atividadesEmAndamento.some(item => item.cracha === cracha)) {
-        showModal('Operador em Atividade', `O operador ${cracha} já possui uma atividade em andamento. Deseja iniciar uma nova atividade mesmo assim?`, saveActivity, true);
+        window.showModal('Operador em Atividade', `O operador ${cracha} já possui uma atividade em andamento. Deseja iniciar uma nova atividade mesmo assim?`, saveActivity, true);
     } else {
         saveActivity();
     }
 }
 
-async function handleCrachaFimChange() {
+window.handleCrachaFimChange = async function() {
     const cracha = document.getElementById('crachaFim').value;
-    const operador = await buscarOperador(cracha, 'nomeFim', 'fotoFim');
+    const operador = await window.buscarOperador(cracha, 'nomeFim', 'fotoFim');
 
     const frotaFimInput = document.getElementById('frotaFim');
     const container = document.getElementById('frotaSelectionContainer');
@@ -1101,7 +1366,7 @@ async function handleCrachaFimChange() {
     request.onsuccess = () => {
         const atividadesOperador = request.result.filter(item => item.cracha === cracha);
         if (atividadesOperador.length === 1) {
-            selecionarFrotaAtiva(atividadesOperador[0].id);
+            window.selecionarFrotaAtiva(atividadesOperador[0].id);
             container.style.display = 'none';
         } else if (atividadesOperador.length > 1) {
             atividadesOperador.forEach(ativ => select.innerHTML += `<option value="${ativ.id}">${ativ.frota} - ${ativ.atividade}</option>`);
@@ -1109,38 +1374,38 @@ async function handleCrachaFimChange() {
         }
     };
 }
-function selecionarFrotaAtiva(id) {
+window.selecionarFrotaAtiva = function(id) {
     const request = db.transaction(['atividadesEmAndamento']).objectStore('atividadesEmAndamento').get(Number(id));
     request.onsuccess = () => {
         const ativ = request.result;
         if (ativ) {
             document.getElementById('frotaFim').value = ativ.frota;
-            mostrarModeloFrota(ativ.frota, 'equipamentoFim', 'fotoEquipFim');
+            window.mostrarModeloFrota(ativ.frota, 'equipamentoFim', 'fotoEquipFim');
             const horimetroInput = document.getElementById('horimetroFim');
             horimetroInput.dataset.atividadeId = ativ.id;
             horimetroInput.dataset.horimetroInicial = ativ.horimetroInicial;
         }
     };
 }
-function enviarFim(event) {
+window.enviarFim = function(event) {
     event.preventDefault();
     const form = document.getElementById('formFim');
     if (!form.checkValidity()) { form.reportValidity(); return; }
     
     const atividadeId = Number(document.getElementById('horimetroFim').dataset.atividadeId);
-    if (!atividadeId) { alert("Nenhuma atividade selecionada para finalizar. Verifique o crachá e a frota."); return; }
+    if (!atividadeId) { window.alert("Nenhuma atividade selecionada para finalizar. Verifique o crachá e a frota."); return; }
 
     const transaction = db.transaction(['atividadesEmAndamento'], 'readonly');
     const requestGet = transaction.objectStore('atividadesEmAndamento').get(atividadeId);
 
     requestGet.onsuccess = () => {
         const atividadeAberta = requestGet.result;
-        if (!atividadeAberta) { alert("Erro: Atividade não encontrada."); return; }
-        finalizarAtividade(atividadeId, atividadeAberta);
+        if (!atividadeAberta) { window.alert("Erro: Atividade não encontrada."); return; }
+        window.finalizarAtividade(atividadeId, atividadeAberta);
     };
 }
 
-function finalizarAtividade(atividadeId, atividadeEncerrada) {
+window.finalizarAtividade = function(atividadeId, atividadeEncerrada) {
     let isInconsistente = false;
     const horimetroFinal = parseFloat(document.getElementById('horimetroFim').value);
     const horimetroInicial = parseFloat(atividadeEncerrada.horimetroInicial);
@@ -1166,17 +1431,17 @@ function finalizarAtividade(atividadeId, atividadeEncerrada) {
         storeAtividades.delete(atividadeId);
 
         transaction.oncomplete = () => {
-            alert("Atividade finalizada com sucesso!");
-            limparFormulario('formFim');
-            mostrar('disponibilidade');
+            window.alert("Atividade finalizada com sucesso!");
+            window.limparFormulario('formFim');
+            window.mostrar('disponibilidade');
         };
-        transaction.onerror = (e) => { console.error("Erro ao finalizar atividade:", e.target.error); alert("Ocorreu um erro ao finalizar a atividade."); };
+        transaction.onerror = (e) => { console.error("Erro ao finalizar atividade:", e.target.error); window.alert("Ocorreu um erro ao finalizar a atividade."); };
     };
 
     const checkDate = () => {
         if (fimTimestamp < inicioTimestamp) {
             isInconsistente = true;
-            showModal('Data Incorreta', 'A data/hora final é anterior à inicial. Deseja continuar mesmo assim?', doSave, true);
+            window.showModal('Data Incorreta', 'A data/hora final é anterior à inicial. Deseja continuar mesmo assim?', doSave, true);
         } else {
             doSave();
         }
@@ -1184,7 +1449,7 @@ function finalizarAtividade(atividadeId, atividadeEncerrada) {
 
     if (horimetroFinal < horimetroInicial) {
         isInconsistente = true;
-        showModal('Erro de Horímetro', `O horímetro final (${horimetroFinal}) é menor que o inicial (${horimetroInicial}). Deseja continuar mesmo assim?`, checkDate, true);
+        window.showModal('Erro de Horímetro', `O horímetro final (${horimetroFinal}) é menor que o inicial (${horimetroInicial}). Deseja continuar mesmo assim?`, checkDate, true);
     } else {
         checkDate();
     }
@@ -1192,9 +1457,13 @@ function finalizarAtividade(atividadeId, atividadeEncerrada) {
 
 
 // --- DISPONIBILIDADE (AVAILABILITY) VIEW ---
-async function updateDisponibilidade() {
+window.updateDisponibilidade = async function() {
     try {
-        const [todasFrotas, atividadesEmAndamento] = await Promise.all([getAllData('frotas'), getAllData('atividadesEmAndamento')]);
+        const [todasFrotas, atividadesEmAndamento, ordensServico] = await Promise.all([
+            window.getAllData('frotas'),
+            window.getAllData('atividadesEmAndamento'),
+            window.getAllData('ordensServico')
+        ]);
         const contentDiv = document.getElementById('disponibilidadeContent');
         const manutencaoListDiv = document.getElementById('frotasEmManutencaoList');
         const manutencaoItemsUl = document.getElementById('manutencaoItems');
@@ -1232,23 +1501,35 @@ async function updateDisponibilidade() {
 
             frotasAgrupadas[modelo].forEach(frota => {
                 const atividade = atividadesEmAndamento.find(a => a.frota === frota.codigo);
-                const isManutencao = atividade?.atividade.toUpperCase() === 'MANUTENÇÃO';
-                
-                if (isManutencao) {
-                    frotasEmManutencao.push({codigo: frota.codigo, relato: atividade.relatoProblema || 'Sem relato.'});
-                }
+                const osAberta = ordensServico.find(os => os.frota === frota.codigo && (os.status === 'Aberta' || os.status === 'Em Andamento'));
                 
                 let statusClass = 'status-ok';
                 let statusText = 'Disponível';
+                let operadorText = '-';
+                let inicioText = '-';
+                let atividadeText = '-';
+
                 if (atividade) {
                     statusText = atividade.atividade;
-                    statusClass = isManutencao ? 'status-maintenance-strong' : 'status-active';
+                    statusClass = atividade.atividade.toUpperCase() === 'MANUTENÇÃO' ? 'status-maintenance-strong' : 'status-active';
+                    operadorText = `${atividade.operador} (${atividade.cracha})`;
+                    inicioText = `${new Date(atividade.dataInicial + 'T' + atividade.horaInicial).toLocaleDateString('pt-BR')} ${atividade.horaInicial}`;
+                    atividadeText = atividade.atividade;
+
+                    if (atividade.atividade.toUpperCase() === 'MANUTENÇÃO') {
+                        frotasEmManutencao.push({codigo: frota.codigo, relato: atividade.relatoProblema || 'Sem relato.'});
+                    }
+                } else if (osAberta) {
+                    statusText = 'Em Manutenção (OS)';
+                    statusClass = 'status-maintenance-strong';
+                    operadorText = `Manutenção (OS ${osAberta.id})`;
+                    inicioText = `${new Date(osAberta.dataAbertura).toLocaleDateString('pt-BR')}`;
+                    atividadeText = osAberta.descricao;
+                    frotasEmManutencao.push({codigo: frota.codigo, relato: osAberta.descricao});
                 }
 
-                const operadorText = atividade ? `${atividade.operador} (${atividade.cracha})` : '-';
-                const inicioText = atividade ? `${new Date(atividade.dataInicial + 'T00:00:00').toLocaleDateString('pt-BR')} ${atividade.horaInicial}` : '-';
                 const row = tbody.insertRow();
-                row.innerHTML = `<td data-label="Frota">${frota.codigo}</td><td data-label="Status"><span class="status-cell ${statusClass}">${statusText}</span></td><td data-label="Operador">${operadorText}</td><td data-label="Atividade">${atividade?.atividade || '-'}</td><td data-label="Início">${inicioText}</td>`;
+                row.innerHTML = `<td data-label="Frota">${frota.codigo}</td><td data-label="Status"><span class="status-cell ${statusClass}">${statusText}</span></td><td data-label="Operador">${operadorText}</td><td data-label="Atividade">${atividadeText}</td><td data-label="Início">${inicioText}</td>`;
             });
             groupDiv.appendChild(table);
             contentDiv.appendChild(groupDiv);
@@ -1267,10 +1548,10 @@ async function updateDisponibilidade() {
 
 
 // --- ADMIN PANEL FUNCTIONS ---
-async function handleLogin() {
+window.handleLogin = async function() {
     const username = document.getElementById('adminUsername').value;
     const password = document.getElementById('adminPassword').value;
-    if (!db) { alert("Banco de dados não está pronto."); return; }
+    if (!db) { window.alert("Banco de dados não está pronto."); return; }
     const transaction = db.transaction(['usuarios'], 'readwrite'); // readwrite to create defaults
     const store = transaction.objectStore('usuarios');
     const adminCheck = store.get('admin');
@@ -1285,14 +1566,14 @@ async function handleLogin() {
             if (user && user.password === password) {
                 currentUser = user;
                 sessionStorage.setItem('loggedInUser', JSON.stringify(user));
-                showAdminDashboard();
+                window.showAdminDashboard();
             } else {
-                alert('Usuário ou senha inválidos.');
+                window.alert('Usuário ou senha inválidos.');
             }
         };
     };
 }
-function showAdminDashboard() {
+window.showAdminDashboard = function() {
     if (!currentUser) return;
     document.getElementById('adminLogin').style.display = 'none';
     document.getElementById('adminDashboard').style.display = 'block';
@@ -1300,76 +1581,107 @@ function showAdminDashboard() {
     document.getElementById('loggedInUserLevelDisplay').textContent = currentUser.level;
     const isAdmin = currentUser.level === 'administrador';
     const isAnalyst = currentUser.level === 'analista';
-    document.getElementById('btnCadastro').style.display = isAdmin ? 'inline-block' : 'none';
-    document.getElementById('btnRelatorio').style.display = (isAdmin || isAnalyst) ? 'inline-block' : 'none';
-    document.getElementById('btnDados').style.display = isAdmin ? 'inline-block' : 'none';
+    
+    // Hide all navigation buttons when in admin panel
+    document.getElementById('btnDisponibilidade').style.display = 'none';
+    document.getElementById('btnInicioAtividade').style.display = 'none';
+    document.getElementById('btnEncerramentoAtividade').style.display = 'none';
+    document.getElementById('btnCadastro').style.display = 'none';
+    document.getElementById('btnRelatorio').style.display = 'none';
+    document.getElementById('btnDados').style.display = 'none';
+
     document.getElementById('userManagement').style.display = isAdmin ? 'block' : 'none';
-    if (isAdmin) loadUserList();
+    if (isAdmin) window.loadUserList();
 }
-function logout() {
+window.logout = function() {
     currentUser = null;
     sessionStorage.removeItem('loggedInUser');
-    ['btnCadastro', 'btnRelatorio', 'btnDados'].forEach(id => document.getElementById(id).style.display = 'none');
+    // Hide management buttons when logged out
+    document.getElementById('btnCadastro').style.display = 'none';
+    document.getElementById('btnRelatorio').style.display = 'none';
+    document.getElementById('btnDados').style.display = 'none';
+
     document.getElementById('adminDashboard').style.display = 'none';
     document.getElementById('adminLogin').style.display = 'block';
     document.getElementById('adminUsername').value = '';
     document.getElementById('adminPassword').value = '';
-    mostrar('disponibilidade');
+    window.mostrar('disponibilidade'); // Return to default view
 }
-async function salvarUsuario() {
+window.salvarUsuario = async function() {
     const username = document.getElementById('newUsername').value.trim();
     const password = document.getElementById('newPassword').value.trim();
     const level = document.getElementById('newUserLevel').value;
-    if (!username || !password || !level) { alert("Todos os campos são obrigatórios."); return; }
-    saveData('usuarios', { username, password, level }, "Usuário salvo com sucesso!");
-    loadUserList();
+    if (!username || !password || !level) { window.alert("Todos os campos são obrigatórios."); return; }
+    window.saveData('usuarios', { username, password, level }, "Usuário salvo com sucesso!");
+    window.loadUserList();
     document.getElementById('newUsername').value = '';
     document.getElementById('newPassword').value = '';
     document.getElementById('newUserLevel').value = '';
 }
-async function loadUserList() {
-    const users = await getAllData('usuarios');
+window.loadUserList = async function() {
+    const users = await window.getAllData('usuarios');
     const userListBody = document.getElementById('userList');
     userListBody.innerHTML = '';
     users.forEach(user => {
         const row = userListBody.insertRow();
-        row.innerHTML = `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${user.username}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.level}</td><td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"><a href="#" class="text-red-600 hover:text-red-900" onclick="deleteUser('${user.username}')">Excluir</a></td>`;
+        row.innerHTML = `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${user.username}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.level}</td><td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"><a href="#" class="text-red-600 hover:text-red-900" onclick="window.deleteUser('${user.username}')">Excluir</a></td>`;
     });
 }
-function deleteUser(username) {
-    if (username === 'admin') { alert("Não é possível excluir o administrador padrão."); return; }
-    showModal('Excluir Usuário', `Tem certeza que deseja excluir '${username}'?`, () => {
+window.deleteUser = function(username) {
+    if (username === 'admin') { window.alert("Não é possível excluir o administrador padrão."); return; }
+    window.showModal('Excluir Usuário', `Tem certeza que deseja excluir '${username}'?`, () => {
         const transaction = db.transaction(['usuarios'], 'readwrite');
         transaction.objectStore('usuarios').delete(username);
-        transaction.oncomplete = () => { alert(`Usuário ${username} excluído.`); loadUserList(); };
+        transaction.oncomplete = () => { window.alert(`Usuário ${username} excluído.`); window.loadUserList(); };
     }, true);
 }
 
 // --- DATA MANAGEMENT & REPORT FUNCTIONS ---
-function gerarRelatorio() {
+window.gerarRelatorio = function() {
     const tipo = document.getElementById('tipoRelatorio').value;
     switch (tipo) {
         case 'horasFrota':
-            gerarRelatorioHorasFrota();
+            window.gerarRelatorioHorasFrota();
+            break;
+        case 'atividadesOperador':
+            window.generateAtividadesOperadorReport();
+            break;
+        case 'manutencoes':
+            window.generateManutencoesReport();
+            break;
+        case 'disponibilidade':
+            window.generateDisponibilidadeReport();
+            break;
+        case 'comparativoHoras':
+            window.generateComparativoHorasReport();
+            break;
+        case 'atividades':
+            window.generateAtividadesReport();
+            break;
+        case 'setor':
+            window.generateSetorReport();
+            break;
+        case 'edicoes':
+            window.generateEdicoesReport();
             break;
         default:
-            alert(`Relatório do tipo '${tipo}' ainda não implementado.`);
+            window.alert(`Relatório do tipo '${tipo}' ainda não implementado.`);
             document.getElementById('relatorioResultado').innerHTML = '';
     }
 }
 
-async function gerarRelatorioHorasFrota() {
+window.gerarRelatorioHorasFrota = async function() {
     const dataInicio = document.getElementById('relatorioDataInicio').value;
     const dataFim = document.getElementById('relatorioDataFim').value;
     const resultadoDiv = document.getElementById('relatorioResultado');
     resultadoDiv.innerHTML = '';
 
     if (!dataInicio || !dataFim) {
-        alert('Por favor, selecione as datas de início e fim.');
+        window.alert('Por favor, selecione as datas de início e fim.');
         return;
     }
 
-    const historico = await getAllData('historicoAtividades');
+    const historico = await window.getAllData('historicoAtividades');
     const relatorio = {};
 
     const inicioTimestamp = new Date(dataInicio + 'T00:00:00').getTime();
@@ -1414,10 +1726,433 @@ async function gerarRelatorioHorasFrota() {
     resultadoDiv.appendChild(table);
 }
 
-async function mostrarBancoDeDados() {
+window.generateAtividadesOperadorReport = async function() {
+    const dataInicio = document.getElementById('relatorioDataInicio').value;
+    const dataFim = document.getElementById('relatorioDataFim').value;
+    const resultadoDiv = document.getElementById('relatorioResultado');
+    resultadoDiv.innerHTML = '';
+
+    if (!dataInicio || !dataFim) {
+        window.alert('Por favor, selecione as datas de início e fim.');
+        return;
+    }
+
+    const historico = await window.getAllData('historicoAtividades');
+    const operadores = await window.getAllData('operadores');
+    const relatorio = {};
+
+    operadores.forEach(op => relatorio[op.cracha] = { nome: op.nome, totalAtividades: 0, totalHoras: 0 });
+
+    const inicioTimestamp = new Date(dataInicio + 'T00:00:00').getTime();
+    const fimTimestamp = new Date(dataFim + 'T23:59:59').getTime();
+
+    historico.forEach(item => {
+        const itemTimestamp = new Date(item.dataFinal).getTime();
+        if (itemTimestamp >= inicioTimestamp && itemTimestamp <= fimTimestamp && relatorio[item.cracha]) {
+            relatorio[item.cracha].totalAtividades++;
+            relatorio[item.cracha].totalHoras += parseFloat(item.horasHorimetro || 0);
+        }
+    });
+
+    if (Object.keys(relatorio).length === 0) {
+        resultadoDiv.innerHTML = '<p class="text-gray-600 mt-4">Nenhum dado encontrado para o período selecionado.</p>';
+        return;
+    }
+
+    const table = document.createElement('table');
+    table.className = 'data-table';
+    table.innerHTML = `
+        <thead>
+            <tr>
+                <th>Crachá</th>
+                <th>Nome do Operador</th>
+                <th>Total de Atividades</th>
+                <th>Total de Horas</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    `;
+    const tbody = table.querySelector('tbody');
+    for (const cracha in relatorio) {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td data-label="Crachá">${cracha}</td>
+            <td data-label="Nome">${relatorio[cracha].nome}</td>
+            <td data-label="Atividades">${relatorio[cracha].totalAtividades}</td>
+            <td data-label="Horas">${relatorio[cracha].totalHoras.toFixed(2)}</td>
+        `;
+    }
+    resultadoDiv.appendChild(table);
+}
+
+window.generateManutencoesReport = async function() {
+    const dataInicio = document.getElementById('relatorioDataInicio').value;
+    const dataFim = document.getElementById('relatorioDataFim').value;
+    const resultadoDiv = document.getElementById('relatorioResultado');
+    resultadoDiv.innerHTML = '';
+
+    if (!dataInicio || !dataFim) {
+        window.alert('Por favor, selecione as datas de início e fim.');
+        return;
+    }
+
+    const ordensServico = await window.getAllData('ordensServico');
+    const filteredOS = ordensServico.filter(os => {
+        const osDate = new Date(os.dataAbertura);
+        const start = new Date(dataInicio);
+        const end = new Date(dataFim + 'T23:59:59');
+        return osDate >= start && osDate <= end;
+    });
+
+    if (filteredOS.length === 0) {
+        resultadoDiv.innerHTML = '<p class="text-gray-600 mt-4">Nenhuma Ordem de Serviço encontrada para o período selecionado.</p>';
+        return;
+    }
+
+    const table = document.createElement('table');
+    table.className = 'data-table';
+    table.innerHTML = `
+        <thead>
+            <tr>
+                <th>OS ID</th>
+                <th>Frota</th>
+                <th>Modelo</th>
+                <th>Data Abertura</th>
+                <th>Solicitante</th>
+                <th>Descrição</th>
+                <th>Tipo</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    `;
+    const tbody = table.querySelector('tbody');
+    filteredOS.forEach(os => {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td data-label="OS ID">${os.id}</td>
+            <td data-label="Frota">${os.frota}</td>
+            <td data-label="Modelo">${os.modeloFrota}</td>
+            <td data-label="Data Abertura">${os.dataAbertura}</td>
+            <td data-label="Solicitante">${os.solicitante}</td>
+            <td data-label="Descrição">${os.descricao}</td>
+            <td data-label="Tipo">${os.tipo}</td>
+            <td data-label="Status">${os.status}</td>
+        `;
+    });
+    resultadoDiv.appendChild(table);
+}
+
+window.generateDisponibilidadeReport = async function() {
+    const dataInicio = document.getElementById('relatorioDataInicio').value;
+    const dataFim = document.getElementById('relatorioDataFim').value;
+    const resultadoDiv = document.getElementById('relatorioResultado');
+    resultadoDiv.innerHTML = '';
+
+    if (!dataInicio || !dataFim) {
+        window.alert('Por favor, selecione as datas de início e fim.');
+        return;
+    }
+
+    const frotas = await window.getAllData('frotas');
+    const historico = await window.getAllData('historicoAtividades');
+    const ordensServico = await window.getAllData('ordensServico');
+
+    const inicioTimestamp = new Date(dataInicio + 'T00:00:00').getTime();
+    const fimTimestamp = new Date(dataFim + 'T23:59:59').getTime();
+
+    const reportData = frotas.map(frota => {
+        let totalHorasOperacao = 0;
+        let totalHorasManutencao = 0;
+
+        historico.filter(item => item.frota === frota.codigo && new Date(item.dataFinal).getTime() >= inicioTimestamp && new Date(item.dataFinal).getTime() <= fimTimestamp)
+                 .forEach(item => {
+                     const horas = parseFloat(item.horasHorimetro || 0);
+                     if (item.atividade.toUpperCase() === 'MANUTENÇÃO') {
+                         totalHorasManutencao += horas;
+                     } else {
+                         totalHorasOperacao += horas;
+                     }
+                 });
+        
+        // Simplesmente para mostrar o status atual no período
+        const currentStatus = ordensServico.some(os => os.frota === frota.codigo && (os.status === 'Aberta' || os.status === 'Em Andamento')) ? 'Em Manutenção' : 
+                              historico.some(item => item.frota === frota.codigo && !item.dataFinal) ? 'Em Operação' : 'Disponível';
+
+        return {
+            frota: frota.codigo,
+            modelo: frota.modelo,
+            horasOperacao: totalHorasOperacao.toFixed(2),
+            horasManutencao: totalHorasManutencao.toFixed(2),
+            statusAtual: currentStatus
+        };
+    });
+
+    if (reportData.length === 0) {
+        resultadoDiv.innerHTML = '<p class="text-gray-600 mt-4">Nenhum dado encontrado para o período selecionado.</p>';
+        return;
+    }
+
+    const table = document.createElement('table');
+    table.className = 'data-table';
+    table.innerHTML = `
+        <thead>
+            <tr>
+                <th>Frota</th>
+                <th>Modelo</th>
+                <th>Horas de Operação</th>
+                <th>Horas de Manutenção</th>
+                <th>Status Atual</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    `;
+    const tbody = table.querySelector('tbody');
+    reportData.forEach(item => {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td data-label="Frota">${item.frota}</td>
+            <td data-label="Modelo">${item.modelo}</td>
+            <td data-label="Horas Op.">${item.horasOperacao}</td>
+            <td data-label="Horas Manut.">${item.horasManutencao}</td>
+            <td data-label="Status">${item.statusAtual}</td>
+        `;
+    });
+    resultadoDiv.appendChild(table);
+}
+
+window.generateComparativoHorasReport = async function() {
+    const dataInicio = document.getElementById('relatorioDataInicio').value;
+    const dataFim = document.getElementById('relatorioDataFim').value;
+    const resultadoDiv = document.getElementById('relatorioResultado');
+    resultadoDiv.innerHTML = '';
+
+    if (!dataInicio || !dataFim) {
+        window.alert('Por favor, selecione as datas de início e fim.');
+        return;
+    }
+
+    const historico = await window.getAllData('historicoAtividades');
+    const filteredHistorico = historico.filter(item => {
+        const itemDate = new Date(item.dataFinal);
+        const start = new Date(dataInicio);
+        const end = new Date(dataFim + 'T23:59:59');
+        return itemDate >= start && itemDate <= end;
+    });
+
+    if (filteredHistorico.length === 0) {
+        resultadoDiv.innerHTML = '<p class="text-gray-600 mt-4">Nenhum dado encontrado para o período selecionado.</p>';
+        return;
+    }
+
+    const table = document.createElement('table');
+    table.className = 'data-table';
+    table.innerHTML = `
+        <thead>
+            <tr>
+                <th>ID Atividade</th>
+                <th>Frota</th>
+                <th>Operador</th>
+                <th>Horímetro Inicial</th>
+                <th>Horímetro Final</th>
+                <th>Horas Apontadas</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    `;
+    const tbody = table.querySelector('tbody');
+    filteredHistorico.forEach(item => {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td data-label="ID">${item.id}</td>
+            <td data-label="Frota">${item.frota}</td>
+            <td data-label="Operador">${item.operador}</td>
+            <td data-label="Horímetro Inicial">${parseFloat(item.horimetroInicial).toFixed(2)}</td>
+            <td data-label="Horímetro Final">${parseFloat(item.horimetroFinal).toFixed(2)}</td>
+            <td data-label="Horas Apontadas">${parseFloat(item.horasHorimetro).toFixed(2)}</td>
+        `;
+    });
+    resultadoDiv.appendChild(table);
+}
+
+window.generateAtividadesReport = async function() {
+    const dataInicio = document.getElementById('relatorioDataInicio').value;
+    const dataFim = document.getElementById('relatorioDataFim').value;
+    const resultadoDiv = document.getElementById('relatorioResultado');
+    resultadoDiv.innerHTML = '';
+
+    if (!dataInicio || !dataFim) {
+        window.alert('Por favor, selecione as datas de início e fim.');
+        return;
+    }
+
+    const historico = await window.getAllData('historicoAtividades');
+    const filteredHistorico = historico.filter(item => {
+        const itemDate = new Date(item.dataFinal);
+        const start = new Date(dataInicio);
+        const end = new Date(dataFim + 'T23:59:59');
+        return itemDate >= start && itemDate <= end;
+    });
+
+    if (filteredHistorico.length === 0) {
+        resultadoDiv.innerHTML = '<p class="text-gray-600 mt-4">Nenhum dado encontrado para o período selecionado.</p>';
+        return;
+    }
+
+    const table = document.createElement('table');
+    table.className = 'data-table';
+    table.innerHTML = `
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Frota</th>
+                <th>Operador</th>
+                <th>Atividade</th>
+                <th>Setor</th>
+                <th>Início</th>
+                <th>Fim</th>
+                <th>Horas</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    `;
+    const tbody = table.querySelector('tbody');
+    filteredHistorico.forEach(item => {
+        const row = tbody.insertRow();
+        const statusClass = item.inconsistente ? 'status-inconsistente' : 'status-ok';
+        const statusText = item.inconsistente ? 'Inconsistente' : 'OK';
+        row.innerHTML = `
+            <td data-label="ID">${item.id}</td>
+            <td data-label="Frota">${item.frota}</td>
+            <td data-label="Operador">${item.operador}</td>
+            <td data-label="Atividade">${item.atividade}</td>
+            <td data-label="Setor">${item.setor}</td>
+            <td data-label="Início">${item.dataInicial} ${item.horaInicial}</td>
+            <td data-label="Fim">${item.dataFinal} ${item.horaFinal}</td>
+            <td data-label="Horas">${parseFloat(item.horasHorimetro).toFixed(2)}</td>
+            <td data-label="Status"><span class="status-cell ${statusClass}">${statusText}</span></td>
+        `;
+    });
+    resultadoDiv.appendChild(table);
+}
+
+window.generateSetorReport = async function() {
+    const dataInicio = document.getElementById('relatorioDataInicio').value;
+    const dataFim = document.getElementById('relatorioDataFim').value;
+    const resultadoDiv = document.getElementById('relatorioResultado');
+    resultadoDiv.innerHTML = '';
+
+    if (!dataInicio || !dataFim) {
+        window.alert('Por favor, selecione as datas de início e fim.');
+        return;
+    }
+
+    const historico = await window.getAllData('historicoAtividades');
+    const relatorio = {};
+
+    const inicioTimestamp = new Date(dataInicio + 'T00:00:00').getTime();
+    const fimTimestamp = new Date(dataFim + 'T23:59:59').getTime();
+
+    historico.forEach(item => {
+        const itemTimestamp = new Date(item.dataFinal).getTime();
+        if (itemTimestamp >= inicioTimestamp && itemTimestamp <= fimTimestamp) {
+            if (!relatorio[item.setor]) {
+                relatorio[item.setor] = { totalHoras: 0, totalAtividades: 0 };
+            }
+            relatorio[item.setor].totalAtividades++;
+            relatorio[item.setor].totalHoras += parseFloat(item.horasHorimetro || 0);
+        }
+    });
+
+    if (Object.keys(relatorio).length === 0) {
+        resultadoDiv.innerHTML = '<p class="text-gray-600 mt-4">Nenhum dado encontrado para o período selecionado.</p>';
+        return;
+    }
+
+    const table = document.createElement('table');
+    table.className = 'data-table';
+    table.innerHTML = `
+        <thead>
+            <tr>
+                <th>Setor</th>
+                <th>Total de Atividades</th>
+                <th>Total de Horas</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    `;
+    const tbody = table.querySelector('tbody');
+    for (const setor in relatorio) {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td data-label="Setor">${setor}</td>
+            <td data-label="Atividades">${relatorio[setor].totalAtividades}</td>
+            <td data-label="Horas">${relatorio[setor].totalHoras.toFixed(2)}</td>
+        `;
+    }
+    resultadoDiv.appendChild(table);
+}
+
+window.generateEdicoesReport = async function() {
+    const dataInicio = document.getElementById('relatorioDataInicio').value;
+    const dataFim = document.getElementById('relatorioDataFim').value;
+    const resultadoDiv = document.getElementById('relatorioResultado');
+    resultadoDiv.innerHTML = '';
+
+    if (!dataInicio || !dataFim) {
+        window.alert('Por favor, selecione as datas de início e fim.');
+        return;
+    }
+
+    const historico = await window.getAllData('historicoAtividades');
+    const filteredHistorico = historico.filter(item => {
+        const itemDate = new Date(item.dataFinal);
+        const start = new Date(dataInicio);
+        const end = new Date(dataFim + 'T23:59:59');
+        return itemDate >= start && itemDate <= end && item.inconsistente;
+    });
+
+    if (filteredHistorico.length === 0) {
+        resultadoDiv.innerHTML = '<p class="text-gray-600 mt-4">Nenhum apontamento inconsistente encontrado para o período selecionado.</p>';
+        return;
+    }
+
+    const table = document.createElement('table');
+    table.className = 'data-table';
+    table.innerHTML = `
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Frota</th>
+                <th>Operador</th>
+                <th>Horímetro Inicial</th>
+                <th>Horímetro Final</th>
+                <th>Inconsistência</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    `;
+    const tbody = table.querySelector('tbody');
+    filteredHistorico.forEach(item => {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td data-label="ID">${item.id}</td>
+            <td data-label="Frota">${item.frota}</td>
+            <td data-label="Operador">${item.operador}</td>
+            <td data-label="Horímetro Inicial">${parseFloat(item.horimetroInicial).toFixed(2)}</td>
+            <td data-label="Horímetro Final">${parseFloat(item.horimetroFinal).toFixed(2)}</td>
+            <td data-label="Inconsistência">Horímetro final menor que inicial ou data incorreta</td>
+        `;
+    });
+    resultadoDiv.appendChild(table);
+}
+
+
+window.mostrarBancoDeDados = async function() {
     const contentDiv = document.getElementById('dadosContent');
     contentDiv.innerHTML = '';
-    const historico = await getAllData('historicoAtividades');
+    const historico = await window.getAllData('historicoAtividades');
 
     if (historico.length === 0) {
         contentDiv.innerHTML = '<p class="text-gray-600">Nenhum lançamento no histórico.</p>';
@@ -1441,52 +2176,65 @@ async function mostrarBancoDeDados() {
             <td data-label="Atividade">${item.atividade}</td>
             <td data-label="Data Final">${new Date(item.dataFinal + 'T00:00:00').toLocaleDateString('pt-BR')}</td>
             <td data-label="Status"><span class="status-cell ${statusClass}">${statusText}</span></td>
-            <td data-label="Ações"><button class="btn blue text-xs p-1" onclick="handleEdit('historicoAtividades', ${item.id})">Alterar</button></td>
+            <td data-label="Ações"><button class="btn blue text-xs p-1" onclick="window.handleEdit('historicoAtividades', ${item.id})">Alterar</button></td>
         `;
     });
     contentDiv.appendChild(table);
 }
 
 // --- CONSULTA & EDIT FUNCTIONS ---
-async function consultarOperador() {
-    const data = await getAllData('operadores');
-    showListModal('Operadores Cadastrados', data, { cracha: 'Crachá', nome: 'Nome', foto: 'Foto' }, 'operadores');
+window.consultarOperador = async function() {
+    const data = await window.getAllData('operadores');
+    window.showListModal('Operadores Cadastrados', data, { cracha: 'Crachá', nome: 'Nome', foto: 'Foto' }, 'operadores');
 }
-async function consultarFrota() {
-    const data = await getAllData('frotas');
-    showListModal('Frotas Cadastradas', data, { codigo: 'Código', modelo: 'Modelo', foto: 'Foto' }, 'frotas');
+window.consultarFrota = async function() {
+    const data = await window.getAllData('frotas');
+    window.showListModal('Frotas Cadastradas', data, { codigo: 'Código', modelo: 'Modelo', foto: 'Foto' }, 'frotas');
 }
-async function consultarSetor() {
-    const data = await getAllData('setores');
-    showListModal('Setores Cadastrados', data, { nome: 'Nome' }, 'setores');
+window.consultarSetor = async function() {
+    const data = await window.getAllData('setores');
+    window.showListModal('Setores Cadastrados', data, { nome: 'Nome' }, 'setores');
 }
-async function consultarAtividade() {
-    const data = await getAllData('atividades');
-    showListModal('Atividades Cadastradas', data, { nome: 'Nome' }, 'atividades');
+window.consultarAtividade = async function() {
+    const data = await window.getAllData('atividades');
+    window.showListModal('Atividades Cadastradas', data, { nome: 'Nome' }, 'atividades');
 }
-async function consultarImplemento() {
-    const data = await getAllData('implementos');
-    showListModal('Implementos Cadastrados', data, { nome: 'Nome', sigla: 'Sigla' }, 'implementos');
+window.consultarImplemento = async function() {
+    const data = await window.getAllData('implementos');
+    window.showListModal('Implementos Cadastrados', data, { nome: 'Nome', sigla: 'Sigla' }, 'implementos');
 }
 
-async function handleDelete(storeName, key) {
-    const password = prompt("Para excluir, digite a senha de administrador:");
+window.handleDelete = async function(storeName, key) {
+    const password = window.prompt("Para excluir, digite a senha de administrador:");
     if (password !== 'admin123') { // Simple password check for demo
-        alert('Senha incorreta.');
+        window.alert('Senha incorreta.');
         return;
     }
     const transaction = db.transaction([storeName], 'readwrite');
     const request = transaction.objectStore(storeName).delete(key);
     request.onsuccess = () => {
-        alert('Item excluído com sucesso!');
+        window.alert('Item excluído com sucesso!');
         document.getElementById('listModal').style.display = 'none';
+        // Re-render relevant lists after deletion
+        if (storeName === 'operadores') window.consultarOperador();
+        else if (storeName === 'frotas') window.consultarFrota();
+        else if (storeName === 'setores') window.consultarSetor();
+        else if (storeName === 'atividades') window.consultarAtividade();
+        else if (storeName === 'implementos') window.consultarImplemento();
+        else if (storeName === 'historicoAtividades') window.mostrarBancoDeDados();
+        else if (storeName === 'usuarios') window.loadUserList();
+        window.updateDisponibilidade(); // Update availability if frotas or activities change
+    };
+    request.onerror = (event) => {
+        console.error(`Error deleting from ${storeName}:`, event.target.error);
+        window.alert(`Erro ao excluir item de ${storeName}.`);
     };
 }
 
-async function handleEdit(storeName, keyOrItem) {
-    const password = prompt("Para editar, digite a senha de administrador:");
+window.handleEdit = async function(storeName, keyOrItem) {
+    const password = window.prompt("Para editar, digite a senha de administrador:");
     if (password !== 'admin123') { // Simple password check for demo
-        alert('Senha incorreta.');
+        window.alert('Senha incorreta.');
         return;
     }
 
@@ -1497,7 +2245,7 @@ async function handleEdit(storeName, keyOrItem) {
     
     request.onsuccess = () => {
         const item = request.result;
-        if (!item) { alert('Item não encontrado.'); return; }
+        if (!item) { window.alert('Item não encontrado.'); return; }
 
         const modal = document.getElementById('editModal');
         const titleEl = document.getElementById('editModalTitle');
@@ -1535,15 +2283,220 @@ async function handleEdit(storeName, keyOrItem) {
             const saveTransaction = db.transaction([storeName], 'readwrite');
             saveTransaction.objectStore(storeName).put(updatedItem);
             saveTransaction.oncomplete = () => {
-                alert('Item atualizado com sucesso!');
+                window.alert('Item atualizado com sucesso!');
                 modal.style.display = 'none';
                 document.getElementById('listModal').style.display = 'none';
-                if(storeName === 'historicoAtividades') mostrarBancoDeDados();
+                if(storeName === 'historicoAtividades') window.mostrarBancoDeDados();
+                else if (storeName === 'operadores') window.consultarOperador();
+                else if (storeName === 'frotas') window.consultarFrota();
+                else if (storeName === 'setores') window.consultarSetor();
+                else if (storeName === 'atividades') window.consultarAtividade();
+                else if (storeName === 'implementos') window.consultarImplemento();
+                else if (storeName === 'usuarios') window.loadUserList();
+            };
+            saveTransaction.onerror = (event) => {
+                console.error(`Error updating item in ${storeName}:`, event.target.error);
+                window.alert(`Erro ao atualizar item em ${storeName}.`);
             };
         };
 
         modal.style.display = 'flex';
     };
+    request.onerror = (event) => {
+        console.error(`Error fetching item for edit from ${storeName}:`, event.target.error);
+        window.alert(`Erro ao buscar item para edição de ${storeName}.`);
+    };
+}
+
+// --- Maintenance Specific Functions ---
+window.salvarOS = async function() {
+    const form = document.getElementById('osForm');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        window.showModal("Campos Faltando", "Por favor, preencha todos os campos obrigatórios.", () => {}, true);
+        return;
+    }
+
+    const frota = document.getElementById('osFrota').value.toUpperCase();
+    const modeloFrota = document.getElementById('osModelo').value.toUpperCase();
+    const dataAbertura = document.getElementById('osDataAbertura').value;
+    const solicitante = document.getElementById('osSolicitante').value;
+    const descricao = document.getElementById('osDescricao').value;
+    const tipo = document.getElementById('osTipo').value;
+
+    const osData = {
+        frota,
+        modeloFrota,
+        dataAbertura,
+        solicitante,
+        descricao,
+        tipo,
+        status: 'Aberta' // Initial status
+    };
+
+    try {
+        await window.saveData('ordensServico', osData, "Ordem de Serviço aberta com sucesso!");
+        window.limparFormulario('osForm');
+        window.consultarOrdensServico(); // Update OS list
+        window.updateDisponibilidade(); // Update fleet status
+    } catch (error) {
+        console.error("Erro ao salvar OS:", error);
+        window.showModal("Erro", `Não foi possível abrir a Ordem de Serviço: ${error.message}`, () => {}, true);
+    }
+}
+
+window.consultarOrdensServico = async function() {
+    const osListContainer = document.getElementById('osListContainer');
+    try {
+        const ordensServico = await window.getAllData('ordensServico');
+
+        if (ordensServico.length === 0) {
+            osListContainer.innerHTML = '<p class="text-gray-600">Nenhuma Ordem de Serviço cadastrada.</p>';
+            return;
+        }
+
+        let tableHtml = `
+            <table class="consult-table">
+                <thead>
+                    <tr>
+                        <th>OS ID</th>
+                        <th>Frota</th>
+                        <th>Modelo</th>
+                        <th>Data Abertura</th>
+                        <th>Solicitante</th>
+                        <th>Descrição</th>
+                        <th>Tipo</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+        ordensServico.forEach(osData => {
+            const osId = osData.id;
+            const statusClass = osData.status === 'Aberta' ? 'status-inconsistente' :
+                                osData.status === 'Em Andamento' ? 'status-revision-strong' : 'status-ok';
+
+            tableHtml += `
+                <tr>
+                    <td>${osId}</td>
+                    <td>${osData.frota}</td>
+                    <td>${osData.modeloFrota}</td>
+                    <td>${osData.dataAbertura}</td>
+                    <td>${osData.solicitante}</td>
+                    <td>${osData.descricao}</td>
+                    <td>${osData.tipo}</td>
+                    <td><span class="status-cell ${statusClass}">${osData.status}</span></td>
+                    <td>
+                        <button class="btn blue px-3 py-1 text-xs" onclick="window.handleEdit('ordensServico', ${osId})">Editar</button>
+                        <button class="btn red px-3 py-1 text-xs ml-2" onclick="window.handleDelete('ordensServico', ${osId})">Excluir</button>
+                    </td>
+                </tr>
+            `;
+        });
+        tableHtml += `</tbody></table>`;
+        osListContainer.innerHTML = tableHtml;
+    } catch (error) {
+        console.error("Erro ao consultar Ordens de Serviço:", error);
+        osListContainer.innerHTML = '<p class="text-red-600">Erro ao carregar Ordens de Serviço.</p>';
+    }
+}
+
+// --- Fueling Specific Functions ---
+window.toggleVolumeRestante = function(local) {
+    const volumeRestanteField = document.getElementById('volumeRestanteField');
+    const volumeRestanteInput = document.getElementById('volumeRestante');
+    if (local === 'interno') {
+        volumeRestanteField.style.display = 'flex';
+        volumeRestanteInput.setAttribute('required', 'true');
+        volumeRestanteInput.value = '1000.00 L'; // Example value for internal tank
+    } else {
+        volumeRestanteField.style.display = 'none';
+        volumeRestanteInput.removeAttribute('required');
+        volumeRestanteInput.value = '';
+    }
+}
+
+window.salvarAbastecimento = async function() {
+    const form = document.getElementById('abastecimentoForm');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        window.showModal("Campos Faltando", "Por favor, preencha todos os campos obrigatórios.", () => {}, true);
+        return;
+    }
+
+    const frota = document.getElementById('abastecimentoFrota').value.toUpperCase();
+    const modelo = document.getElementById('abastecimentoModelo').value.toUpperCase();
+    const doc = document.getElementById('abastecimentoDoc').value;
+    const empresa = document.getElementById('abastecimentoEmpresa').value;
+    const horimetro = parseFloat(document.getElementById('abastecimentoHorimetro').value);
+    const data = document.getElementById('abastecimentoData').value;
+    const hora = document.getElementById('abastecimentoHora').value;
+    const crachaMotorista = document.getElementById('abastecimentoMotorista').value.toUpperCase();
+    const nomeMotorista = document.getElementById('nomeMotorista').value.toUpperCase();
+    const crachaFrentista = document.getElementById('abastecimentoFrentista').value.toUpperCase();
+    const nomeFrentista = document.getElementById('nomeFrentista').value.toUpperCase();
+    const codProduto = document.getElementById('abastecimentoCodProduto').value.toUpperCase();
+    const nomeProduto = document.getElementById('nomeProduto').value.toUpperCase();
+    const local = document.getElementById('abastecimentoLocal').value;
+    const volumeRestante = local === 'interno' ? parseFloat(document.getElementById('volumeRestante').value) : null;
+
+    const abastecimentoData = {
+        frota,
+        modelo,
+        doc,
+        empresa,
+        horimetro,
+        data,
+        hora,
+        crachaMotorista,
+        nomeMotorista,
+        crachaFrentista,
+        nomeFrentista,
+        codProduto,
+        nomeProduto,
+        local,
+        volumeRestante
+    };
+
+    try {
+        await window.saveData('abastecimentos', abastecimentoData, "Abastecimento registrado com sucesso!");
+        window.limparFormulario('abastecimentoForm');
+    }
+    catch (error) {
+        console.error("Erro ao salvar abastecimento:", error);
+        window.showModal("Erro", `Não foi possível registrar o abastecimento: ${error.message}`, () => {}, true);
+    }
+}
+
+window.salvarCompraCombustivel = async function() {
+    const form = document.getElementById('compraCombustivelForm');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        window.showModal("Campos Faltando", "Por favor, preencha todos os campos obrigatórios.", () => {}, true);
+        return;
+    }
+
+    const codProduto = document.getElementById('compraCodProduto').value.toUpperCase();
+    const empresa = document.getElementById('compraEmpresa').value;
+    const volume = parseFloat(document.getElementById('compraVolume').value);
+    const valor = parseFloat(document.getElementById('compraValor').value);
+
+    const compraData = {
+        codProduto,
+        empresa,
+        volume,
+        valor,
+        dataRegistro: new Date().toISOString().split('T')[0] // Current date
+    };
+
+    try {
+        await window.saveData('comprasCombustivel', compraData, "Compra de combustível registrada com sucesso!");
+        window.limparFormulario('compraCombustivelForm');
+    } catch (error) {
+        console.error("Erro ao salvar compra de combustível:", error);
+        window.showModal("Erro", `Não foi possível registrar a compra: ${error.message}`, () => {}, true);
+    }
 }
 
 </script>
