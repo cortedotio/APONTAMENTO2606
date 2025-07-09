@@ -313,7 +313,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
         <button class="btn dark-primary" onclick="window.showApp('statusDeAtividadePanel')">Status de Atividade</button>
         <button class="btn dark-primary" onclick="window.showApp('manutencaoPanel')">Gestão de Manutenção</button>
-        <button class="btn dark-primary" onclick="window.alert('Função em desenvolvimento.')">Gestão de Abastecimento</button>
+        <button class="btn dark-primary" onclick="window.showApp('abastecimentoPanel')">Gestão de Abastecimento</button>
         <button class="btn dark-primary" onclick="window.alert('Função em desenvolvimento.')">Gestão de Pneus</button>
         <button class="btn dark-primary" onclick="window.showApp('statusDeAtividadePanel', 'cadastro')">Cadastro</button>
         <button class="btn dark-primary" onclick="window.showApp('statusDeAtividadePanel', 'relatorio')">Relatório</button>
@@ -360,7 +360,7 @@
       </div>
       <div class="field">
         <label for="dataInicial">Data Inicial</label>
-        <input type="date" name="dataInicial" id="dataInicial" required onclick="window.confirmarDataHora('dataInicial','horaInicial')">
+        <input type="date" name="dataInicial" id="dataInicial" required onclick="window.promptAndFillDateTime('dataInicial','horaInicial')">
       </div>
       <div class="field">
         <label for="horaInicial">Hora Inicial</label>
@@ -529,13 +529,13 @@
     <div id="cadastroAtividade" style="display:none; margin-top:10px;">
       <h4>Cadastro de Atividade</h4>
       <div class="field"><label for="nomeAtividade">Atividade</label><input type="text" id="nomeAtividade" oninput="this.value = this.value.toUpperCase()"></div>
-      <div class="flex justify-start gap-4 mt-6"><button class="btn blue" type="button" onclick="window.salvarAtividade()">Salvar</button><button class="btn blue" type="button" onclick="window.consultarAtividade()">Consultar</button></div>
+      <div class="flex justify-start gap-4 mt-6"><button class="btn blue" type="button" onclick="window.salvarAtividade()">Salvar</button><button class="btn blue" type="button" onclick="window.consultarAtividade()">Consultar</button></div></form>
     </div>
     <div id="cadastroImplemento" style="display:none; margin-top:10px;">
       <h4>Cadastro de Implemento</h4>
       <div class="field"><label for="nomeImplemento">Implemento</label><input type="text" id="nomeImplemento" oninput="this.value = this.value.toUpperCase()"></div>
       <div class="field"><label for="siglaImplemento">Sigla</label><input type="text" id="siglaImplemento" required oninput="this.value = this.value.toUpperCase()"></div>
-      <div class="flex justify-start gap-4 mt-6"><button class="btn blue" onclick="window.salvarImplemento()">Salvar</button><button class="btn blue" onclick="window.consultarImplemento()">Consultar</button></div>
+      <div class="flex justify-start gap-4 mt-6"><button class="btn blue" onclick="window.salvarImplemento()">Salvar</button><button class="btn blue" type="button" onclick="window.consultarImplemento()">Consultar</button></div>
     </div>
   </div>
 
@@ -596,6 +596,8 @@
             <option value="atividades">Relatório de Atividades</option>
             <option value="setor">Relatório por Setor</option>
             <option value="edicoes">Relatório de Apontamentos Inconsistentes</option>
+            <option value="consumoFrota">Consumo por Frota</option>
+            <option value="custosCombustivel">Custos de Combustível</option>
         </select>
     </div>
     <div class="field">
@@ -629,6 +631,9 @@
         <button class="btn blue" onclick="window.mostrarManutencaoSubpanel('formAbrirOS')">Abrir Ordem de Serviço</button>
         <button class="btn green" onclick="window.mostrarManutencaoSubpanel('formPlanosManutencao')">Planos de Manutenção</button>
         <button class="btn orange" onclick="window.mostrarManutencaoSubpanel('consultarOS')">Consultar Ordens de Serviço</button>
+        <button class="btn teal" onclick="window.mostrarManutencaoSubpanel('gestaoPecas')">Gestão de Peças</button>
+        <button class="btn purple" onclick="window.mostrarManutencaoSubpanel('orcamentosAprovacoes')">Orçamentos e Aprovações</button>
+        <button class="btn darkblue" onclick="window.mostrarManutencaoSubpanel('historicoManutencao')">Histórico de Manutenção</button>
     </div>
 
     <div id="formAbrirOS" style="display:none;">
@@ -643,12 +648,60 @@
         </form>
     </div>
     <div id="formPlanosManutencao" style="display:none;">
-        <h4>Planos de Manutenção (em desenvolvimento)</h4>
+        <h4>Planos de Manutenção</h4>
+        <form id="planosManutencaoForm">
+            <div class="field"><label for="planoFrota">* Frota</label><input type="text" id="planoFrota" oninput="this.value = this.value.toUpperCase(); window.mostrarModeloFrota(this.value, 'planoModelo')" required><input type="text" id="planoModelo" readonly placeholder="Modelo"></div>
+            <div class="field"><label for="planoDescricao">* Descrição</label><textarea id="planoDescricao" rows="2" required></textarea></div>
+            <div class="field"><label for="tipoManutencao">* Tipo</label><select id="tipoManutencao" required><option value="Horímetro">Baseado em Horímetro</option><option value="Tempo">Baseado em Tempo</option></select></div>
+            <div class="field" id="horimetroIntervalField"><label for="horimetroInterval">Intervalo (Horímetro)</label><input type="text" id="horimetroInterval" oninput="this.value = this.value.replace(/[^0-9.]/g, '')"></div>
+            <div class="field" id="tempoIntervalField" style="display:none;"><label for="tempoInterval">Intervalo (dias)</label><input type="text" id="tempoInterval" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+            <div class="field"><label for="ultimaManutencao">Última Manutenção</label><input type="date" id="ultimaManutencao"></div>
+            <button class="btn blue mt-4" type="button" onclick="window.salvarPlanoManutencao()">Salvar Plano</button>
+        </form>
+        <div id="planosManutencaoListContainer" class="mt-6">
+            <h4>Planos Cadastrados</h4>
+            <div id="planosManutencaoTable"></div>
+        </div>
     </div>
     <div id="consultarOS" style="display:none;">
         <h4>Consultar Ordens de Serviço</h4>
         <div id="osListContainer">
             <p class="text-gray-600">Nenhuma Ordem de Serviço para exibir.</p>
+        </div>
+    </div>
+    <div id="gestaoPecas" style="display:none;">
+        <h4>Gestão de Peças</h4>
+        <form id="pecaForm">
+            <div class="field"><label for="nomePeca">* Nome da Peça</label><input type="text" id="nomePeca" required></div>
+            <div class="field"><label for="codPeca">Cód. Peça</label><input type="text" id="codPeca"></div>
+            <div class="field"><label for="stockPeca">* Stock</label><input type="number" id="stockPeca" required min="0"></div>
+            <div class="field"><label for="minStockPeca">Stock Mínimo</label><input type="number" id="minStockPeca" min="0"></div>
+            <div class="field"><label for="custoPeca">Custo Unitário (R$)</label><input type="text" id="custoPeca" oninput="this.value = this.value.replace(/[^0-9.]/g, '')"></div>
+            <button class="btn blue mt-4" type="button" onclick="window.salvarPeca()">Salvar Peça</button>
+        </form>
+        <div id="pecasListContainer" class="mt-6">
+            <h4>Inventário de Peças</h4>
+            <div id="pecasTable"></div>
+        </div>
+    </div>
+    <div id="orcamentosAprovacoes" style="display:none;">
+        <h4>Orçamentos e Aprovações</h4>
+        <form id="orcamentoForm">
+            <div class="field"><label for="orcamentoOsId">* OS ID</label><input type="text" id="orcamentoOsId" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required></div>
+            <div class="field"><label for="orcamentoDescricao">Descrição Orçamento</label><textarea id="orcamentoDescricao" rows="2"></textarea></div>
+            <div class="field"><label for="orcamentoValor">* Valor Estimado (R$)</label><input type="text" id="orcamentoValor" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" required></div>
+            <button class="btn blue mt-4" type="button" onclick="window.salvarOrcamento()">Submeter Orçamento</button>
+        </form>
+        <div id="orcamentosListContainer" class="mt-6">
+            <h4>Orçamentos Pendentes</h4>
+            <div id="orcamentosTable"></div>
+        </div>
+    </div>
+    <div id="historicoManutencao" style="display:none;">
+        <h4>Histórico de Manutenção</h4>
+        <div class="field"><label for="historicoFrotaFilter">Filtrar por Frota</label><input type="text" id="historicoFrotaFilter" oninput="this.value = this.value.toUpperCase(); window.consultarHistoricoManutencao()"></div>
+        <div id="historicoManutencaoListContainer" class="mt-4">
+            <p class="text-gray-600">Nenhum histórico de manutenção para exibir.</p>
         </div>
     </div>
 </div>
@@ -817,6 +870,16 @@ request.onupgradeneeded = (event) => {
     if (!db.objectStoreNames.contains('comprasCombustivel')) {
         db.createObjectStore('comprasCombustivel', { keyPath: 'id', autoIncrement: true });
     }
+    // New object stores for Maintenance Management improvements
+    if (!db.objectStoreNames.contains('maintenancePlans')) {
+        db.createObjectStore('maintenancePlans', { keyPath: 'id', autoIncrement: true });
+    }
+    if (!db.objectStoreNames.contains('partsInventory')) {
+        db.createObjectStore('partsInventory', { keyPath: 'id', autoIncrement: true });
+    }
+    if (!db.objectStoreNames.contains('repairBudgets')) {
+        db.createObjectStore('repairBudgets', { keyPath: 'id', autoIncrement: true });
+    }
 };
 
 // --- NAVIGATION ---
@@ -884,7 +947,7 @@ window.mostrar = function(idToShow) {
 }
 
 window.mostrarManutencaoSubpanel = function(subPanelId) {
-    const subPanelsManutencao = ['formAbrirOS', 'formPlanosManutencao', 'consultarOS'];
+    const subPanelsManutencao = ['formAbrirOS', 'formPlanosManutencao', 'consultarOS', 'gestaoPecas', 'orcamentosAprovacoes', 'historicoManutencao'];
     subPanelsManutencao.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.style.display = 'none';
@@ -899,6 +962,18 @@ window.mostrarManutencaoSubpanel = function(subPanelId) {
         window.populateCurrentDateTime('osDataAbertura');
     } else if (subPanelId === 'consultarOS') {
         window.consultarOrdensServico();
+    } else if (subPanelId === 'formPlanosManutencao') {
+        window.consultarPlanosManutencao();
+        // Set initial state for interval fields
+        const tipoManutencao = document.getElementById('tipoManutencao').value;
+        document.getElementById('horimetroIntervalField').style.display = tipoManutencao === 'Horímetro' ? 'flex' : 'none';
+        document.getElementById('tempoIntervalField').style.display = tipoManutencao === 'Tempo' ? 'flex' : 'none';
+    } else if (subPanelId === 'gestaoPecas') {
+        window.consultarPecas();
+    } else if (subPanelId === 'orcamentosAprovacoes') {
+        window.consultarOrcamentos();
+    } else if (subPanelId === 'historicoManutencao') {
+        window.consultarHistoricoManutencao();
     }
 }
 
@@ -1009,6 +1084,14 @@ window.limparFormulario = function(formId) {
         document.getElementById('nomeMotorista').value = '';
         document.getElementById('nomeFrentista').value = '';
         document.getElementById('nomeProduto').value = '';
+    } else if (formId === 'planosManutencaoForm') {
+        document.getElementById('planoModelo').value = '';
+        document.getElementById('horimetroIntervalField').style.display = 'flex';
+        document.getElementById('tempoIntervalField').style.display = 'none';
+    } else if (formId === 'pecaForm') {
+        // No specific readonly fields to clear
+    } else if (formId === 'orcamentoForm') {
+        // No specific readonly fields to clear
     }
 }
 
@@ -1274,6 +1357,13 @@ window.hideAllChecklistReports = function() {
 window.enviarInicio = async function(event) {
     event.preventDefault();
     
+    if (!window.confirmarDataHora('dataInicial', 'horaInicial')) { // Use confirmarDataHora for initial fill/validation
+        return;
+    }
+    if (!window.validateDateTime('dataInicial', 'horaInicial')) { // Additional validation for future dates
+        return;
+    }
+
     const frotaCadastrada = await window.mostrarModeloFrota(document.getElementById('frotaInicio').value, 'equipamentoInicio', 'fotoEquipInicio');
     if (!frotaCadastrada) {
         window.showModal('Erro', 'Frota não cadastrada. Verifique o código da frota e tente novamente.', () => {}, true);
@@ -1392,6 +1482,13 @@ window.enviarFim = function(event) {
     const form = document.getElementById('formFim');
     if (!form.checkValidity()) { form.reportValidity(); return; }
     
+    if (!window.confirmarDataHora('dataFinal', 'horaFinal')) { // Use confirmarDataHora for initial fill/validation
+        return;
+    }
+    if (!window.validateDateTime('dataFinal', 'horaFinal')) { // Additional validation for future dates
+        return;
+    }
+
     const atividadeId = Number(document.getElementById('horimetroFim').dataset.atividadeId);
     if (!atividadeId) { window.alert("Nenhuma atividade selecionada para finalizar. Verifique o crachá e a frota."); return; }
 
@@ -1663,6 +1760,12 @@ window.gerarRelatorio = function() {
             break;
         case 'edicoes':
             window.generateEdicoesReport();
+            break;
+        case 'consumoFrota':
+            window.generateConsumoFrotaReport(); // New report
+            break;
+        case 'custosCombustivel':
+            window.generateCustosCombustivelReport(); // New report
             break;
         default:
             window.alert(`Relatório do tipo '${tipo}' ainda não implementado.`);
@@ -2148,6 +2251,193 @@ window.generateEdicoesReport = async function() {
     resultadoDiv.appendChild(table);
 }
 
+window.generateConsumoFrotaReport = async function() {
+    const dataInicio = document.getElementById('relatorioDataInicio').value;
+    const dataFim = document.getElementById('relatorioDataFim').value;
+    const resultadoDiv = document.getElementById('relatorioResultado');
+    resultadoDiv.innerHTML = '';
+
+    if (!dataInicio || !dataFim) {
+        window.alert('Por favor, selecione as datas de início e fim.');
+        return;
+    }
+
+    const abastecimentos = await window.getAllData('abastecimentos');
+    const consumoPorFrota = {};
+
+    const inicioTimestamp = new Date(dataInicio + 'T00:00:00').getTime();
+    const fimTimestamp = new Date(dataFim + 'T23:59:59').getTime();
+
+    abastecimentos.forEach(abast => {
+        const abastDate = new Date(abast.data);
+        if (abastDate.getTime() >= inicioTimestamp && abastDate.getTime() <= fimTimestamp) {
+            if (!consumoPorFrota[abast.frota]) {
+                consumoPorFrota[abast.frota] = {
+                    modelo: abast.modelo,
+                    totalVolume: 0
+                };
+            }
+            // Assuming volume is implicitly derived from horimeter difference or directly captured
+            // For now, let's assume a fixed volume per abastecimento for simplicity if not explicitly stored
+            // In a real app, you'd calculate volume based on tank levels or direct input.
+            // For this demo, let's use a placeholder or assume a default volume if not present.
+            // If 'volumeRestante' is the tank level, we need to calculate volume dispensed.
+            // Let's assume a fixed volume per fueling event for now, or add a 'volumeDispensed' field to abastecimentos.
+            // For simplicity, let's assume each abastecimento represents a full tank fill or a standard volume.
+            // If 'abastecimentoHorimetro' is the only numeric field, we can't calculate volume directly.
+            // Let's assume a new field `volumeLitros` is added to `abastecimentos` for this report.
+            // For now, I'll use a placeholder value if volume isn't explicitly recorded.
+            const volumeDispensed = abast.volumeLitros || 50; // Use volumeLitros if available, else 50
+            consumoPorFrota[abast.frota].totalVolume += volumeDispensed;
+        }
+    });
+
+    if (Object.keys(consumoPorFrota).length === 0) {
+        resultadoDiv.innerHTML = '<p class="text-gray-600 mt-4">Nenhum consumo de combustível encontrado para o período selecionado.</p>';
+        return;
+    }
+
+    let tableHtml = `
+        <h4>Relatório de Consumo por Frota</h4>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Frota</th>
+                    <th>Modelo</th>
+                    <th>Total Consumido (Litros)</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    for (const frotaCode in consumoPorFrota) {
+        tableHtml += `
+            <tr>
+                <td>${frotaCode}</td>
+                <td>${consumoPorFrota[frotaCode].modelo}</td>
+                <td>${consumoPorFrota[frotaCode].totalVolume.toFixed(2)} L</td>
+            </tr>
+        `;
+    }
+    tableHtml += `</tbody></table>`;
+    resultadoDiv.innerHTML = tableHtml;
+}
+
+window.generateCustosCombustivelReport = async function() {
+    const dataInicio = document.getElementById('relatorioDataInicio').value;
+    const dataFim = document.getElementById('relatorioDataFim').value;
+    const resultadoDiv = document.getElementById('relatorioResultado');
+    resultadoDiv.innerHTML = '';
+
+    if (!dataInicio || !dataFim) {
+        window.alert('Por favor, selecione as datas de início e fim.');
+        return;
+    }
+
+    const comprasCombustivel = await window.getAllData('comprasCombustivel');
+    const abastecimentos = await window.getAllData('abastecimentos'); // To link consumption to costs
+
+    const inicioTimestamp = new Date(dataInicio + 'T00:00:00').getTime();
+    const fimTimestamp = new Date(dataFim + 'T23:59:59').getTime();
+
+    let totalCustoCompras = 0;
+    const custoPorProduto = {};
+    const custoPorFrota = {};
+
+    comprasCombustivel.forEach(compra => {
+        const compraDate = new Date(compra.dataRegistro);
+        if (compraDate.getTime() >= inicioTimestamp && compraDate.getTime() <= fimTimestamp) {
+            totalCustoCompras += compra.valor;
+            if (!custoPorProduto[compra.codProduto]) {
+                custoPorProduto[compra.codProduto] = {
+                    nome: compra.codProduto, // Assuming product name is same as code for simplicity
+                    totalVolume: 0,
+                    totalValor: 0
+                };
+            }
+            custoPorProduto[compra.codProduto].totalVolume += compra.volume;
+            custoPorProduto[compra.codProduto].totalValor += compra.valor;
+        }
+    });
+
+    // Link abastecimentos to costs (simplified: average cost per liter)
+    let totalVolumeAbastecido = 0;
+    abastecimentos.forEach(abast => {
+        const abastDate = new Date(abast.data);
+        if (abastDate.getTime() >= inicioTimestamp && abastDate.getTime() <= fimTimestamp) {
+            const volumeDispensed = abast.volumeLitros || 50; // Use volumeLitros if available, else 50
+            totalVolumeAbastecido += volumeDispensed;
+            if (!custoPorFrota[abast.frota]) {
+                custoPorFrota[abast.frota] = {
+                    modelo: abast.modelo,
+                    volumeConsumido: 0,
+                    custoEstimado: 0
+                };
+            }
+            custoPorFrota[abast.frota].volumeConsumido += volumeDispensed;
+        }
+    });
+
+    const averageCostPerLiter = totalVolumeAbastecido > 0 ? totalCustoCompras / totalVolumeAbastecido : 0;
+
+    for (const frotaCode in custoPorFrota) {
+        custoPorFrota[frotaCode].custoEstimado = custoPorFrota[frotaCode].volumeConsumido * averageCostPerLiter;
+    }
+
+    let html = `
+        <h4>Relatório de Custos de Combustível</h4>
+        <p class="text-gray-700 mb-4">Custo Total de Compras no Período: R$ ${totalCustoCompras.toFixed(2)}</p>
+        <p class="text-gray-700 mb-4">Custo Médio por Litro (Estimado): R$ ${averageCostPerLiter.toFixed(2)}/L</p>
+        
+        <h5 class="font-bold mt-6 mb-2">Custos por Produto:</h5>
+        <table class="data-table mb-6">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Volume Comprado (L)</th>
+                    <th>Valor Total (R$)</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    for (const prodCode in custoPorProduto) {
+        html += `
+            <tr>
+                <td>${prodCode}</td>
+                <td>${custoPorProduto[prodCode].totalVolume.toFixed(2)}</td>
+                <td>${custoPorProduto[prodCode].totalValor.toFixed(2)}</td>
+            </tr>
+        `;
+    }
+    html += `</tbody></table>`;
+
+    html += `
+        <h5 class="font-bold mt-6 mb-2">Custos Estimados por Frota:</h5>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Frota</th>
+                    <th>Modelo</th>
+                    <th>Volume Consumido (L)</th>
+                    <th>Custo Estimado (R$)</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    for (const frotaCode in custoPorFrota) {
+        html += `
+            <tr>
+                <td>${frotaCode}</td>
+                <td>${custoPorFrota[frotaCode].modelo}</td>
+                <td>${custoPorFrota[frotaCode].volumeConsumido.toFixed(2)}</td>
+                <td>${custoPorFrota[frotaCode].custoEstimado.toFixed(2)}</td>
+            </tr>
+        `;
+    }
+    html += `</tbody></table>`;
+
+    resultadoDiv.innerHTML = html;
+}
+
 
 window.mostrarBancoDeDados = async function() {
     const contentDiv = document.getElementById('dadosContent');
@@ -2223,6 +2513,10 @@ window.handleDelete = async function(storeName, key) {
         else if (storeName === 'implementos') window.consultarImplemento();
         else if (storeName === 'historicoAtividades') window.mostrarBancoDeDados();
         else if (storeName === 'usuarios') window.loadUserList();
+        else if (storeName === 'ordensServico') window.consultarOrdensServico(); // Added for OS
+        else if (storeName === 'maintenancePlans') window.consultarPlanosManutencao(); // Added for Maintenance Plans
+        else if (storeName === 'partsInventory') window.consultarPecas(); // Added for Parts
+        else if (storeName === 'repairBudgets') window.consultarOrcamentos(); // Added for Budgets
         window.updateDisponibilidade(); // Update availability if frotas or activities change
     };
     request.onerror = (event) => {
@@ -2254,38 +2548,153 @@ window.handleEdit = async function(storeName, keyOrItem) {
         titleEl.textContent = `Editar Item (ID: ${key})`;
         formEl.innerHTML = '';
 
-        for (const prop in item) {
-            if (prop === 'foto') continue; // Skip photo for simplicity
+        // Define fields based on storeName for specific edit forms
+        let fieldsToEdit = [];
+        if (storeName === 'ordensServico') {
+            fieldsToEdit = [
+                { key: 'frota', label: 'Frota', type: 'text', readonly: true },
+                { key: 'modeloFrota', label: 'Modelo', type: 'text', readonly: true },
+                { key: 'dataAbertura', label: 'Data Abertura', type: 'date', readonly: true },
+                { key: 'solicitante', label: 'Solicitante', type: 'text' },
+                { key: 'descricao', label: 'Descrição', type: 'textarea' },
+                { key: 'tipo', label: 'Tipo', type: 'select', options: ['Corretiva', 'Preventiva'] },
+                { key: 'status', label: 'Status', type: 'select', options: ['Aberta', 'Em Andamento', 'Concluída', 'Cancelada'] }
+            ];
+        } else if (storeName === 'maintenancePlans') {
+            fieldsToEdit = [
+                { key: 'frota', label: 'Frota', type: 'text', readonly: true },
+                { key: 'modeloFrota', label: 'Modelo', type: 'text', readonly: true },
+                { key: 'descricao', label: 'Descrição', type: 'textarea' },
+                { key: 'tipoManutencao', label: 'Tipo', type: 'select', options: ['Horímetro', 'Tempo'] },
+                { key: 'horimetroInterval', label: 'Intervalo (Horímetro)', type: 'number' },
+                { key: 'tempoInterval', label: 'Intervalo (dias)', type: 'number' },
+                { key: 'ultimaManutencao', label: 'Última Manutencao', type: 'date' },
+                { key: 'proximaManutencao', label: 'Próxima Manutencao', type: 'date', readonly: true }
+            ];
+        } else if (storeName === 'partsInventory') {
+            fieldsToEdit = [
+                { key: 'nomePeca', label: 'Nome da Peça', type: 'text' },
+                { key: 'codPeca', label: 'Cód. Peça', type: 'text' },
+                { key: 'stockPeca', label: 'Stock', type: 'number' },
+                { key: 'minStockPeca', label: 'Stock Mínimo', type: 'number' },
+                { key: 'custoPeca', label: 'Custo Unitário (R$)', type: 'text' }
+            ];
+        } else if (storeName === 'repairBudgets') {
+            fieldsToEdit = [
+                { key: 'orcamentoOsId', label: 'OS ID', type: 'text', readonly: true },
+                { key: 'orcamentoDescricao', label: 'Descrição', type: 'textarea' },
+                { key: 'orcamentoValor', label: 'Valor (R$)', type: 'text' },
+                { key: 'status', label: 'Status', type: 'select', options: ['Pendente', 'Aprovado', 'Rejeitado'] },
+                { key: 'dataSubmissao', label: 'Data Submissão', type: 'date', readonly: true }
+            ];
+        } else if (storeName === 'usuarios') {
+             fieldsToEdit = [
+                { key: 'username', label: 'Usuário', type: 'text', readonly: true },
+                { key: 'password', label: 'Senha', type: 'password' },
+                { key: 'level', label: 'Nível', type: 'select', options: ['operacao', 'analista', 'administrador'] }
+            ];
+        } else if (storeName === 'abastecimentos') {
+            fieldsToEdit = [
+                { key: 'frota', label: 'Frota', type: 'text', readonly: true },
+                { key: 'modelo', label: 'Modelo', type: 'text', readonly: true },
+                { key: 'doc', label: 'Documento/NF', type: 'text' },
+                { key: 'empresa', label: 'Empresa', type: 'text' },
+                { key: 'horimetro', label: 'Horímetro', type: 'number' },
+                { key: 'data', label: 'Data', type: 'date' },
+                { key: 'hora', label: 'Hora', type: 'time' },
+                { key: 'crachaMotorista', label: 'Crachá Motorista', type: 'text' },
+                { key: 'nomeMotorista', label: 'Nome Motorista', type: 'text' },
+                { key: 'crachaFrentista', label: 'Crachá Frentista', type: 'text' },
+                { key: 'nomeFrentista', label: 'Nome Frentista', type: 'text' },
+                { key: 'codProduto', label: 'Cód. Produto', type: 'text' },
+                { key: 'nomeProduto', label: 'Nome Produto', type: 'text' },
+                { key: 'local', label: 'Local', type: 'select', options: ['interno', 'externo'] },
+                { key: 'volumeRestante', label: 'Volume Restante', type: 'number' },
+                { key: 'volumeLitros', label: 'Volume (L)', type: 'number' }
+            ];
+        } else if (storeName === 'comprasCombustivel') {
+            fieldsToEdit = [
+                { key: 'codProduto', label: 'Cód. Produto', type: 'text' },
+                { key: 'empresa', label: 'Empresa', type: 'text' },
+                { key: 'volume', label: 'Volume (L)', type: 'number' },
+                { key: 'valor', label: 'Valor (R$)', type: 'number' },
+                { key: 'dataRegistro', label: 'Data Registo', type: 'date', readonly: true }
+            ];
+        } else { // Generic handling for other stores
+            for (const prop in item) {
+                if (prop === 'foto') continue;
+                let type = 'text';
+                if (typeof item[prop] === 'number') type = 'number';
+                if (prop.toLowerCase().includes('data')) type = 'date';
+                if (prop.toLowerCase().includes('hora')) type = 'time';
+                if (prop.toLowerCase().includes('password')) type = 'password';
+                fieldsToEdit.push({ key: prop, label: prop.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()), type: type, readonly: (prop === db.transaction(storeName).objectStore(storeName).keyPath) });
+            }
+        }
+
+
+        for (const field of fieldsToEdit) {
             const fieldDiv = document.createElement('div');
             fieldDiv.className = 'field';
             const label = document.createElement('label');
-            label.textContent = prop;
+            label.textContent = field.label;
             label.className = 'capitalize';
-            const input = document.createElement(prop.length > 50 ? 'textarea' : 'input');
-            input.type = 'text';
-            input.name = prop;
-            input.value = item[prop];
-            input.className = 'border p-2 rounded w-full';
-            if (prop === db.transaction(storeName).objectStore(storeName).keyPath) {
-                input.readOnly = true;
-                input.classList.add('bg-gray-200');
+            
+            let inputElement;
+            if (field.type === 'select') {
+                inputElement = document.createElement('select');
+                inputElement.id = `edit_${field.key}`;
+                inputElement.className = 'w-full p-2 border rounded';
+                field.options.forEach(option => {
+                    const optionEl = document.createElement('option');
+                    optionEl.value = option;
+                    optionEl.textContent = option;
+                    if (option === item[field.key]) {
+                        optionEl.selected = true;
+                    }
+                    inputElement.appendChild(optionEl);
+                });
+            } else if (field.type === 'textarea') {
+                inputElement = document.createElement('textarea');
+                inputElement.id = `edit_${field.key}`;
+                inputElement.rows = 3;
+                inputElement.className = 'w-full p-2 border rounded';
+                inputElement.value = item[field.key] || '';
+            } else {
+                inputElement = document.createElement('input');
+                inputElement.type = field.type;
+                inputElement.id = `edit_${field.key}`;
+                inputElement.className = 'w-full p-2 border rounded';
+                inputElement.value = item[field.key] || '';
+                if (field.readonly) {
+                    inputElement.readOnly = true;
+                    inputElement.classList.add('bg-gray-200');
+                }
             }
             fieldDiv.appendChild(label);
-            fieldDiv.appendChild(input);
+            fieldDiv.appendChild(inputElement);
             formEl.appendChild(fieldDiv);
         }
 
         document.getElementById('editModalSaveBtn').onclick = () => {
             const updatedItem = { ...item };
-            new FormData(formEl).forEach((value, key) => {
-                updatedItem[key] = value;
-            });
+            for (const field of fieldsToEdit) {
+                const inputElement = document.getElementById(`edit_${field.key}`);
+                if (inputElement) {
+                    updatedItem[field.key] = inputElement.value;
+                    // Convert to number if type is number
+                    if (field.type === 'number') {
+                        updatedItem[field.key] = parseFloat(inputElement.value);
+                    }
+                }
+            }
             const saveTransaction = db.transaction([storeName], 'readwrite');
             saveTransaction.objectStore(storeName).put(updatedItem);
             saveTransaction.oncomplete = () => {
                 window.alert('Item atualizado com sucesso!');
                 modal.style.display = 'none';
                 document.getElementById('listModal').style.display = 'none';
+                // Re-render relevant lists after update
                 if(storeName === 'historicoAtividades') window.mostrarBancoDeDados();
                 else if (storeName === 'operadores') window.consultarOperador();
                 else if (storeName === 'frotas') window.consultarFrota();
@@ -2293,6 +2702,13 @@ window.handleEdit = async function(storeName, keyOrItem) {
                 else if (storeName === 'atividades') window.consultarAtividade();
                 else if (storeName === 'implementos') window.consultarImplemento();
                 else if (storeName === 'usuarios') window.loadUserList();
+                else if (storeName === 'ordensServico') window.consultarOrdensServico();
+                else if (storeName === 'maintenancePlans') window.consultarPlanosManutencao();
+                else if (storeName === 'partsInventory') window.consultarPecas();
+                else if (storeName === 'repairBudgets') window.consultarOrcamentos();
+                else if (storeName === 'abastecimentos') window.mostrarAbastecimentoSubpanel('formAbastecimento'); // Refresh abastecimento view
+                else if (storeName === 'comprasCombustivel') window.mostrarAbastecimentoSubpanel('formCompraCombustivel'); // Refresh compras view
+                window.updateDisponibilidade(); // Update availability if frotas or activities change
             };
             saveTransaction.onerror = (event) => {
                 console.error(`Error updating item in ${storeName}:`, event.target.error);
@@ -2402,6 +2818,433 @@ window.consultarOrdensServico = async function() {
     }
 }
 
+// --- New Maintenance Management Functions ---
+
+// Function to toggle maintenance interval fields based on type
+document.getElementById('tipoManutencao').addEventListener('change', function() {
+    const tipo = this.value;
+    document.getElementById('horimetroIntervalField').style.display = tipo === 'Horímetro' ? 'flex' : 'none';
+    document.getElementById('tempoIntervalField').style.display = tipo === 'Tempo' ? 'flex' : 'none';
+    // Clear values when switching type
+    document.getElementById('horimetroInterval').value = '';
+    document.getElementById('tempoInterval').value = '';
+});
+
+window.salvarPlanoManutencao = async function() {
+    const form = document.getElementById('planosManutencaoForm');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        window.showModal("Campos Faltando", "Por favor, preencha todos os campos obrigatórios.", () => {}, true);
+        return;
+    }
+
+    const frota = document.getElementById('planoFrota').value.toUpperCase();
+    const modeloFrota = document.getElementById('planoModelo').value.toUpperCase();
+    const descricao = document.getElementById('planoDescricao').value;
+    const tipoManutencao = document.getElementById('tipoManutencao').value;
+    const horimetroInterval = tipoManutencao === 'Horímetro' ? parseFloat(document.getElementById('horimetroInterval').value) : null;
+    const tempoInterval = tipoManutencao === 'Tempo' ? parseInt(document.getElementById('tempoInterval').value) : null;
+    const ultimaManutencao = document.getElementById('ultimaManutencao').value;
+
+    const planoData = {
+        frota,
+        modeloFrota,
+        descricao,
+        tipoManutencao,
+        horimetroInterval,
+        tempoInterval,
+        ultimaManutencao,
+        proximaManutencao: null // To be calculated
+    };
+
+    try {
+        // Simple calculation for next maintenance date (can be more complex)
+        if (tipoManutencao === 'Tempo' && ultimaManutencao && tempoInterval) {
+            const lastMaintenanceDate = new Date(ultimaManutencao);
+            lastMaintenanceDate.setDate(lastMaintenanceDate.getDate() + tempoInterval);
+            planoData.proximaManutencao = lastMaintenanceDate.toISOString().split('T')[0];
+        }
+        // For horimeter, next maintenance would depend on current horimeter reading, which is dynamic.
+        // This would require a background check or trigger based on activity logging.
+
+        await window.saveData('maintenancePlans', planoData, "Plano de manutenção salvo com sucesso!");
+        window.limparFormulario('planosManutencaoForm');
+        window.consultarPlanosManutencao();
+    } catch (error) {
+        console.error("Erro ao salvar plano de manutenção:", error);
+        window.showModal("Erro", `Não foi possível salvar o plano de manutenção: ${error.message}`, () => {}, true);
+    }
+}
+
+window.consultarPlanosManutencao = async function() {
+    const planosManutencaoListContainer = document.getElementById('planosManutencaoTable');
+    try {
+        const planos = await window.getAllData('maintenancePlans');
+
+        if (planos.length === 0) {
+            planosManutencaoListContainer.innerHTML = '<p class="text-gray-600">Nenhum plano de manutenção cadastrado.</p>';
+            return;
+        }
+
+        let tableHtml = `
+            <table class="consult-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Frota</th>
+                        <th>Descrição</th>
+                        <th>Tipo</th>
+                        <th>Intervalo</th>
+                        <th>Última Manut.</th>
+                        <th>Próxima Manut.</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+        planos.forEach(plano => {
+            const intervaloText = plano.tipoManutencao === 'Horímetro' ? `${plano.horimetroInterval} Horas` : `${plano.tempoInterval} dias`;
+            tableHtml += `
+                <tr>
+                    <td>${plano.id}</td>
+                    <td>${plano.frota}</td>
+                    <td>${plano.descricao}</td>
+                    <td>${plano.tipoManutencao}</td>
+                    <td>${intervaloText}</td>
+                    <td>${plano.ultimaManutencao || '-'}</td>
+                    <td>${plano.proximaManutencao || '-'}</td>
+                    <td>
+                        <button class="btn blue px-3 py-1 text-xs" onclick="window.handleEdit('maintenancePlans', ${plano.id})">Editar</button>
+                        <button class="btn red px-3 py-1 text-xs ml-2" onclick="window.handleDelete('maintenancePlans', ${plano.id})">Excluir</button>
+                    </td>
+                </tr>
+            `;
+        });
+        tableHtml += `</tbody></table>`;
+        planosManutencaoListContainer.innerHTML = tableHtml;
+    } catch (error) {
+        console.error("Erro ao consultar planos de manutenção:", error);
+        planosManutencaoListContainer.innerHTML = '<p class="text-red-600">Erro ao carregar planos de manutenção.</p>';
+    }
+}
+
+window.salvarPeca = async function() {
+    const form = document.getElementById('pecaForm');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        window.showModal("Campos Faltando", "Por favor, preencha todos os campos obrigatórios.", () => {}, true);
+        return;
+    }
+
+    const nomePeca = document.getElementById('nomePeca').value.trim();
+    const codPeca = document.getElementById('codPeca').value.trim();
+    const stockPeca = parseInt(document.getElementById('stockPeca').value);
+    const minStockPeca = parseInt(document.getElementById('minStockPeca').value) || 0;
+    const custoPeca = parseFloat(document.getElementById('custoPeca').value) || 0;
+
+    const pecaData = {
+        nomePeca,
+        codPeca,
+        stockPeca,
+        minStockPeca,
+        custoPeca
+    };
+
+    try {
+        await window.saveData('partsInventory', pecaData, "Peça salva com sucesso!");
+        window.limparFormulario('pecaForm');
+        window.consultarPecas();
+    } catch (error) {
+        console.error("Erro ao salvar peça:", error);
+        window.showModal("Erro", `Não foi possível salvar a peça: ${error.message}`, () => {}, true);
+    }
+}
+
+window.consultarPecas = async function() {
+    const pecasListContainer = document.getElementById('pecasTable');
+    try {
+        const pecas = await window.getAllData('partsInventory');
+
+        if (pecas.length === 0) {
+            pecasListContainer.innerHTML = '<p class="text-gray-600">Nenhuma peça cadastrada.</p>';
+            return;
+        }
+
+        let tableHtml = `
+            <table class="consult-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome da Peça</th>
+                        <th>Cód. Peça</th>
+                        <th>Stock</th>
+                        <th>Stock Mínimo</th>
+                        <th>Custo Unit. (R$)</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+        pecas.forEach(peca => {
+            const statusClass = peca.stockPeca <= peca.minStockPeca ? 'status-inconsistente' : 'status-ok';
+            const statusText = peca.stockPeca <= peca.minStockPeca ? 'Baixo Stock' : 'OK';
+            tableHtml += `
+                <tr>
+                    <td>${peca.id}</td>
+                    <td>${peca.nomePeca}</td>
+                    <td>${peca.codPeca || '-'}</td>
+                    <td>${peca.stockPeca}</td>
+                    <td>${peca.minStockPeca}</td>
+                    <td>${peca.custoPeca.toFixed(2)}</td>
+                    <td><span class="status-cell ${statusClass}">${statusText}</span></td>
+                    <td>
+                        <button class="btn blue px-3 py-1 text-xs" onclick="window.handleEdit('partsInventory', ${peca.id})">Editar</button>
+                        <button class="btn red px-3 py-1 text-xs ml-2" onclick="window.handleDelete('partsInventory', ${peca.id})">Excluir</button>
+                    </td>
+                </tr>
+            `;
+        });
+        tableHtml += `</tbody></table>`;
+        pecasListContainer.innerHTML = tableHtml;
+    } catch (error) {
+        console.error("Erro ao consultar peças:", error);
+        pecasListContainer.innerHTML = '<p class="text-red-600">Erro ao carregar inventário de peças.</p>';
+    }
+}
+
+window.salvarOrcamento = async function() {
+    const form = document.getElementById('orcamentoForm');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        window.showModal("Campos Faltando", "Por favor, preencha todos os campos obrigatórios.", () => {}, true);
+        return;
+    }
+
+    const orcamentoOsId = parseInt(document.getElementById('orcamentoOsId').value);
+    const orcamentoDescricao = document.getElementById('orcamentoDescricao').value;
+    const orcamentoValor = parseFloat(document.getElementById('orcamentoValor').value);
+
+    const orcamentoData = {
+        orcamentoOsId,
+        orcamentoDescricao,
+        orcamentoValor,
+        status: 'Pendente',
+        dataSubmissao: new Date().toISOString().split('T')[0]
+    };
+
+    try {
+        await window.saveData('repairBudgets', orcamentoData, "Orçamento submetido com sucesso!");
+        window.limparFormulario('orcamentoForm');
+        window.consultarOrcamentos();
+    } catch (error) {
+        console.error("Erro ao salvar orçamento:", error);
+        window.showModal("Erro", `Não foi possível submeter o orçamento: ${error.message}`, () => {}, true);
+    }
+}
+
+window.consultarOrcamentos = async function() {
+    const orcamentosListContainer = document.getElementById('orcamentosTable');
+    try {
+        const orcamentos = await window.getAllData('repairBudgets');
+
+        if (orcamentos.length === 0) {
+            orcamentosListContainer.innerHTML = '<p class="text-gray-600">Nenhum orçamento para exibir.</p>';
+            return;
+        }
+
+        let tableHtml = `
+            <table class="consult-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>OS ID</th>
+                        <th>Descrição</th>
+                        <th>Valor (R$)</th>
+                        <th>Status</th>
+                        <th>Data Submissão</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+        orcamentos.forEach(orcamento => {
+            const statusClass = orcamento.status === 'Pendente' ? 'status-inconsistente' :
+                                orcamento.status === 'Aprovado' ? 'status-ok' : 'status-red';
+            tableHtml += `
+                <tr>
+                    <td>${orcamento.id}</td>
+                    <td>${orcamento.orcamentoOsId}</td>
+                    <td>${orcamento.orcamentoDescricao}</td>
+                    <td>${orcamento.orcamentoValor.toFixed(2)}</td>
+                    <td><span class="status-cell ${statusClass}">${orcamento.status}</span></td>
+                    <td>${orcamento.dataSubmissao}</td>
+                    <td>
+                        ${orcamento.status === 'Pendente' ? `
+                        <button class="btn green px-3 py-1 text-xs" onclick="window.aprovarOrcamento(${orcamento.id})">Aprovar</button>
+                        <button class="btn red px-3 py-1 text-xs ml-2" onclick="window.rejeitarOrcamento(${orcamento.id})">Rejeitar</button>
+                        ` : '-'}
+                        <button class="btn blue px-3 py-1 text-xs ml-2" onclick="window.handleEdit('repairBudgets', ${orcamento.id})">Editar</button>
+                        <button class="btn red px-3 py-1 text-xs ml-2" onclick="window.handleDelete('repairBudgets', ${orcamento.id})">Excluir</button>
+                    </td>
+                </tr>
+            `;
+        });
+        tableHtml += `</tbody></table>`;
+        orcamentosListContainer.innerHTML = tableHtml;
+    } catch (error) {
+        console.error("Erro ao consultar orçamentos:", error);
+        orcamentosListContainer.innerHTML = '<p class="text-red-600">Erro ao carregar orçamentos.</p>';
+    }
+}
+
+window.aprovarOrcamento = function(orcamentoId) {
+    window.showModal('Aprovar Orçamento', 'Tem certeza que deseja aprovar este orçamento?', () => {
+        const password = window.prompt("Digite a senha de administrador para aprovar:");
+        if (password === 'admin123') {
+            const transaction = db.transaction(['repairBudgets'], 'readwrite');
+            const store = transaction.objectStore('repairBudgets');
+            const request = store.get(orcamentoId);
+            request.onsuccess = () => {
+                const orcamento = request.result;
+                if (orcamento) {
+                    orcamento.status = 'Aprovado';
+                    store.put(orcamento);
+                    transaction.oncomplete = () => {
+                        window.alert('Orçamento aprovado!');
+                        window.consultarOrcamentos();
+                    };
+                }
+            };
+        } else {
+            window.alert('Senha incorreta.');
+        }
+    }, false); // Not a warning, but needs confirmation
+}
+
+window.rejeitarOrcamento = function(orcamentoId) {
+    window.showModal('Rejeitar Orçamento', 'Tem certeza que deseja rejeitar este orçamento?', () => {
+        const password = window.prompt("Digite a senha de administrador para rejeitar:");
+        if (password === 'admin123') {
+            const transaction = db.transaction(['repairBudgets'], 'readwrite');
+            const store = transaction.objectStore('repairBudgets');
+            const request = store.get(orcamentoId);
+            request.onsuccess = () => {
+                const orcamento = request.result;
+                if (orcamento) {
+                    orcamento.status = 'Rejeitado';
+                    store.put(orcamento);
+                    transaction.oncomplete = () => {
+                        window.alert('Orçamento rejeitado!');
+                        window.consultarOrcamentos();
+                    };
+                }
+            };
+        } else {
+            window.alert('Senha incorreta.');
+        }
+    }, true); // Is a warning, needs confirmation
+}
+
+window.consultarHistoricoManutencao = async function() {
+    const historicoManutencaoListContainer = document.getElementById('historicoManutencaoListContainer');
+    const frotaFilter = document.getElementById('historicoFrotaFilter').value.toUpperCase();
+    try {
+        const todasOS = await window.getAllData('ordensServico');
+        const todasAtividadesHistorico = await window.getAllData('historicoAtividades');
+
+        let historicoCombinado = [];
+
+        // Adicionar Ordens de Serviço (concluídas ou canceladas)
+        todasOS.forEach(os => {
+            if (os.status === 'Concluída' || os.status === 'Cancelada') {
+                historicoCombinado.push({
+                    tipo: 'OS',
+                    id: os.id,
+                    frota: os.frota,
+                    modeloFrota: os.modeloFrota,
+                    data: os.dataAbertura,
+                    descricao: os.descricao,
+                    status: os.status,
+                    horas: 'N/A' // OS might not have direct hours
+                });
+            }
+        });
+
+        // Adicionar atividades de Manutenção do histórico de atividades
+        todasAtividadesHistorico.forEach(ativ => {
+            if (ativ.atividade.toUpperCase() === 'MANUTENÇÃO') {
+                historicoCombinado.push({
+                    tipo: 'Atividade',
+                    id: ativ.id,
+                    frota: ativ.frota,
+                    modeloFrota: ativ.equipamento,
+                    data: ativ.dataFinal,
+                    descricao: ativ.relatoProblema || 'Manutenção geral',
+                    status: ativ.status,
+                    horas: ativ.horasHorimetro // Hours from activity
+                });
+            }
+        });
+
+        // Filtrar se um código de frota for fornecido
+        if (frotaFilter) {
+            historicoCombinado = historicoCombinado.filter(item => item.frota === frotaFilter);
+        }
+
+        // Ordenar por data (mais recente primeiro)
+        historicoCombinado.sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime());
+
+        if (historicoCombinado.length === 0) {
+            historicoManutencaoListContainer.innerHTML = '<p class="text-gray-600">Nenhum histórico de manutenção encontrado.</p>';
+            return;
+        }
+
+        let tableHtml = `
+            <table class="consult-table">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>ID</th>
+                        <th>Frota</th>
+                        <th>Modelo</th>
+                        <th>Data</th>
+                        <th>Descrição</th>
+                        <th>Status</th>
+                        <th>Horas</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+        historicoCombinado.forEach(item => {
+            let statusClass = 'status-ok';
+            if (item.status === 'Cancelada' || item.status === 'Inconsistente') {
+                statusClass = 'status-inconsistente';
+            } else if (item.status === 'Em Andamento') {
+                statusClass = 'status-revision-strong';
+            }
+            tableHtml += `
+                <tr>
+                    <td>${item.tipo}</td>
+                    <td>${item.id}</td>
+                    <td>${item.frota}</td>
+                    <td>${item.modeloFrota}</td>
+                    <td>${item.data}</td>
+                    <td>${item.descricao}</td>
+                    <td><span class="status-cell ${statusClass}">${item.status}</span></td>
+                    <td>${item.horas}</td>
+                </tr>
+            `;
+        });
+        tableHtml += `</tbody></table>`;
+        historicoManutencaoListContainer.innerHTML = tableHtml;
+
+    } catch (error) {
+        console.error("Erro ao consultar histórico de manutenção:", error);
+        historicoManutencaoListContainer.innerHTML = '<p class="text-red-600">Erro ao carregar histórico de manutenção.</p>';
+    }
+}
+
 // --- Fueling Specific Functions ---
 window.toggleVolumeRestante = function(local) {
     const volumeRestanteField = document.getElementById('volumeRestanteField');
@@ -2456,7 +3299,8 @@ window.salvarAbastecimento = async function() {
         codProduto,
         nomeProduto,
         local,
-        volumeRestante
+        volumeRestante,
+        volumeLitros: 50 // Placeholder for volume dispensed
     };
 
     try {
