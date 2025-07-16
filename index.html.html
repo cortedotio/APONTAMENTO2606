@@ -1245,47 +1245,144 @@ window.mostrarCadastro = function(subpanel) {
         document.getElementById(p).style.display = p === subpanel ? 'block' : 'none';
     });
 }
+
 window.salvarOperador = async function() {
     const cracha = document.getElementById('crachaOperador').value.trim();
     const nome = document.getElementById('nomeOperador').value.trim();
     const fotoFile = document.getElementById('fotoOperador').files[0];
-    if (!cracha || !nome) { window.alert("Crachá e Nome são obrigatórios."); return; }
-    const foto = fotoFile ? await window.fileToBase64(fotoFile) : null;
-    window.saveData('operadores', { cracha, nome, foto }, "Operador salvo com sucesso!");
-    document.getElementById('cadastroOperador').querySelector('form').reset();
+    if (!cracha || !nome) { window.showModal('Campos Obrigatórios', 'Crachá e Nome são obrigatórios.', null, true); return; }
+
+    const transaction = db.transaction(['operadores'], 'readonly');
+    const store = transaction.objectStore('operadores');
+    const request = store.get(cracha);
+
+    request.onsuccess = async (event) => {
+        if (event.target.result) {
+            window.showModal('Erro de Cadastro', `O operador com o crachá '${cracha}' já existe.`, null, true);
+        } else {
+            const foto = fotoFile ? await window.fileToBase64(fotoFile) : null;
+            window.saveData('operadores', { cracha, nome, foto }, "Operador salvo com sucesso!");
+            document.getElementById('cadastroOperador').querySelector('form').reset();
+        }
+    };
+    request.onerror = (event) => {
+        console.error('Error checking for duplicate operator:', event.target.error);
+        window.showModal('Erro de Banco de Dados', 'Não foi possível verificar o operador.', null, true);
+    };
 }
+
 window.salvarFrota = async function() {
     const codigo = document.getElementById('codigoFrota').value.trim();
     const modelo = document.getElementById('modeloFrota').value.trim();
     const fotoFile = document.getElementById('fotoFrota').files[0];
-    if (!codigo || !modelo) { window.alert("Código e Modelo são obrigatórios."); return; }
-    const foto = fotoFile ? await window.fileToBase64(fotoFile) : null;
-    window.saveData('frotas', { codigo, modelo, foto }, "Frota salva com sucesso!");
-    document.getElementById('cadastroFrota').querySelector('form').reset();
+    if (!codigo || !modelo) {
+        window.showModal('Campos Obrigatórios', 'Os campos Frota e Modelo são obrigatórios.', null, true);
+        return;
+    }
+
+    const transaction = db.transaction(['frotas'], 'readonly');
+    const store = transaction.objectStore('frotas');
+    const request = store.get(codigo);
+
+    request.onsuccess = async (event) => {
+        if (event.target.result) {
+            window.showModal('Erro de Cadastro', `A frota com o código '${codigo}' já existe.`, null, true);
+        } else {
+            const foto = fotoFile ? await window.fileToBase64(fotoFile) : null;
+            const frotaData = { codigo, modelo, foto };
+            
+            const saveTransaction = db.transaction(['frotas'], 'readwrite');
+            const saveStore = saveTransaction.objectStore('frotas');
+            const saveRequest = saveStore.put(frotaData);
+
+            saveRequest.onsuccess = () => {
+                window.showModal('Sucesso', "Frota salva com sucesso!");
+                document.getElementById('cadastroFrota').querySelector('form').reset();
+                window.updateDisponibilidade();
+            };
+            saveRequest.onerror = (err) => {
+                console.error('Error saving frota:', err.target.error);
+                window.showModal('Erro', 'Ocorreu um erro ao salvar a frota.', null, true);
+            };
+        }
+    };
+    request.onerror = (event) => {
+        console.error('Error checking for duplicate frota:', event.target.error);
+        window.showModal('Erro de Banco de Dados', 'Não foi possível verificar a frota.', null, true);
+    };
 }
+
 window.salvarSetor = function() {
     const nome = document.getElementById('nomeSetor').value.trim();
-    if (!nome) { window.alert("Nome do setor é obrigatório."); return; }
-    window.saveData('setores', { nome }, "Setor salvo com sucesso!");
-    document.getElementById('nomeSetor').value = '';
-    window.populateSelects();
+    if (!nome) { window.showModal('Campo Obrigatório', 'O nome do setor é obrigatório.', null, true); return; }
+
+    const transaction = db.transaction(['setores'], 'readonly');
+    const store = transaction.objectStore('setores');
+    const request = store.get(nome);
+
+    request.onsuccess = (event) => {
+        if (event.target.result) {
+            window.showModal('Erro de Cadastro', `O setor '${nome}' já existe.`, null, true);
+        } else {
+            window.saveData('setores', { nome }, "Setor salvo com sucesso!");
+            document.getElementById('nomeSetor').value = '';
+            window.populateSelects();
+        }
+    };
+    request.onerror = (event) => {
+        console.error('Error checking for duplicate setor:', event.target.error);
+        window.showModal('Erro de Banco de Dados', 'Não foi possível verificar o setor.', null, true);
+    };
 }
+
 window.salvarAtividade = function() {
     const nome = document.getElementById('nomeAtividade').value.trim();
-    if (!nome) { window.alert("Nome da atividade é obrigatório."); return; }
-    window.saveData('atividades', { nome }, "Atividade salva com sucesso!");
-    document.getElementById('nomeAtividade').value = '';
-    window.populateSelects();
+    if (!nome) { window.showModal('Campo Obrigatório', 'O nome da atividade é obrigatório.', null, true); return; }
+
+    const transaction = db.transaction(['atividades'], 'readonly');
+    const store = transaction.objectStore('atividades');
+    const request = store.get(nome);
+
+    request.onsuccess = (event) => {
+        if (event.target.result) {
+            window.showModal('Erro de Cadastro', `A atividade '${nome}' já existe.`, null, true);
+        } else {
+            window.saveData('atividades', { nome }, "Atividade salva com sucesso!");
+            document.getElementById('nomeAtividade').value = '';
+            window.populateSelects();
+        }
+    };
+     request.onerror = (event) => {
+        console.error('Error checking for duplicate atividade:', event.target.error);
+        window.showModal('Erro de Banco de Dados', 'Não foi possível verificar a atividade.', null, true);
+    };
 }
+
 window.salvarImplemento = function() {
     const nome = document.getElementById('nomeImplemento').value.trim();
     const sigla = document.getElementById('siglaImplemento').value.trim();
-    if (!nome || !sigla) { window.alert("Nome e Sigla são obrigatórios."); return; }
-    window.saveData('implementos', { nome, sigla }, "Implemento salvo com sucesso!");
-    document.getElementById('nomeImplemento').value = '';
-    document.getElementById('siglaImplemento').value = '';
-    window.populateSelects();
+    if (!nome || !sigla) { window.showModal('Campos Obrigatórios', 'Nome e Sigla são obrigatórios.', null, true); return; }
+
+    const transaction = db.transaction(['implementos'], 'readonly');
+    const store = transaction.objectStore('implementos');
+    const request = store.get(nome);
+
+    request.onsuccess = (event) => {
+        if (event.target.result) {
+            window.showModal('Erro de Cadastro', `O implemento '${nome}' já existe.`, null, true);
+        } else {
+            window.saveData('implementos', { nome, sigla }, "Implemento salvo com sucesso!");
+            document.getElementById('nomeImplemento').value = '';
+            document.getElementById('siglaImplemento').value = '';
+            window.populateSelects();
+        }
+    };
+    request.onerror = (event) => {
+        console.error('Error checking for duplicate implemento:', event.target.error);
+        window.showModal('Erro de Banco de Dados', 'Não foi possível verificar o implemento.', null, true);
+    };
 }
+
 
 // --- INÍCIO/FIM DE ATIVIDADE FUNCTIONS ---
 window.buscarOperador = function(cracha, nomeFieldId, fotoFieldId) {
