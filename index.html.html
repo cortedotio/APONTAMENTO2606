@@ -331,8 +331,7 @@
         <h2 id="panelTitle" style="margin-bottom: 0;">Status de Atividade</h2>
     </div>
     <div>
-        <!-- Botão Administrador removido daqui, agora acessível via "Gerenciamento" na tela principal -->
-        <button class="btn red" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
+        <button class="btn dark-primary" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
     </div>
   </div>
   
@@ -340,16 +339,16 @@
     <button class="btn yellow" id="btnDisponibilidade" onclick="window.mostrar('disponibilidade')">Disponibilidade</button>
     <button class="btn green" id="btnInicioAtividade" onclick="window.mostrar('inicio')">Início de Atividade</button>
     <button class="btn red" id="btnEncerramentoAtividade" onclick="window.mostrar('fim')">Encerramento de Atividade</button>
-    <button class="btn blue" id="btnCadastro" style="display:none;" onclick="window.mostrar('cadastro')">Cadastro</button>
-    <button class="btn blue" id="btnRelatorio" style="display:none;" onclick="window.mostrar('relatorio')">Relatório</button>
-    <button class="btn darkblue" id="btnDados" style="display:none;" onclick="window.mostrar('dados')">Dados</button>
+    <button class="btn dark-primary" id="btnCadastro" style="display:none;" onclick="window.mostrar('cadastro')">Cadastro</button>
+    <button class="btn dark-primary" id="btnRelatorio" style="display:none;" onclick="window.mostrar('relatorio')">Relatório</button>
+    <button class="btn dark-primary" id="btnDados" style="display:none;" onclick="window.mostrar('dados')">Dados</button>
   </div>
   
-  <div id="inicio" style="display:none; margin-top:20px;">
+  <div id="inicio" style="display:none; margin-top:20px; background-color: #f0fff4; padding: 20px; border-radius: 12px;">
     <h3>Início de Atividade</h3>
     <form id="formInicio">
       <div class="flex justify-end mb-4">
-        <button class="btn red" type="button" onclick="window.limparFormulario('formInicio')">Limpar Formulário</button>
+        <button class="btn dark-primary" type="button" onclick="window.limparFormulario('formInicio')">Limpar Formulário</button>
       </div>
       <div class="field">
         <label for="crachaInicio">Crachá</label>
@@ -360,7 +359,7 @@
       </div>
       <div class="field">
         <label for="dataInicial">Data Inicial</label>
-        <input type="date" name="dataInicial" id="dataInicial" required onclick="window.promptAndFillDateTime('dataInicial','horaInicial')">
+        <input type="date" name="dataInicial" id="dataInicial" required onclick="window.confirmAndSetDateTime('dataInicial','horaInicial')">
       </div>
       <div class="field">
         <label for="horaInicial">Hora Inicial</label>
@@ -440,11 +439,11 @@
             <div class="col-span-3"><textarea name="relato_ParteEletrica" id="relato_ParteEletrica" rows="1" placeholder="Relatar não conformidade" class="hidden text-xs px-1 py-0.5 w-full border rounded"></textarea></div>
         </div>
       </div>
-      <button class="btn blue mt-6" type="button" onclick="window.enviarInicio(event)">Salvar Início</button>
+      <button class="btn dark-primary mt-6" type="button" onclick="window.enviarInicio(event)">Salvar Início</button>
     </form>
   </div>
   
-  <div id="disponibilidade" style="display:none; margin-top:20px;">
+  <div id="disponibilidade" style="display:none; margin-top:20px; background-color: #fffbeb; padding: 20px; border-radius: 12px;">
     <h3>Disponibilidade</h3>
     <div id="disponibilidadeContent"><p class="text-gray-600">Nenhuma frota cadastrada ou atividade em andamento para exibir.</p></div>
     <div id="frotasEmManutencaoList" class="mt-8 p-6 border border-red-300 rounded-lg bg-red-50 shadow-md" style="display: none;">
@@ -453,10 +452,10 @@
     </div>
   </div>
   
-  <div id="fim" style="display:none; margin-top:20px;">
+  <div id="fim" style="display:none; margin-top:20px; background-color: #ebf8ff; padding: 20px; border-radius: 12px;">
     <h3>Fim de Atividade</h3>
     <form id="formFim">
-      <div class="flex justify-end mb-4"><button class="btn red" type="button" onclick="window.limparFormulario('formFim')">Limpar Formulário</button></div>
+      <div class="flex justify-end mb-4"><button class="btn dark-primary" type="button" onclick="window.limparFormulario('formFim')">Limpar Formulário</button></div>
       <div class="field">
         <label for="crachaFim">Crachá</label>
         <input type="text" name="crachaFim" id="crachaFim" oninput="this.value = this.value.toUpperCase(); window.handleCrachaFimChange();" required>
@@ -466,7 +465,7 @@
       </div>
       <div class="field">
         <label for="dataFinal">Data Final</label>
-        <input type="date" name="dataFinal" id="dataFinal" required onclick="window.confirmarDataHora('dataFinal', 'horaFinal')">
+        <input type="date" name="dataFinal" id="dataFinal" required onclick="window.confirmAndSetDateTime('dataFinal', 'horaFinal')">
       </div>
       <div class="field">
         <label for="horaFinal">Hora Final</label>
@@ -494,48 +493,48 @@
         <label for="observacoesFim">Observações</label>
         <textarea name="observacoesFim" id="observacoesFim" rows="3"></textarea>
       </div>
-      <button class="btn green mt-6" type="button" onclick="window.enviarFim(event)">Finalizar</button>
+      <button class="btn dark-primary mt-6" type="button" onclick="window.enviarFim(event)">Finalizar</button>
     </form>
   </div>
   
   <div id="cadastro" class="admin-panel">
     <h3>Cadastro</h3> 
     <div class="flex flex-wrap justify-center mb-6 gap-3">
-      <button class="btn blue" onclick="window.mostrarCadastro('cadastroOperador')">Operador</button>
-      <button class="btn blue" onclick="window.mostrarCadastro('cadastroFrota')">Frota</button>
-      <button class="btn blue" onclick="window.mostrarCadastro('cadastroSetor')">Setor</button>
-      <button class="btn blue" onclick="window.mostrarCadastro('cadastroAtividade')">Atividade</button>
-      <button class="btn blue" onclick="window.mostrarCadastro('cadastroImplemento')">Implemento</button>
+      <button class="btn dark-primary" onclick="window.mostrarCadastro('cadastroOperador')">Operador</button>
+      <button class="btn dark-primary" onclick="window.mostrarCadastro('cadastroFrota')">Frota</button>
+      <button class="btn dark-primary" onclick="window.mostrarCadastro('cadastroSetor')">Setor</button>
+      <button class="btn dark-primary" onclick="window.mostrarCadastro('cadastroAtividade')">Atividade</button>
+      <button class="btn dark-primary" onclick="window.mostrarCadastro('cadastroImplemento')">Implemento</button>
     </div>
     <div id="cadastroOperador" style="display:none; margin-top:10px;">
       <h4>Cadastro de Operador</h4>
       <form><div class="field"><label for="crachaOperador">Crachá</label><input type="text" id="crachaOperador" oninput="this.value = this.value.toUpperCase()"></div>
       <div class="field"><label for="nomeOperador">Operador</label><input type="text" id="nomeOperador" oninput="this.value = this.value.toUpperCase()"></div>
       <div class="field"><label for="fotoOperador">Foto</label><input type="file" id="fotoOperador" accept="image/*" capture></div>
-      <div class="flex justify-start gap-4 mt-6"><button class="btn blue" type="button" onclick="window.salvarOperador()">Salvar</button><button class="btn blue" type="button" onclick="window.consultarOperador()">Consultar</button></div></form>
+      <div class="flex justify-start gap-4 mt-6"><button class="btn dark-primary" type="button" onclick="window.salvarOperador()">Salvar</button><button class="btn dark-primary" type="button" onclick="window.consultarOperador()">Consultar</button></div></form>
     </div>
     <div id="cadastroFrota" style="display:none; margin-top:10px;">
       <h4>Cadastro de Frota</h4>
       <form><div class="field"><label for="codigoFrota">Frota</label><input type="text" id="codigoFrota" oninput="this.value = this.value.toUpperCase()"></div>
       <div class="field"><label for="modeloFrota">Modelo</label><input type="text" id="modeloFrota" oninput="this.value = this.value.toUpperCase()"></div>
       <div class="field"><label for="fotoFrota">Foto</label><input type="file" id="fotoFrota" accept="image/*" capture></div>
-      <div class="flex justify-start gap-4 mt-6"><button class="btn blue" type="button" onclick="window.salvarFrota()">Salvar</button><button class="btn blue" type="button" onclick="window.consultarFrota()">Consultar</button></div></form>
+      <div class="flex justify-start gap-4 mt-6"><button class="btn dark-primary" type="button" onclick="window.salvarFrota()">Salvar</button><button class="btn dark-primary" type="button" onclick="window.consultarFrota()">Consultar</button></div></form>
     </div>
     <div id="cadastroSetor" style="display:none; margin-top:10px;">
       <h4>Cadastro de Setor</h4>
       <div class="field"><label for="nomeSetor">Setor</label><input type="text" id="nomeSetor" oninput="this.value = this.value.toUpperCase()"></div>
-      <div class="flex justify-start gap-4 mt-6"><button class="btn blue" onclick="window.salvarSetor()">Salvar</button><button class="btn blue" onclick="window.consultarSetor()">Consultar</button></div>
+      <div class="flex justify-start gap-4 mt-6"><button class="btn dark-primary" onclick="window.salvarSetor()">Salvar</button><button class="btn dark-primary" onclick="window.consultarSetor()">Consultar</button></div>
     </div>
     <div id="cadastroAtividade" style="display:none; margin-top:10px;">
       <h4>Cadastro de Atividade</h4>
       <div class="field"><label for="nomeAtividade">Atividade</label><input type="text" id="nomeAtividade" oninput="this.value = this.value.toUpperCase()"></div>
-      <div class="flex justify-start gap-4 mt-6"><button class="btn blue" type="button" onclick="window.salvarAtividade()">Salvar</button><button class="btn blue" type="button" onclick="window.consultarAtividade()">Consultar</button></div></form>
+      <div class="flex justify-start gap-4 mt-6"><button class="btn dark-primary" type="button" onclick="window.salvarAtividade()">Salvar</button><button class="btn dark-primary" type="button" onclick="window.consultarAtividade()">Consultar</button></div></form>
     </div>
     <div id="cadastroImplemento" style="display:none; margin-top:10px;">
       <h4>Cadastro de Implemento</h4>
       <div class="field"><label for="nomeImplemento">Implemento</label><input type="text" id="nomeImplemento" oninput="this.value = this.value.toUpperCase()"></div>
       <div class="field"><label for="siglaImplemento">Sigla</label><input type="text" id="siglaImplemento" required oninput="this.value = this.value.toUpperCase()"></div>
-      <div class="flex justify-start gap-4 mt-6"><button class="btn blue" onclick="window.salvarImplemento()">Salvar</button><button class="btn blue" type="button" onclick="window.consultarImplemento()">Consultar</button></div>
+      <div class="flex justify-start gap-4 mt-6"><button class="btn dark-primary" onclick="window.salvarImplemento()">Salvar</button><button class="btn dark-primary" type="button" onclick="window.consultarImplemento()">Consultar</button></div>
     </div>
   </div>
 
@@ -545,7 +544,7 @@
       <h4>Login de Administrador</h4>
       <div class="field"><label for="adminUsername">Usuário</label><input type="text" id="adminUsername" required></div>
       <div class="field"><label for="adminPassword">Senha</label><input type="password" id="adminPassword" required></div>
-      <button class="btn purple mt-6" onclick="window.handleLogin()">Entrar</button>
+      <button class="btn dark-primary mt-6" onclick="window.handleLogin()">Entrar</button>
       <p class="text-sm text-gray-600 mt-4">Axyn: Menos custos, mais controle. Simples assim.</p>
     </div>
     <div id="adminDashboard" style="display:none; margin-top:20px;">
@@ -564,7 +563,7 @@
             <option value="administrador">Administrador</option>
           </select>
         </div>
-        <button class="btn blue mt-6" onclick="window.salvarUsuario()">Salvar Usuário</button>
+        <button class="btn dark-primary mt-6" onclick="window.salvarUsuario()">Salvar Usuário</button>
         <h5 class="font-bold mt-8 mb-4 text-gray-700">Usuários Cadastrados:</h5>
         <div id="userListContainer" class="max-h-60 overflow-y-auto border border-gray-200 rounded-lg bg-white shadow-inner">
           <table class="min-w-full divide-y divide-gray-200">
@@ -579,7 +578,7 @@
           </table>
         </div>
       </div>
-      <button class="btn red mt-6" onclick="window.logout()">Sair</button>
+      <button class="btn dark-primary mt-6" onclick="window.logout()">Sair</button>
     </div>
   </div>
 
@@ -608,9 +607,9 @@
       <label for="relatorioDataFim">Data de Fim</label>
       <input type="date" id="relatorioDataFim">
     </div>
-    <button class="btn blue mt-4" onclick="window.gerarRelatorio()">Gerar Relatório</button>
+    <button class="btn dark-primary mt-4" onclick="window.gerarRelatorio()">Gerar Relatório</button>
     <!-- Botão Dados movido para cá -->
-    <button class="btn darkblue mt-4" onclick="window.mostrar('dados')">Dados</button>
+    <button class="btn dark-primary mt-4" onclick="window.mostrar('dados')">Dados</button>
     <div id="relatorioResultado" class="mt-6"></div>
   </div>
 
@@ -625,15 +624,15 @@
 <div class="card" id="manutencaoPanel" style="display:none;">
     <div class="flex justify-between items-center mb-6">
         <h3>Gestão de Manutenção</h3>
-        <button class="btn red" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
+        <button class="btn dark-primary" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
     </div>
-    <div class="flex flex-wrap justify-center mb-6 gap-3">
-        <button class="btn blue" onclick="window.mostrarManutencaoSubpanel('formAbrirOS')">Abrir Ordem de Serviço</button>
-        <button class="btn green" onclick="window.mostrarManutencaoSubpanel('formPlanosManutencao')">Planos de Manutenção</button>
-        <button class="btn orange" onclick="window.mostrarManutencaoSubpanel('consultarOS')">Consultar Ordens de Serviço</button>
-        <button class="btn teal" onclick="window.mostrarManutencaoSubpanel('gestaoPecas')">Gestão de Peças</button>
-        <button class="btn purple" onclick="window.mostrarManutencaoSubpanel('orcamentosAprovacoes')">Orçamentos e Aprovações</button>
-        <button class="btn darkblue" onclick="window.mostrarManutencaoSubpanel('historicoManutencao')">Histórico de Manutenção</button>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <button class="btn dark-primary" onclick="window.mostrarManutencaoSubpanel('formAbrirOS')">Abrir Ordem de Serviço</button>
+        <button class="btn dark-primary" onclick="window.mostrarManutencaoSubpanel('formPlanosManutencao')">Planos de Manutenção</button>
+        <button class="btn dark-primary" onclick="window.mostrarManutencaoSubpanel('consultarOS')">Consultar Ordens de Serviço</button>
+        <button class="btn dark-primary" onclick="window.mostrarManutencaoSubpanel('gestaoPecas')">Gestão de Peças</button>
+        <button class="btn dark-primary" onclick="window.mostrarManutencaoSubpanel('orcamentosAprovacoes')">Orçamentos e Aprovações</button>
+        <button class="btn dark-primary" onclick="window.mostrarManutencaoSubpanel('historicoManutencao')">Histórico de Manutenção</button>
     </div>
 
     <div id="formAbrirOS" style="display:none;">
@@ -644,7 +643,7 @@
             <div class="field"><label for="osSolicitante">Solicitante</label><input type="text" id="osSolicitante" required></div>
             <div class="field"><label for="osDescricao">Descrição do Problema</label><textarea id="osDescricao" rows="3" required></textarea></div>
             <div class="field"><label for="osTipo">Tipo</label><select id="osTipo"><option value="Corretiva">Corretiva</option><option value="Preventiva">Preventiva</option></select></div>
-            <button class="btn blue mt-4" type="button" onclick="window.salvarOS()">Abrir OS</button>
+            <button class="btn dark-primary mt-4" type="button" onclick="window.salvarOS()">Abrir OS</button>
         </form>
     </div>
     <div id="formPlanosManutencao" style="display:none;">
@@ -656,7 +655,7 @@
             <div class="field" id="horimetroIntervalField"><label for="horimetroInterval">Intervalo (Horímetro)</label><input type="text" id="horimetroInterval" oninput="this.value = this.value.replace(/[^0-9.]/g, '')"></div>
             <div class="field" id="tempoIntervalField" style="display:none;"><label for="tempoInterval">Intervalo (dias)</label><input type="text" id="tempoInterval" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
             <div class="field"><label for="ultimaManutencao">Última Manutenção</label><input type="date" id="ultimaManutencao"></div>
-            <button class="btn blue mt-4" type="button" onclick="window.salvarPlanoManutencao()">Salvar Plano</button>
+            <button class="btn dark-primary mt-4" type="button" onclick="window.salvarPlanoManutencao()">Salvar Plano</button>
         </form>
         <div id="planosManutencaoListContainer" class="mt-6">
             <h4>Planos Cadastrados</h4>
@@ -677,7 +676,7 @@
             <div class="field"><label for="stockPeca">Stock</label><input type="number" id="stockPeca" required min="0"></div>
             <div class="field"><label for="minStockPeca">Stock Mínimo</label><input type="number" id="minStockPeca" min="0"></div>
             <div class="field"><label for="custoPeca">Custo Unitário (R$)</label><input type="text" id="custoPeca" oninput="this.value = this.value.replace(/[^0-9.]/g, '')"></div>
-            <button class="btn blue mt-4" type="button" onclick="window.salvarPeca()">Salvar Peça</button>
+            <button class="btn dark-primary mt-4" type="button" onclick="window.salvarPeca()">Salvar Peça</button>
         </form>
         <div id="pecasListContainer" class="mt-6">
             <h4>Inventário de Peças</h4>
@@ -690,7 +689,7 @@
             <div class="field"><label for="orcamentoOsId">OS ID</label><input type="text" id="orcamentoOsId" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required></div>
             <div class="field"><label for="orcamentoDescricao">Descrição Orçamento</label><textarea id="orcamentoDescricao" rows="2"></textarea></div>
             <div class="field"><label for="orcamentoValor">Valor Estimado (R$)</label><input type="text" id="orcamentoValor" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" required></div>
-            <button class="btn blue mt-4" type="button" onclick="window.salvarOrcamento()">Submeter Orçamento</button>
+            <button class="btn dark-primary mt-4" type="button" onclick="window.salvarOrcamento()">Submeter Orçamento</button>
         </form>
         <div id="orcamentosListContainer" class="mt-6">
             <h4>Orçamentos Pendentes</h4>
@@ -711,11 +710,11 @@
 <div class="card" id="abastecimentoPanel" style="display:none;">
     <div class="flex justify-between items-center mb-6">
         <h3>Gestão de Abastecimento</h3>
-        <button class="btn red" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
+        <button class="btn dark-primary" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
     </div>
     <div class="flex flex-wrap justify-center mb-6 gap-3">
-      <button class="btn blue" onclick="window.mostrarAbastecimentoSubpanel('formAbastecimento')">Registrar Abastecimento</button>
-      <button class="btn green" onclick="window.mostrarAbastecimentoSubpanel('formCompraCombustivel')">Registrar Compra de Combustível</button>
+      <button class="btn dark-primary" onclick="window.mostrarAbastecimentoSubpanel('formAbastecimento')">Registrar Abastecimento</button>
+      <button class="btn dark-primary" onclick="window.mostrarAbastecimentoSubpanel('formCompraCombustivel')">Registrar Compra de Combustível</button>
     </div>
     <div id="formAbastecimento" style="display:none;">
         <h4>Registrar Abastecimento</h4>
@@ -731,7 +730,7 @@
             <div class="field"><label for="abastecimentoCodProduto">Cód. Produto</label><input type="text" id="abastecimentoCodProduto" oninput="this.value = this.value.toUpperCase(); window.buscarProduto(this.value, 'nomeProduto')" required><input type="text" id="nomeProduto" readonly placeholder="Nome do Produto"></div>
             <div class="field"><label for="abastecimentoLocal">Local</label><select id="abastecimentoLocal" onchange="window.toggleVolumeRestante(this.value)"><option value="interno">Dentro da Empresa</option><option value="externo">Fora da Empresa</option></select></div>
             <div class="field" id="volumeRestanteField"><label for="volumeRestante">Volume Restante</label><input type="text" id="volumeRestante" readonly></div>
-            <button class="btn blue mt-4" type="button" onclick="window.salvarAbastecimento()">Salvar</button>
+            <button class="btn dark-primary mt-4" type="button" onclick="window.salvarAbastecimento()">Salvar</button>
         </form>
     </div>
     <div id="formCompraCombustivel" style="display:none;">
@@ -741,7 +740,7 @@
             <div class="field"><label for="compraEmpresa">Empresa Comprado</label><input type="text" id="compraEmpresa" required></div>
             <div class="field"><label for="compraVolume">Volume (L)</label><input type="text" id="compraVolume" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" required></div>
             <div class="field"><label for="compraValor">Valor (R$)</label><input type="text" id="compraValor" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" required></div>
-            <button class="btn green mt-4" type="button" onclick="window.salvarCompraCombustivel()">Salvar Compra</button>
+            <button class="btn dark-primary mt-4" type="button" onclick="window.salvarCompraCombustivel()">Salvar Compra</button>
         </form>
     </div>
 </div>
@@ -750,7 +749,7 @@
 <div class="card" id="pneusPanel" style="display:none;">
     <div class="flex justify-between items-center mb-6">
         <h3>Gestão de Pneus</h3>
-        <button class="btn red" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
+        <button class="btn dark-primary" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
     </div>
     <p class="text-gray-600 mb-8">Esta seção está em desenvolvimento.</p>
 </div>
@@ -761,8 +760,8 @@
         <h3 id="modalTitle">Confirmação</h3>
         <p id="modalMessage">Você tem certeza?</p>
         <div class="modal-buttons">
-            <button id="modalConfirmBtn" class="btn green">Confirmar</button>
-            <button id="modalCancelBtn" class="btn red">Cancelar</button>
+            <button id="modalConfirmBtn" class="btn dark-primary">Confirmar</button>
+            <button id="modalCancelBtn" class="btn dark-primary">Cancelar</button>
         </div>
     </div>
 </div>
@@ -773,7 +772,7 @@
         <h3 id="listModalTitle">Itens Cadastrados</h3>
         <div id="listModalContent" class="modal-list-content"></div>
         <div class="modal-buttons mt-4">
-            <button id="listModalCloseBtn" class="btn red">Fechar</button>
+            <button id="listModalCloseBtn" class="btn dark-primary">Fechar</button>
         </div>
     </div>
 </div>
@@ -784,8 +783,8 @@
         <h3 id="editModalTitle">Editar Item</h3>
         <form id="editForm" class="text-left"></form>
         <div class="modal-buttons mt-6">
-            <button id="editModalSaveBtn" class="btn green">Salvar</button>
-            <button id="editModalCancelBtn" class="btn red">Cancelar</button>
+            <button id="editModalSaveBtn" class="btn dark-primary">Salvar</button>
+            <button id="editModalCancelBtn" class="btn dark-primary">Cancelar</button>
         </div>
     </div>
 </div>
@@ -1113,15 +1112,15 @@ window.populateCurrentDateTime = function(dateInputId, timeInputId) {
     }
 }
 
-// NEW/REFACTORED: Prompts the user to fill the date/time fields if they are empty.
-window.promptAndFillDateTime = function(dateInputId, timeInputId) {
+// RESTORED: Prompts the user to fill the date/time fields if they are empty, allowing manual input.
+window.confirmAndSetDateTime = function(dateInputId, timeInputId) {
     const dateInput = document.getElementById(dateInputId);
     const timeInput = document.getElementById(timeInputId);
 
-    // Only prompt to fill if both are empty
+    // Only prompt if the fields are empty.
     if (!dateInput.value && !timeInput.value) {
         window.showModal(
-            'Data e Hora Atuais',
+            'Preenchimento Automático',
             'Deseja preencher a data e a hora com o momento atual?',
             () => { // onConfirm callback
                 window.populateCurrentDateTime(dateInputId, timeInputId);
@@ -1130,7 +1129,7 @@ window.promptAndFillDateTime = function(dateInputId, timeInputId) {
     }
 }
 
-// NEW/REFACTORED: Validates that the selected date and time are not in the future.
+// Validates that the selected date and time are not in the future.
 window.validateDateTime = function(dateInputId, timeInputId) {
     const dateInput = document.getElementById(dateInputId);
     const timeInput = document.getElementById(timeInputId);
@@ -1224,12 +1223,12 @@ window.showListModal = async function(title, data, headers, storeName) {
         actionsCell.className = 'flex gap-2';
         const editBtn = document.createElement('button');
         editBtn.textContent = 'Alterar';
-        editBtn.className = 'btn blue text-xs p-1';
+        editBtn.className = 'btn dark-primary text-xs p-1';
         editBtn.onclick = () => window.handleEdit(storeName, item);
         
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Excluir';
-        deleteBtn.className = 'btn red text-xs p-1';
+        deleteBtn.className = 'btn dark-primary text-xs p-1';
         deleteBtn.onclick = () => window.handleDelete(storeName, item[db.transaction(storeName).objectStore(storeName).keyPath]);
         
         actionsCell.appendChild(editBtn);
@@ -1367,7 +1366,6 @@ window.hideAllChecklistReports = function() {
 window.enviarInicio = async function(event) {
     event.preventDefault();
     
-    // UPDATED: Simplified date/time validation
     if (!window.validateDateTime('dataInicial', 'horaInicial')) {
         return;
     }
@@ -1490,7 +1488,6 @@ window.enviarFim = function(event) {
     const form = document.getElementById('formFim');
     if (!form.checkValidity()) { form.reportValidity(); return; }
     
-    // UPDATED: Simplified date/time validation
     if (!window.validateDateTime('dataFinal', 'horaFinal')) {
         return;
     }
@@ -2472,7 +2469,7 @@ window.mostrarBancoDeDados = async function() {
             <td data-label="Atividade">${item.atividade}</td>
             <td data-label="Data Final">${new Date(item.dataFinal + 'T00:00:00').toLocaleDateString('pt-BR')}</td>
             <td data-label="Status"><span class="status-cell ${statusClass}">${statusText}</span></td>
-            <td data-label="Ações"><button class="btn blue text-xs p-1" onclick="window.handleEdit('historicoAtividades', ${item.id})">Alterar</button></td>
+            <td data-label="Ações"><button class="btn dark-primary text-xs p-1" onclick="window.handleEdit('historicoAtividades', ${item.id})">Alterar</button></td>
         `;
     });
     contentDiv.appendChild(table);
@@ -2810,8 +2807,8 @@ window.consultarOrdensServico = async function() {
                     <td>${osData.tipo}</td>
                     <td><span class="status-cell ${statusClass}">${osData.status}</span></td>
                     <td>
-                        <button class="btn blue px-3 py-1 text-xs" onclick="window.handleEdit('ordensServico', ${osId})">Editar</button>
-                        <button class="btn red px-3 py-1 text-xs ml-2" onclick="window.handleDelete('ordensServico', ${osId})">Excluir</button>
+                        <button class="btn dark-primary px-3 py-1 text-xs" onclick="window.handleEdit('ordensServico', ${osId})">Editar</button>
+                        <button class="btn dark-primary px-3 py-1 text-xs ml-2" onclick="window.handleDelete('ordensServico', ${osId})">Excluir</button>
                     </td>
                 </tr>
             `;
@@ -2920,8 +2917,8 @@ window.consultarPlanosManutencao = async function() {
                     <td>${plano.ultimaManutencao || '-'}</td>
                     <td>${plano.proximaManutencao || '-'}</td>
                     <td>
-                        <button class="btn blue px-3 py-1 text-xs" onclick="window.handleEdit('maintenancePlans', ${plano.id})">Editar</button>
-                        <button class="btn red px-3 py-1 text-xs ml-2" onclick="window.handleDelete('maintenancePlans', ${plano.id})">Excluir</button>
+                        <button class="btn dark-primary px-3 py-1 text-xs" onclick="window.handleEdit('maintenancePlans', ${plano.id})">Editar</button>
+                        <button class="btn dark-primary px-3 py-1 text-xs ml-2" onclick="window.handleDelete('maintenancePlans', ${plano.id})">Excluir</button>
                     </td>
                 </tr>
             `;
@@ -3005,8 +3002,8 @@ window.consultarPecas = async function() {
                     <td>${peca.custoPeca.toFixed(2)}</td>
                     <td><span class="status-cell ${statusClass}">${statusText}</span></td>
                     <td>
-                        <button class="btn blue px-3 py-1 text-xs" onclick="window.handleEdit('partsInventory', ${peca.id})">Editar</button>
-                        <button class="btn red px-3 py-1 text-xs ml-2" onclick="window.handleDelete('partsInventory', ${peca.id})">Excluir</button>
+                        <button class="btn dark-primary px-3 py-1 text-xs" onclick="window.handleEdit('partsInventory', ${peca.id})">Editar</button>
+                        <button class="btn dark-primary px-3 py-1 text-xs ml-2" onclick="window.handleDelete('partsInventory', ${peca.id})">Excluir</button>
                     </td>
                 </tr>
             `;
@@ -3087,11 +3084,11 @@ window.consultarOrcamentos = async function() {
                     <td>${orcamento.dataSubmissao}</td>
                     <td>
                         ${orcamento.status === 'Pendente' ? `
-                        <button class="btn green px-3 py-1 text-xs" onclick="window.aprovarOrcamento(${orcamento.id})">Aprovar</button>
-                        <button class="btn red px-3 py-1 text-xs ml-2" onclick="window.rejeitarOrcamento(${orcamento.id})">Rejeitar</button>
+                        <button class="btn dark-primary px-3 py-1 text-xs" onclick="window.aprovarOrcamento(${orcamento.id})">Aprovar</button>
+                        <button class="btn dark-primary px-3 py-1 text-xs ml-2" onclick="window.rejeitarOrcamento(${orcamento.id})">Rejeitar</button>
                         ` : '-'}
-                        <button class="btn blue px-3 py-1 text-xs ml-2" onclick="window.handleEdit('repairBudgets', ${orcamento.id})">Editar</button>
-                        <button class="btn red px-3 py-1 text-xs ml-2" onclick="window.handleDelete('repairBudgets', ${orcamento.id})">Excluir</button>
+                        <button class="btn dark-primary px-3 py-1 text-xs ml-2" onclick="window.handleEdit('repairBudgets', ${orcamento.id})">Editar</button>
+                        <button class="btn dark-primary px-3 py-1 text-xs ml-2" onclick="window.handleDelete('repairBudgets', ${orcamento.id})">Excluir</button>
                     </td>
                 </tr>
             `;
