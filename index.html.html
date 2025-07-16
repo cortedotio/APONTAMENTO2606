@@ -639,20 +639,20 @@
     <div id="formAbrirOS" style="display:none;">
         <h4>Abrir Ordem de Serviço</h4>
         <form id="osForm">
-            <div class="field"><label for="osFrota">* Frota</label><input type="text" id="osFrota" oninput="this.value = this.value.toUpperCase(); window.mostrarModeloFrota(this.value, 'osModelo')" required><input type="text" id="osModelo" readonly placeholder="Modelo"></div>
+            <div class="field"><label for="osFrota">Frota</label><input type="text" id="osFrota" oninput="this.value = this.value.toUpperCase(); window.mostrarModeloFrota(this.value, 'osModelo')" required><input type="text" id="osModelo" readonly placeholder="Modelo"></div>
             <div class="field"><label for="osDataAbertura">Data Abertura</label><input type="text" id="osDataAbertura" readonly></div>
-            <div class="field"><label for="osSolicitante">* Solicitante</label><input type="text" id="osSolicitante" required></div>
-            <div class="field"><label for="osDescricao">* Descrição do Problema</label><textarea id="osDescricao" rows="3" required></textarea></div>
-            <div class="field"><label for="osTipo">* Tipo</label><select id="osTipo"><option value="Corretiva">Corretiva</option><option value="Preventiva">Preventiva</option></select></div>
+            <div class="field"><label for="osSolicitante">Solicitante</label><input type="text" id="osSolicitante" required></div>
+            <div class="field"><label for="osDescricao">Descrição do Problema</label><textarea id="osDescricao" rows="3" required></textarea></div>
+            <div class="field"><label for="osTipo">Tipo</label><select id="osTipo"><option value="Corretiva">Corretiva</option><option value="Preventiva">Preventiva</option></select></div>
             <button class="btn blue mt-4" type="button" onclick="window.salvarOS()">Abrir OS</button>
         </form>
     </div>
     <div id="formPlanosManutencao" style="display:none;">
         <h4>Planos de Manutenção</h4>
         <form id="planosManutencaoForm">
-            <div class="field"><label for="planoFrota">* Frota</label><input type="text" id="planoFrota" oninput="this.value = this.value.toUpperCase(); window.mostrarModeloFrota(this.value, 'planoModelo')" required><input type="text" id="planoModelo" readonly placeholder="Modelo"></div>
-            <div class="field"><label for="planoDescricao">* Descrição</label><textarea id="planoDescricao" rows="2" required></textarea></div>
-            <div class="field"><label for="tipoManutencao">* Tipo</label><select id="tipoManutencao" required><option value="Horímetro">Baseado em Horímetro</option><option value="Tempo">Baseado em Tempo</option></select></div>
+            <div class="field"><label for="planoFrota">Frota</label><input type="text" id="planoFrota" oninput="this.value = this.value.toUpperCase(); window.mostrarModeloFrota(this.value, 'planoModelo')" required><input type="text" id="planoModelo" readonly placeholder="Modelo"></div>
+            <div class="field"><label for="planoDescricao">Descrição</label><textarea id="planoDescricao" rows="2" required></textarea></div>
+            <div class="field"><label for="tipoManutencao">Tipo</label><select id="tipoManutencao" required><option value="Horímetro">Baseado em Horímetro</option><option value="Tempo">Baseado em Tempo</option></select></div>
             <div class="field" id="horimetroIntervalField"><label for="horimetroInterval">Intervalo (Horímetro)</label><input type="text" id="horimetroInterval" oninput="this.value = this.value.replace(/[^0-9.]/g, '')"></div>
             <div class="field" id="tempoIntervalField" style="display:none;"><label for="tempoInterval">Intervalo (dias)</label><input type="text" id="tempoInterval" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
             <div class="field"><label for="ultimaManutencao">Última Manutenção</label><input type="date" id="ultimaManutencao"></div>
@@ -672,9 +672,9 @@
     <div id="gestaoPecas" style="display:none;">
         <h4>Gestão de Peças</h4>
         <form id="pecaForm">
-            <div class="field"><label for="nomePeca">* Nome da Peça</label><input type="text" id="nomePeca" required></div>
+            <div class="field"><label for="nomePeca">Nome da Peça</label><input type="text" id="nomePeca" required></div>
             <div class="field"><label for="codPeca">Cód. Peça</label><input type="text" id="codPeca"></div>
-            <div class="field"><label for="stockPeca">* Stock</label><input type="number" id="stockPeca" required min="0"></div>
+            <div class="field"><label for="stockPeca">Stock</label><input type="number" id="stockPeca" required min="0"></div>
             <div class="field"><label for="minStockPeca">Stock Mínimo</label><input type="number" id="minStockPeca" min="0"></div>
             <div class="field"><label for="custoPeca">Custo Unitário (R$)</label><input type="text" id="custoPeca" oninput="this.value = this.value.replace(/[^0-9.]/g, '')"></div>
             <button class="btn blue mt-4" type="button" onclick="window.salvarPeca()">Salvar Peça</button>
@@ -687,9 +687,9 @@
     <div id="orcamentosAprovacoes" style="display:none;">
         <h4>Orçamentos e Aprovações</h4>
         <form id="orcamentoForm">
-            <div class="field"><label for="orcamentoOsId">* OS ID</label><input type="text" id="orcamentoOsId" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required></div>
+            <div class="field"><label for="orcamentoOsId">OS ID</label><input type="text" id="orcamentoOsId" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required></div>
             <div class="field"><label for="orcamentoDescricao">Descrição Orçamento</label><textarea id="orcamentoDescricao" rows="2"></textarea></div>
-            <div class="field"><label for="orcamentoValor">* Valor Estimado (R$)</label><input type="text" id="orcamentoValor" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" required></div>
+            <div class="field"><label for="orcamentoValor">Valor Estimado (R$)</label><input type="text" id="orcamentoValor" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" required></div>
             <button class="btn blue mt-4" type="button" onclick="window.salvarOrcamento()">Submeter Orçamento</button>
         </form>
         <div id="orcamentosListContainer" class="mt-6">
@@ -720,16 +720,16 @@
     <div id="formAbastecimento" style="display:none;">
         <h4>Registrar Abastecimento</h4>
         <form id="abastecimentoForm">
-            <div class="field"><label for="abastecimentoFrota">* Frota</label><input type="text" id="abastecimentoFrota" oninput="this.value = this.value.toUpperCase(); window.mostrarModeloFrota(this.value, 'abastecimentoModelo')" required><input type="text" id="abastecimentoModelo" readonly placeholder="Modelo"></div>
+            <div class="field"><label for="abastecimentoFrota">Frota</label><input type="text" id="abastecimentoFrota" oninput="this.value = this.value.toUpperCase(); window.mostrarModeloFrota(this.value, 'abastecimentoModelo')" required><input type="text" id="abastecimentoModelo" readonly placeholder="Modelo"></div>
             <div class="field"><label for="abastecimentoDoc">Documento/NF</label><input type="text" id="abastecimentoDoc" required></div>
             <div class="field"><label for="abastecimentoEmpresa">Empresa</label><input type="text" id="abastecimentoEmpresa" required></div>
-            <div class="field"><label for="abastecimentoHorimetro">* Horímetro</label><input type="text" id="abastecimentoHorimetro" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" required></div>
-            <div class="field"><label for="abastecimentoData">* Data</label><input type="date" id="abastecimentoData" required></div>
-            <div class="field"><label for="abastecimentoHora">* Hora</label><input type="time" id="abastecimentoHora" required></div>
-            <div class="field"><label for="abastecimentoMotorista">* Crachá Motorista</label><input type="text" id="abastecimentoMotorista" oninput="this.value = this.value.toUpperCase(); window.buscarOperador(this.value, 'nomeMotorista')" required><input type="text" id="nomeMotorista" readonly placeholder="Nome do Motorista"></div>
-            <div class="field"><label for="abastecimentoFrentista">* Crachá Frentista</label><input type="text" id="abastecimentoFrentista" oninput="this.value = this.value.toUpperCase(); window.buscarOperador(this.value, 'nomeFrentista')" required><input type="text" id="nomeFrentista" readonly placeholder="Nome do Frentista"></div>
-            <div class="field"><label for="abastecimentoCodProduto">* Cód. Produto</label><input type="text" id="abastecimentoCodProduto" oninput="this.value = this.value.toUpperCase(); window.buscarProduto(this.value, 'nomeProduto')" required><input type="text" id="nomeProduto" readonly placeholder="Nome do Produto"></div>
-            <div class="field"><label for="abastecimentoLocal">* Local</label><select id="abastecimentoLocal" onchange="window.toggleVolumeRestante(this.value)"><option value="interno">Dentro da Empresa</option><option value="externo">Fora da Empresa</option></select></div>
+            <div class="field"><label for="abastecimentoHorimetro">Horímetro</label><input type="text" id="abastecimentoHorimetro" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" required></div>
+            <div class="field"><label for="abastecimentoData">Data</label><input type="date" id="abastecimentoData" required></div>
+            <div class="field"><label for="abastecimentoHora">Hora</label><input type="time" id="abastecimentoHora" required></div>
+            <div class="field"><label for="abastecimentoMotorista">Crachá Motorista</label><input type="text" id="abastecimentoMotorista" oninput="this.value = this.value.toUpperCase(); window.buscarOperador(this.value, 'nomeMotorista')" required><input type="text" id="nomeMotorista" readonly placeholder="Nome do Motorista"></div>
+            <div class="field"><label for="abastecimentoFrentista">Crachá Frentista</label><input type="text" id="abastecimentoFrentista" oninput="this.value = this.value.toUpperCase(); window.buscarOperador(this.value, 'nomeFrentista')" required><input type="text" id="nomeFrentista" readonly placeholder="Nome do Frentista"></div>
+            <div class="field"><label for="abastecimentoCodProduto">Cód. Produto</label><input type="text" id="abastecimentoCodProduto" oninput="this.value = this.value.toUpperCase(); window.buscarProduto(this.value, 'nomeProduto')" required><input type="text" id="nomeProduto" readonly placeholder="Nome do Produto"></div>
+            <div class="field"><label for="abastecimentoLocal">Local</label><select id="abastecimentoLocal" onchange="window.toggleVolumeRestante(this.value)"><option value="interno">Dentro da Empresa</option><option value="externo">Fora da Empresa</option></select></div>
             <div class="field" id="volumeRestanteField"><label for="volumeRestante">Volume Restante</label><input type="text" id="volumeRestante" readonly></div>
             <button class="btn blue mt-4" type="button" onclick="window.salvarAbastecimento()">Salvar</button>
         </form>
@@ -737,10 +737,10 @@
     <div id="formCompraCombustivel" style="display:none;">
         <h4>Registrar Compra de Combustível</h4>
         <form id="compraCombustivelForm">
-            <div class="field"><label for="compraCodProduto">* Cód. Produto</label><input type="text" id="compraCodProduto" oninput="this.value = this.value.toUpperCase();" required></div>
-            <div class="field"><label for="compraEmpresa">* Empresa Comprado</label><input type="text" id="compraEmpresa" required></div>
-            <div class="field"><label for="compraVolume">* Volume (L)</label><input type="text" id="compraVolume" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" required></div>
-            <div class="field"><label for="compraValor">* Valor (R$)</label><input type="text" id="compraValor" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" required></div>
+            <div class="field"><label for="compraCodProduto">Cód. Produto</label><input type="text" id="compraCodProduto" oninput="this.value = this.value.toUpperCase();" required></div>
+            <div class="field"><label for="compraEmpresa">Empresa Comprado</label><input type="text" id="compraEmpresa" required></div>
+            <div class="field"><label for="compraVolume">Volume (L)</label><input type="text" id="compraVolume" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" required></div>
+            <div class="field"><label for="compraValor">Valor (R$)</label><input type="text" id="compraValor" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" required></div>
             <button class="btn green mt-4" type="button" onclick="window.salvarCompraCombustivel()">Salvar Compra</button>
         </form>
     </div>
@@ -1113,7 +1113,8 @@ window.populateCurrentDateTime = function(dateInputId, timeInputId) {
     }
 }
 
-window.confirmarDataHora = function(dateInputId, timeInputId) {
+// NEW/REFACTORED: Prompts the user to fill the date/time fields if they are empty.
+window.promptAndFillDateTime = function(dateInputId, timeInputId) {
     const dateInput = document.getElementById(dateInputId);
     const timeInput = document.getElementById(timeInputId);
 
@@ -1126,25 +1127,28 @@ window.confirmarDataHora = function(dateInputId, timeInputId) {
                 window.populateCurrentDateTime(dateInputId, timeInputId);
             }
         );
-    } else {
-        // If values exist, perform validation
-        const selectedDate = dateInput.value;
-        const selectedTime = timeInput.value;
+    }
+}
 
-        if (!selectedDate || !selectedTime) {
-            return true; // Allow if only one is filled, or if already validated
-        }
+// NEW/REFACTORED: Validates that the selected date and time are not in the future.
+window.validateDateTime = function(dateInputId, timeInputId) {
+    const dateInput = document.getElementById(dateInputId);
+    const timeInput = document.getElementById(timeInputId);
+    const selectedDate = dateInput.value;
+    const selectedTime = timeInput.value;
 
-        const selectedDateTime = new Date(`${selectedDate}T${selectedTime}`);
-        const now = new Date();
+    if (!selectedDate || !selectedTime) {
+        // This will be caught by the form's main validation check later.
+        return true; 
+    }
 
-        if (selectedDateTime > now) {
-            window.showModal("Data/Hora Inválida", "A data e hora não podem ser futuras.", () => {
-                dateInput.value = '';
-                timeInput.value = '';
-            }, true);
-            return false;
-        }
+    const selectedDateTime = new Date(`${selectedDate}T${selectedTime}`);
+    const now = new Date();
+
+    // Allow a small buffer (e.g., 2 minutes) to prevent errors from submission delay
+    if (selectedDateTime.getTime() > now.getTime() + 120000) {
+        window.showModal("Data/Hora Inválida", "A data e hora não podem ser futuras. Por favor, corrija.", null, true);
+        return false;
     }
     return true;
 }
@@ -1311,20 +1315,26 @@ window.mostrarModeloFrota = function(codigo, modeloFieldId, fotoFieldId) {
     return new Promise((resolve, reject) => {
         if (!db || !codigo) {
             document.getElementById(modeloFieldId).value = '';
-            document.getElementById(fotoFieldId).src = 'https://placehold.co/100x100/A0AEC0/000000?text=FROTA';
+            if (document.getElementById(fotoFieldId)) {
+               document.getElementById(fotoFieldId).src = 'https://placehold.co/100x100/A0AEC0/000000?text=FROTA';
+            }
             return resolve(null);
         }
         const request = db.transaction(['frotas']).objectStore('frotas').get(codigo);
         request.onsuccess = () => {
             const frota = request.result;
             document.getElementById(modeloFieldId).value = frota ? frota.modelo : 'Frota não encontrada';
-            document.getElementById(fotoFieldId).src = frota?.foto || 'https://placehold.co/100x100/A0AEC0/000000?text=FROTA';
+             if (document.getElementById(fotoFieldId)) {
+                document.getElementById(fotoFieldId).src = frota?.foto || 'https://placehold.co/100x100/A0AEC0/000000?text=FROTA';
+             }
             resolve(frota);
         };
         request.onerror = (e) => {
             console.error("Erro ao buscar frota:", e);
             document.getElementById(modeloFieldId).value = 'Erro na busca';
-            document.getElementById(fotoFieldId).src = 'https://placehold.co/100x100/A0AEC0/000000?text=ERRO';
+            if (document.getElementById(fotoFieldId)) {
+                document.getElementById(fotoFieldId).src = 'https://placehold.co/100x100/A0AEC0/000000?text=ERRO';
+            }
             reject(e);
         };
     });
@@ -1357,10 +1367,8 @@ window.hideAllChecklistReports = function() {
 window.enviarInicio = async function(event) {
     event.preventDefault();
     
-    if (!window.confirmarDataHora('dataInicial', 'horaInicial')) { // Use confirmarDataHora for initial fill/validation
-        return;
-    }
-    if (!window.validateDateTime('dataInicial', 'horaInicial')) { // Additional validation for future dates
+    // UPDATED: Simplified date/time validation
+    if (!window.validateDateTime('dataInicial', 'horaInicial')) {
         return;
     }
 
@@ -1482,10 +1490,8 @@ window.enviarFim = function(event) {
     const form = document.getElementById('formFim');
     if (!form.checkValidity()) { form.reportValidity(); return; }
     
-    if (!window.confirmarDataHora('dataFinal', 'horaFinal')) { // Use confirmarDataHora for initial fill/validation
-        return;
-    }
-    if (!window.validateDateTime('dataFinal', 'horaFinal')) { // Additional validation for future dates
+    // UPDATED: Simplified date/time validation
+    if (!window.validateDateTime('dataFinal', 'horaFinal')) {
         return;
     }
 
@@ -3257,6 +3263,20 @@ window.toggleVolumeRestante = function(local) {
         volumeRestanteField.style.display = 'none';
         volumeRestanteInput.removeAttribute('required');
         volumeRestanteInput.value = '';
+    }
+}
+
+window.buscarProduto = async function(codProduto, nomeProdutoFieldId) {
+    // This is a placeholder. In a real app, you would fetch this from an 'produtos' object store.
+    const produtos = {
+        'DIESELS10': 'DIESEL S10',
+        'GASOLINA': 'GASOLINA COMUM',
+    };
+    const nomeProdutoInput = document.getElementById(nomeProdutoFieldId);
+    if (produtos[codProduto]) {
+        nomeProdutoInput.value = produtos[codProduto];
+    } else {
+        nomeProdutoInput.value = 'Produto não encontrado';
     }
 }
 
