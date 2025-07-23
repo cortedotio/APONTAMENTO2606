@@ -24,6 +24,22 @@
       max-width: 768px;
       background-color: #ffffff;
       border: 1px solid #e2e8f0;
+      position: relative;
+    }
+    .header-actions {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    .alert-icon {
+        color: #4a5568;
+        cursor: pointer;
+    }
+    .alert-icon:hover {
+        color: #1a202c;
     }
     h2 {
       font-size: 2.25rem;
@@ -312,11 +328,11 @@
     <p class="text-gray-600 mb-8">Por favor, insira suas credenciais para continuar.</p>
     <div class="field">
         <label for="appUsername">Usuário</label>
-        <input type="text" id="appUsername" required>
+        <input type="text" id="appUsername" required autocomplete="off">
     </div>
     <div class="field">
         <label for="appPassword">Senha</label>
-        <input type="password" id="appPassword" required>
+        <input type="password" id="appPassword" required autocomplete="off">
     </div>
     <button class="btn dark-primary w-full mt-4" onclick="window.mainLogin()">Entrar</button>
 </div>
@@ -324,6 +340,12 @@
 
 <!-- Painel Principal de Gestão de Frotas -->
 <div class="card" id="gestaoDeFrotasPanel" style="display:none;">
+    <div class="header-actions">
+        <svg class="w-6 h-6 alert-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+        </svg>
+        <button class="btn dark-primary !p-2 !m-0" onclick="logoutAndShowLogin()">Sair</button>
+    </div>
     <div class="flex items-center gap-4 mb-4">
         <img id="logoGestao" alt="Logotipo da Empresa" class="h-14">
         <h2 class="flex-grow" style="margin-bottom: 0;">Gestão de Frotas</h2>
@@ -926,6 +948,10 @@ function logoutAndShowLogin() {
 
     // Mostra o painel de login
     document.getElementById('loginPanel').style.display = 'block';
+    
+    // Limpa os campos de login
+    document.getElementById('appUsername').value = '';
+    document.getElementById('appPassword').value = '';
 
     // Limpa a sessão do usuário
     sessionStorage.removeItem('appLoggedIn');
@@ -935,20 +961,37 @@ function logoutAndShowLogin() {
     window.showModal('Sessão Expirada', 'Sua sessão expirou por inatividade. Por favor, faça o login novamente.', null, true);
 }
 
-window.mainLogin = function() {
+window.mainLogin = async function() {
     const username = document.getElementById('appUsername').value;
     const password = document.getElementById('appPassword').value;
 
-    // Lógica de login simples
-    if (username === 'teste01' && password === 'testedobrasil') {
-        document.getElementById('loginPanel').style.display = 'none';
-        document.getElementById('gestaoDeFrotasPanel').style.display = 'block';
-        sessionStorage.setItem('appLoggedIn', 'true');
-        setupActivityListeners();
-        resetInactivityTimer();
-    } else {
-        window.showModal('Erro de Login', 'Usuário ou senha inválidos.', null, true);
-    }
+    const transaction = db.transaction(['usuarios'], 'readwrite');
+    const store = transaction.objectStore('usuarios');
+    
+    const checkUsers = store.getAll();
+    checkUsers.onsuccess = () => {
+        if (checkUsers.result.length === 0) {
+            store.put({ username: 'admin', password: 'admin123', level: 'administrador' });
+            store.put({ username: 'teste01', password: 'testedobrasil', level: 'analista' });
+        }
+
+        const request = store.get(username);
+        request.onsuccess = (event) => {
+            const user = event.target.result;
+            if (user && user.password === password) {
+                document.getElementById('loginPanel').style.display = 'none';
+                document.getElementById('gestaoDeFrotasPanel').style.display = 'block';
+                sessionStorage.setItem('appLoggedIn', 'true');
+                setupActivityListeners();
+                resetInactivityTimer();
+            } else {
+                window.showModal('Erro de Login', 'Usuário ou senha inválidos.', null, true);
+            }
+        };
+        request.onerror = (event) => {
+            window.showModal('Erro de Banco de Dados', 'Não foi possível verificar o usuário.', null, true);
+        };
+    };
 }
 
 
