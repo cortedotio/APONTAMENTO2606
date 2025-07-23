@@ -13,7 +13,7 @@
       background-color: #e0e7ff;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center; /* Center vertically */
       min-height: 100vh;
     }
     .card {
@@ -303,8 +303,27 @@
 </head>
 <body>
 
+<!-- Painel de Login Principal -->
+<div class="card" id="loginPanel">
+    <div class="flex items-center gap-4 mb-4">
+        <img id="logoLogin" alt="Logotipo da Empresa" class="h-14">
+        <h2 class="flex-grow" style="margin-bottom: 0;">Acesso ao Sistema</h2>
+    </div>
+    <p class="text-gray-600 mb-8">Por favor, insira suas credenciais para continuar.</p>
+    <div class="field">
+        <label for="appUsername">Usuário</label>
+        <input type="text" id="appUsername" required>
+    </div>
+    <div class="field">
+        <label for="appPassword">Senha</label>
+        <input type="password" id="appPassword" required>
+    </div>
+    <button class="btn dark-primary w-full mt-4" onclick="window.mainLogin()">Entrar</button>
+</div>
+
+
 <!-- Painel Principal de Gestão de Frotas -->
-<div class="card" id="gestaoDeFrotasPanel">
+<div class="card" id="gestaoDeFrotasPanel" style="display:none;">
     <div class="flex items-center gap-4 mb-4">
         <img id="logoGestao" alt="Logotipo da Empresa" class="h-14">
         <h2 class="flex-grow" style="margin-bottom: 0;">Gestão de Frotas</h2>
@@ -803,13 +822,11 @@ const logoUrl = "https://firebasestorage.googleapis.com/v0/b/generative-ai-sandb
 // Define os src das imagens do logotipo
 document.addEventListener('DOMContentLoaded', () => {
     const logoGestao = document.getElementById('logoGestao');
-    if (logoGestao) {
-        logoGestao.src = logoUrl;
-    }
+    if (logoGestao) logoGestao.src = logoUrl;
     const logoStatus = document.getElementById('logoStatus');
-    if (logoStatus) {
-        logoStatus.src = logoUrl;
-    }
+    if (logoStatus) logoStatus.src = logoUrl;
+    const logoLogin = document.getElementById('logoLogin');
+    if(logoLogin) logoLogin.src = logoUrl;
 });
 
 
@@ -822,10 +839,9 @@ request.onerror = (event) => {
 request.onsuccess = (event) => {
     db = event.target.result;
     console.log("IndexedDB aberto com sucesso.");
-    // Inicia o aplicativo após o IndexedDB estar pronto
-    window.showApp('gestaoDeFrotasPanel');
+    // Funções que dependem do DB podem ser chamadas aqui
     window.populateSelects();
-    window.checkLoginState();
+    window.checkLoginState(); // Para o painel de admin
 };
 
 request.onupgradeneeded = (event) => {
@@ -840,13 +856,13 @@ request.onupgradeneeded = (event) => {
         db.createObjectStore('frotas', { keyPath: 'codigo' });
     }
     if (!db.objectStoreNames.contains('setores')) {
-        db.createObjectStore('setores', { keyPath: 'nome' }); // Changed to 'nome' as keyPath
+        db.createObjectStore('setores', { keyPath: 'nome' });
     }
     if (!db.objectStoreNames.contains('atividades')) {
-        db.createObjectStore('atividades', { keyPath: 'nome' }); // Changed to 'nome' as keyPath
+        db.createObjectStore('atividades', { keyPath: 'nome' });
     }
     if (!db.objectStoreNames.contains('implementos')) {
-        db.createObjectStore('implementos', { keyPath: 'nome' }); // Changed to 'nome' as keyPath
+        db.createObjectStore('implementos', { keyPath: 'nome' });
     }
     if (!db.objectStoreNames.contains('atividadesEmAndamento')) {
         db.createObjectStore('atividadesEmAndamento', { keyPath: 'id', autoIncrement: true });
@@ -881,22 +897,77 @@ request.onupgradeneeded = (event) => {
     }
 };
 
+// --- INACTIVITY TIMER & LOGIN LOGIC ---
+let inactivityTimer;
+const INACTIVITY_TIMEOUT = 5 * 60 * 1000; // 5 minutos
+let activityListenersSetup = false;
+
+function resetInactivityTimer() {
+    clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(logoutAndShowLogin, INACTIVITY_TIMEOUT);
+}
+
+function setupActivityListeners() {
+    if (activityListenersSetup) return;
+    const events = ['mousemove', 'mousedown', 'keypress', 'scroll', 'touchstart'];
+    events.forEach(event => {
+        window.addEventListener(event, resetInactivityTimer, true);
+    });
+    activityListenersSetup = true;
+}
+
+function logoutAndShowLogin() {
+    // Esconde todos os painéis da aplicação
+    document.getElementById('gestaoDeFrotasPanel').style.display = 'none';
+    document.getElementById('statusDeAtividadePanel').style.display = 'none';
+    document.getElementById('manutencaoPanel').style.display = 'none';
+    document.getElementById('abastecimentoPanel').style.display = 'none';
+    document.getElementById('pneusPanel').style.display = 'none';
+
+    // Mostra o painel de login
+    document.getElementById('loginPanel').style.display = 'block';
+
+    // Limpa a sessão do usuário
+    sessionStorage.removeItem('appLoggedIn');
+    clearTimeout(inactivityTimer);
+
+    // Mostra uma mensagem de sessão expirada
+    window.showModal('Sessão Expirada', 'Sua sessão expirou por inatividade. Por favor, faça o login novamente.', null, true);
+}
+
+window.mainLogin = function() {
+    const username = document.getElementById('appUsername').value;
+    const password = document.getElementById('appPassword').value;
+
+    // Lógica de login simples
+    if (username === 'teste01' && password === 'testedobrasil') {
+        document.getElementById('loginPanel').style.display = 'none';
+        document.getElementById('gestaoDeFrotasPanel').style.display = 'block';
+        sessionStorage.setItem('appLoggedIn', 'true');
+        setupActivityListeners();
+        resetInactivityTimer();
+    } else {
+        window.showModal('Erro de Login', 'Usuário ou senha inválidos.', null, true);
+    }
+}
+
+
 // --- NAVIGATION ---
 window.showApp = function(panelId, subPanelId = '') {
     document.getElementById('gestaoDeFrotasPanel').style.display = 'none';
     document.getElementById('statusDeAtividadePanel').style.display = 'none';
-    document.getElementById('manutencaoPanel').style.display = 'none'; // Ensure maintenance panel is hidden
-    document.getElementById('abastecimentoPanel').style.display = 'none'; // Ensure abastecimento panel is hidden
-    document.getElementById('pneusPanel').style.display = 'none'; // Ensure pneus panel is hidden
+    document.getElementById('manutencaoPanel').style.display = 'none'; 
+    document.getElementById('abastecimentoPanel').style.display = 'none';
+    document.getElementById('pneusPanel').style.display = 'none'; 
 
     document.getElementById(panelId).style.display = 'block';
     
     if (panelId === 'statusDeAtividadePanel') {
-        window.mostrar(subPanelId || 'disponibilidade'); // Default to 'disponibilidade' if no subPanelId is provided
+        window.mostrar(subPanelId || 'disponibilidade'); 
     } else if (panelId === 'manutencaoPanel') {
-        window.mostrarManutencaoSubpanel('formAbrirOS'); // Default to 'Abrir OS'
+        window.mostrarManutencaoSubpanel('formAbrirOS'); 
     } else if (panelId === 'abastecimentoPanel') {
-        window.mostrarAbastecimentoSubpanel('formAbastecimento'); // Default to 'Registrar Abastecimento'
+        window.mostrarAbastecimentoSubpanel('formAbastecimento');
     }
 }
 
@@ -904,7 +975,6 @@ window.mostrar = function(idToShow) {
   const sections = ['inicio', 'disponibilidade', 'fim', 'cadastro', 'administrador', 'relatorio', 'dados'];
   const panelTitle = document.getElementById('panelTitle');
   
-  // Get all navigation buttons within statusDeAtividadePanel
   const btnDisponibilidade = document.getElementById('btnDisponibilidade');
   const btnInicioAtividade = document.getElementById('btnInicioAtividade');
   const btnEncerramentoAtividade = document.getElementById('btnEncerramentoAtividade');
@@ -912,7 +982,6 @@ window.mostrar = function(idToShow) {
   const btnRelatorio = document.getElementById('btnRelatorio');
   const btnDados = document.getElementById('btnDados');
 
-  // Hide all navigation buttons first
   [btnDisponibilidade, btnInicioAtividade, btnEncerramentoAtividade, btnCadastro, btnRelatorio, btnDados].forEach(btn => {
     if (btn) btn.style.display = 'none';
   });
@@ -922,17 +991,13 @@ window.mostrar = function(idToShow) {
     if (el) el.style.display = (id === idToShow) ? 'block' : 'none';
   });
 
-  // Now, selectively show buttons based on the active section
   if (idToShow === 'disponibilidade' || idToShow === 'inicio' || idToShow === 'fim') {
     btnDisponibilidade.style.display = 'inline-block';
     btnInicioAtividade.style.display = 'inline-block';
     btnEncerramentoAtividade.style.display = 'inline-block';
   } else if (idToShow === 'relatorio') {
-    // When 'relatorio' is active, hide 'btnRelatorio' and show 'btnDados'
     btnDados.style.display = 'inline-block';
   }
-  // For 'cadastro' and 'dados' (when 'dados' is the active panel), no buttons from this nav bar should be shown.
-  // For 'administrador', no buttons from this nav bar should be shown.
 
   switch(idToShow) {
     case 'disponibilidade': panelTitle.textContent = 'Status de Atividade'; window.updateDisponibilidade(); break;
@@ -963,7 +1028,6 @@ window.mostrarManutencaoSubpanel = function(subPanelId) {
         window.consultarOrdensServico();
     } else if (subPanelId === 'formPlanosManutencao') {
         window.consultarPlanosManutencao();
-        // Set initial state for interval fields
         const tipoManutencao = document.getElementById('tipoManutencao').value;
         document.getElementById('horimetroIntervalField').style.display = tipoManutencao === 'Horímetro' ? 'flex' : 'none';
         document.getElementById('tempoIntervalField').style.display = tipoManutencao === 'Tempo' ? 'flex' : 'none';
@@ -1755,7 +1819,7 @@ window.handleLogin = async function() {
     adminCheck.onsuccess = () => {
         if (!adminCheck.result) {
             store.put({ username: 'admin', password: 'admin123', level: 'administrador' });
-            store.put({ username: 'analista', password: 'analista123', level: 'analista' });
+            store.put({ username: 'teste01', password: 'testedobrasil', level: 'analista' });
         }
         const loginRequest = store.get(username);
         loginRequest.onsuccess = () => {
@@ -1790,19 +1854,10 @@ window.showAdminDashboard = function() {
     document.getElementById('userManagement').style.display = isAdmin ? 'block' : 'none';
     if (isAdmin) window.loadUserList();
 }
-window.logout = function() {
+window.logout = function() { // Admin logout
     currentUser = null;
     sessionStorage.removeItem('loggedInUser');
-    // Hide management buttons when logged out
-    document.getElementById('btnCadastro').style.display = 'none';
-    document.getElementById('btnRelatorio').style.display = 'none';
-    document.getElementById('btnDados').style.display = 'none';
-
-    document.getElementById('adminDashboard').style.display = 'none';
-    document.getElementById('adminLogin').style.display = 'block';
-    document.getElementById('adminUsername').value = '';
-    document.getElementById('adminPassword').value = '';
-    window.mostrar('disponibilidade'); // Return to default view
+    logoutAndShowLogin(); // Redirect to the main login screen
 }
 window.salvarUsuario = async function() {
     const username = document.getElementById('newUsername').value.trim();
