@@ -355,6 +355,7 @@
         <button class="btn dark-primary" onclick="window.showApp('statusDeAtividadePanel')">Status de Atividade</button>
         <button class="btn dark-primary" onclick="window.showApp('manutencaoPanel')">Gestão de Manutenção</button>
         <button class="btn dark-primary" onclick="window.showApp('abastecimentoPanel')">Gestão de Abastecimento</button>
+        <button class="btn dark-primary" onclick="window.showApp('localizacaoPanel')">Localização</button>
         <button class="btn dark-primary" onclick="window.alert('Função em desenvolvimento.')">Gestão de Pneus</button>
         <button class="btn dark-primary" onclick="window.showApp('statusDeAtividadePanel', 'cadastro')">Cadastro</button>
         <button class="btn dark-primary" onclick="window.showApp('statusDeAtividadePanel', 'relatorio')">Relatório</button>
@@ -363,6 +364,16 @@
         <button class="btn dark-primary" onclick="window.showApp('statusDeAtividadePanel', 'administrador')">Gerenciamento</button>
     </div>
 </div>
+
+<!-- Location Panel -->
+<div class="card" id="localizacaoPanel" style="display:none;">
+    <div class="flex justify-between items-center mb-6">
+        <h3>Localização de Frotas</h3>
+        <button class="btn dark-primary" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
+    </div>
+    <p class="text-gray-600 mb-8">Esta funcionalidade está em desenvolvimento e estará disponível em breve.</p>
+</div>
+
 
 <!-- Painel da Aplicação de Atividade de Empilhadeiras (oculto por padrão) -->
 <div class="card" id="statusDeAtividadePanel" style="display:none;">
@@ -945,6 +956,7 @@ function logoutAndShowLogin() {
     document.getElementById('manutencaoPanel').style.display = 'none';
     document.getElementById('abastecimentoPanel').style.display = 'none';
     document.getElementById('pneusPanel').style.display = 'none';
+    document.getElementById('localizacaoPanel').style.display = 'none';
 
     // Mostra o painel de login
     document.getElementById('loginPanel').style.display = 'block';
@@ -1002,6 +1014,7 @@ window.showApp = function(panelId, subPanelId = '') {
     document.getElementById('manutencaoPanel').style.display = 'none'; 
     document.getElementById('abastecimentoPanel').style.display = 'none';
     document.getElementById('pneusPanel').style.display = 'none'; 
+    document.getElementById('localizacaoPanel').style.display = 'none';
 
     document.getElementById(panelId).style.display = 'block';
     
