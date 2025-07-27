@@ -394,7 +394,7 @@
     <button class="btn blue" id="btnEncerramentoAtividade" onclick="window.mostrar('fim')">Encerramento de Atividade</button>
   </div>
 
-  <div id="inicio" style="display:none; margin-top:20px; background-color: #dbeafe; padding: 20px; border-radius: 12px;">
+  <div id="inicio" style="display:none; margin-top:20px; background-color: #D1FAE5; padding: 20px; border-radius: 12px;">
     <h3>Início de Atividade</h3>
     <form id="formInicio">
       <div class="flex justify-end mb-4">
@@ -402,7 +402,7 @@
       </div>
       <div class="field">
         <label for="crachaInicio">Crachá</label>
-        <input type="text" name="crachaInicio" id="crachaInicio" oninput="this.value = this.value.toUpperCase(); window.buscarOperador(this.value,'nomeInicio','fotoInicio');" required>
+        <input type="text" name="crachaInicio" id="crachaInicio" oninput="this.value = this.value.toUpperCase(); window.buscarOperador(this.value,'nomeInicio','fotoInicio'); window.checkIfChecklistIsNeeded();" required>
         <label for="nomeInicio">Operador</label>
         <input type="text" id="nomeInicio" readonly>
         <img id="fotoInicio" src="https://placehold.co/100x100/A0AEC0/000000?text=OPERADOR" alt="Foto Operador">
@@ -417,12 +417,12 @@
       </div>
       <div class="field">
         <label for="frotaInicio">Frota</label>
-        <input type="text" name="frotaInicio" id="frotaInicio" oninput="this.value = this.value.toUpperCase(); window.mostrarModeloFrota(this.value,'equipamentoInicio','fotoEquipInicio');" required>
+        <input type="text" name="frotaInicio" id="frotaInicio" oninput="this.value = this.value.toUpperCase(); window.mostrarModeloFrota(this.value,'modeloInicio','fotoEquipInicio'); window.checkIfChecklistIsNeeded();" required>
         <img id="fotoEquipInicio" src="https://placehold.co/100x100/A0AEC0/000000?text=FROTA" alt="Foto Frota">
       </div>
       <div class="field">
-        <label for="equipamentoInicio">Equipamento</label>
-        <input type="text" id="equipamentoInicio" readonly>
+        <label for="modeloInicio">Modelo</label>
+        <input type="text" id="modeloInicio" readonly>
       </div>
       <div class="field">
         <label for="implementoInicio">Implemento</label>
@@ -430,7 +430,7 @@
       </div>
       <div class="field">
         <label for="horimetroInicial">Horímetro Inicial</label>
-        <input type="text" name="horimetroInicial" id="horimetroInicial" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" required>
+        <input type="text" name="horimetroInicial" id="horimetroInicial" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" onblur="window.validateHorimetro('horimetroInicial', 'frotaInicio')" required>
       </div>
       <div class="field">
         <label for="setorInicio">Setor</label>
@@ -537,7 +537,7 @@
       </div>
       <div class="field">
         <label for="horimetroFim">Horímetro Final</label>
-        <input type="text" name="horimetroFim" id="horimetroFim" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" required>
+        <input type="text" name="horimetroFim" id="horimetroFim" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" onblur="window.validateHorimetro('horimetroFim', 'frotaFim')" required>
       </div>
       <div class="field">
         <label for="observacoesFim">Observações</label>
@@ -856,7 +856,9 @@
       query, 
       where, 
       onSnapshot,
-      writeBatch
+      writeBatch,
+      orderBy,
+      limit
   } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
   import { 
       getStorage, 
@@ -1138,7 +1140,7 @@
     form.reset();
     if (formId === 'formInicio') {
         document.getElementById('nomeInicio').value = '';
-        document.getElementById('equipamentoInicio').value = '';
+        document.getElementById('modeloInicio').value = '';
         document.getElementById('fotoInicio').src = 'https://placehold.co/100x100/A0AEC0/000000?text=OPERADOR';
         document.getElementById('fotoEquipInicio').src = 'https://placehold.co/100x100/A0AEC0/000000?text=FROTA';
         document.getElementById('relatoProblemaField').style.display = 'none';
@@ -1533,7 +1535,7 @@
       
       if (!window.validateDateTime('dataInicial', 'horaInicial')) return;
 
-      const frotaCadastrada = await window.mostrarModeloFrota(document.getElementById('frotaInicio').value, 'equipamentoInicio', 'fotoEquipInicio');
+      const frotaCadastrada = await window.mostrarModeloFrota(document.getElementById('frotaInicio').value, 'modeloInicio', 'fotoEquipInicio');
       if (!frotaCadastrada) {
           window.showModal('Erro', 'Frota não cadastrada. Verifique o código da frota e tente novamente.', null, true);
           return;
@@ -1558,7 +1560,7 @@
               dataInicial: document.getElementById('dataInicial').value,
               horaInicial: document.getElementById('horaInicial').value,
               frota,
-              equipamento: document.getElementById('equipamentoInicio').value,
+              equipamento: document.getElementById('modeloInicio').value,
               horimetroInicial: parseFloat(document.getElementById('horimetroInicial').value),
               setor: document.getElementById('setorInicio').value,
               atividade: document.getElementById('atividadeInicio').value,
@@ -1778,7 +1780,7 @@
       const userManagement = document.getElementById('userManagement');
       
       adminDashboard.style.display = 'block';
-      document.getElementById('loggedInUserEmailDisplay').textContent = currentUser.email;
+      document.getElementById('loggedInUserEmailDisplay').textContent = currentUser.email.replace(DUMMY_DOMAIN, '');
       document.getElementById('loggedInUserLevelDisplay').textContent = currentUserRole;
 
       if (currentUserRole === 'administrador') {
