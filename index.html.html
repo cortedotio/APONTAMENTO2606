@@ -333,7 +333,8 @@
    </div>
    <div class="field">
        <label for="appPassword">Senha</label>
-       <input type="password" id="appPassword" required autocomplete="current-password">
+       <!-- Changed autocomplete to "new-password" to prevent browser from saving/autofilling the password -->
+       <input type="password" id="appPassword" required autocomplete="new-password">
    </div>
    <button class="btn dark-primary w-full mt-4" onclick="window.mainLogin()">Entrar</button>
 </div>
