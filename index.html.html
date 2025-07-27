@@ -29,10 +29,13 @@
        border: 1px solid #e2e8f0;
        position: relative;
      }
+     .app-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+     }
      .header-actions {
-         position: absolute;
-         top: 20px;
-         right: 20px;
          display: flex;
          align-items: center;
          gap: 16px;
@@ -57,7 +60,7 @@
         display: none;
         position: absolute;
         top: 65px; /* Adjusted position to be below the user name */
-        right: 50px;
+        right: 20px;
         width: 300px;
         max-height: 400px;
         overflow-y: auto;
@@ -79,7 +82,7 @@
        font-size: 2.25rem;
        font-weight: 800;
        color: #1a202c;
-       margin-bottom: 20px;
+       margin-bottom: 0;
      }
      h3 {
        font-size: 1.75rem;
@@ -374,21 +377,22 @@
 
 <!-- Dashboard Panel -->
 <div class="card" id="dashboardPanel" style="display:none;">
-    <div class="header-actions">
-        <div class="flex flex-col items-center">
-            <div class="notification-bell" onclick="toggleNotificationPanel()">
-                <svg class="w-6 h-6 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-                </svg>
-                <span class="notification-badge"></span>
-            </div>
-            <span class="current-username text-xs text-gray-600 mt-1"></span>
+    <div class="app-header">
+        <div class="flex items-center gap-4">
+            <img alt="Logotipo da Empresa" class="h-14 logo-img">
+            <h2 class="panel-title" style="margin-bottom: 0;"></h2>
         </div>
-        <button class="btn dark-primary !p-2 !m-0" onclick="window.appLogout()">Sair</button>
-    </div>
-    <div class="flex items-center gap-4 mb-4">
-        <img id="logoDashboard" alt="Logotipo da Empresa" class="h-14">
-        <h2 class="flex-grow" style="margin-bottom: 0;">Dashboard</h2>
+        <div class="header-actions">
+            <div class="flex flex-col items-center">
+                <div class="notification-bell" onclick="toggleNotificationPanel()">
+                    <svg class="w-6 h-6 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+                    <span class="notification-badge"></span>
+                </div>
+                <span class="current-username text-xs text-gray-600 mt-1"></span>
+            </div>
+            <button class="btn dark-primary back-button" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
+            <button class="btn dark-primary !p-2 !m-0" onclick="window.appLogout()">Sair</button>
+        </div>
     </div>
     <p class="text-gray-600 mb-8">Visão geral da operação da frota.</p>
     
@@ -402,30 +406,28 @@
             <canvas id="operatorChart"></canvas>
         </div>
     </div>
-    <div class="flex justify-center mt-4">
-        <button class="btn dark-primary" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar ao Menu</button>
-    </div>
 </div>
 
 
 <!-- Painel Principal de Gestão de Frotas -->
 <div class="card" id="gestaoDeFrotasPanel" style="display:none;">
-   <div class="header-actions">
-        <div class="flex flex-col items-center">
-            <div class="notification-bell" onclick="toggleNotificationPanel()">
-                <svg class="w-6 h-6 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-                </svg>
-                <span class="notification-badge"></span>
-            </div>
-            <span class="current-username text-xs text-gray-600 mt-1"></span>
+   <div class="app-header">
+        <div class="flex items-center gap-4">
+            <img alt="Logotipo da Empresa" class="h-14 logo-img">
+            <h2 class="panel-title" style="margin-bottom: 0;"></h2>
         </div>
-        <button class="btn dark-primary !p-2 !m-0" onclick="window.appLogout()">Sair</button>
-   </div>
-   <div class="flex items-center gap-4 mb-4">
-       <img id="logoGestao" alt="Logotipo da Empresa" class="h-14">
-       <h2 class="flex-grow" style="margin-bottom: 0;">Menu Principal</h2>
-   </div>
+        <div class="header-actions">
+            <div class="flex flex-col items-center">
+                <div class="notification-bell" onclick="toggleNotificationPanel()">
+                    <svg class="w-6 h-6 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+                    <span class="notification-badge"></span>
+                </div>
+                <span class="current-username text-xs text-gray-600 mt-1"></span>
+            </div>
+            <button class="btn dark-primary back-button" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
+            <button class="btn dark-primary !p-2 !m-0" onclick="window.appLogout()">Sair</button>
+        </div>
+    </div>
    <p class="text-gray-600 mb-8">Selecione uma das opções abaixo para gerenciar a frota.</p>
    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
        <button id="btn-dashboard" class="btn dark-primary" onclick="window.showApp('dashboardPanel')">Dashboard</button>
@@ -442,46 +444,46 @@
 
 <!-- Location Panel -->
 <div class="card" id="localizacaoPanel" style="display:none;">
-   <div class="header-actions">
-        <div class="flex flex-col items-center">
-            <div class="notification-bell" onclick="toggleNotificationPanel()">
-                <svg class="w-6 h-6 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
-                <span class="notification-badge"></span>
-            </div>
-            <span class="current-username text-xs text-gray-600 mt-1"></span>
+   <div class="app-header">
+        <div class="flex items-center gap-4">
+            <img alt="Logotipo da Empresa" class="h-14 logo-img">
+            <h2 class="panel-title" style="margin-bottom: 0;"></h2>
         </div>
-        <button class="btn dark-primary !p-2 !m-0" onclick="window.appLogout()">Sair</button>
+        <div class="header-actions">
+            <div class="flex flex-col items-center">
+                <div class="notification-bell" onclick="toggleNotificationPanel()">
+                    <svg class="w-6 h-6 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+                    <span class="notification-badge"></span>
+                </div>
+                <span class="current-username text-xs text-gray-600 mt-1"></span>
+            </div>
+            <button class="btn dark-primary back-button" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
+            <button class="btn dark-primary !p-2 !m-0" onclick="window.appLogout()">Sair</button>
+        </div>
     </div>
-   <div class="flex justify-between items-center mb-6">
-      <h3>Localização de Frotas</h3>
-       <button class="btn dark-primary" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
-   </div>
    <p class="text-gray-600 mb-8">Esta funcionalidade está em desenvolvimento e estará disponível em breve.</p>
 </div>
 
 
 <!-- Painel da Aplicação de Atividade de Empilhadeiras (oculto por padrão) -->
 <div class="card" id="statusDeAtividadePanel" style="display:none;">
-  <div class="header-actions">
-        <div class="flex flex-col items-center">
-            <div class="notification-bell" onclick="toggleNotificationPanel()">
-                <svg class="w-6 h-6 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
-                <span class="notification-badge"></span>
-            </div>
-            <span class="current-username text-xs text-gray-600 mt-1"></span>
+    <div class="app-header">
+        <div class="flex items-center gap-4">
+            <img alt="Logotipo da Empresa" class="h-14 logo-img">
+            <h2 id="panelTitle" class="panel-title" style="margin-bottom: 0;"></h2>
         </div>
-        <button class="btn dark-primary !p-2 !m-0" onclick="window.appLogout()">Sair</button>
+        <div class="header-actions">
+            <div class="flex flex-col items-center">
+                <div class="notification-bell" onclick="toggleNotificationPanel()">
+                    <svg class="w-6 h-6 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+                    <span class="notification-badge"></span>
+                </div>
+                <span class="current-username text-xs text-gray-600 mt-1"></span>
+            </div>
+            <button class="btn dark-primary back-button" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
+            <button class="btn dark-primary !p-2 !m-0" onclick="window.appLogout()">Sair</button>
+        </div>
     </div>
-  <div class="flex justify-between items-center mb-6">
-    <div class="flex items-center gap-4">
-        <img id="logoStatus" alt="Logotipo da Empresa" class="h-14">
-        <h2 id="panelTitle" style="margin-bottom: 0;">Status de Atividade</h2>
-    </div>
-    <div>
-        <button class="btn dark-primary" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
-    </div>
-  </div>
-
   <div id="mainNavButtons" class="flex flex-wrap justify-center mb-8 gap-3">
     <button class="btn yellow" id="btnDisponibilidade" onclick="window.mostrar('disponibilidade')">Disponibilidade</button>
     <button class="btn green" id="btnInicioAtividade" onclick="window.mostrar('inicio')">Início de Atividade</button>
@@ -759,10 +761,23 @@
 
 <!-- Maintenance Panel -->
 <div class="card" id="manutencaoPanel" style="display:none;">
-   <div class="flex justify-between items-center mb-6">
-      <h3>Gestão de Manutenção</h3>
-       <button class="btn dark-primary" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
-   </div>
+   <div class="app-header">
+        <div class="flex items-center gap-4">
+            <img alt="Logotipo da Empresa" class="h-14 logo-img">
+            <h2 class="panel-title" style="margin-bottom: 0;"></h2>
+        </div>
+        <div class="header-actions">
+            <div class="flex flex-col items-center">
+                <div class="notification-bell" onclick="toggleNotificationPanel()">
+                    <svg class="w-6 h-6 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+                    <span class="notification-badge"></span>
+                </div>
+                <span class="current-username text-xs text-gray-600 mt-1"></span>
+            </div>
+            <button class="btn dark-primary back-button" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
+            <button class="btn dark-primary !p-2 !m-0" onclick="window.appLogout()">Sair</button>
+        </div>
+    </div>
    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
        <button class="btn dark-primary" onclick="window.mostrarManutencaoSubpanel('formAbrirOS')">Abrir Ordem de Serviço</button>
        <button class="btn dark-primary" onclick="window.mostrarManutencaoSubpanel('formPlanosManutencao')">Planos de Manutenção</button>
@@ -845,10 +860,23 @@
 
 <!-- Fueling Panel -->
 <div class="card" id="abastecimentoPanel" style="display:none;">
-   <div class="flex justify-between items-center mb-6">
-      <h3>Gestão de Abastecimento</h3>
-       <button class="btn dark-primary" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
-   </div>
+   <div class="app-header">
+        <div class="flex items-center gap-4">
+            <img alt="Logotipo da Empresa" class="h-14 logo-img">
+            <h2 class="panel-title" style="margin-bottom: 0;"></h2>
+        </div>
+        <div class="header-actions">
+            <div class="flex flex-col items-center">
+                <div class="notification-bell" onclick="toggleNotificationPanel()">
+                    <svg class="w-6 h-6 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+                    <span class="notification-badge"></span>
+                </div>
+                <span class="current-username text-xs text-gray-600 mt-1"></span>
+            </div>
+            <button class="btn dark-primary back-button" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
+            <button class="btn dark-primary !p-2 !m-0" onclick="window.appLogout()">Sair</button>
+        </div>
+    </div>
    <div class="flex flex-wrap justify-center mb-6 gap-3">
       <button class="btn dark-primary" onclick="window.mostrarAbastecimentoSubpanel('formAbastecimento')">Registrar Abastecimento</button>
       <button class="btn dark-primary" onclick="window.mostrarAbastecimentoSubpanel('formCompraCombustivel')">Registrar Compra de Combustível</button>
@@ -884,20 +912,23 @@
 
 <!-- Tires Panel -->
 <div class="card" id="pneusPanel" style="display:none;">
-   <div class="header-actions">
-        <div class="flex flex-col items-center">
-            <div class="notification-bell" onclick="toggleNotificationPanel()">
-                <svg class="w-6 h-6 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
-                <span class="notification-badge"></span>
-            </div>
-            <span class="current-username text-xs text-gray-600 mt-1"></span>
+   <div class="app-header">
+        <div class="flex items-center gap-4">
+            <img alt="Logotipo da Empresa" class="h-14 logo-img">
+            <h2 class="panel-title" style="margin-bottom: 0;"></h2>
         </div>
-        <button class="btn dark-primary !p-2 !m-0" onclick="window.appLogout()">Sair</button>
+        <div class="header-actions">
+            <div class="flex flex-col items-center">
+                <div class="notification-bell" onclick="toggleNotificationPanel()">
+                    <svg class="w-6 h-6 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+                    <span class="notification-badge"></span>
+                </div>
+                <span class="current-username text-xs text-gray-600 mt-1"></span>
+            </div>
+            <button class="btn dark-primary back-button" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
+            <button class="btn dark-primary !p-2 !m-0" onclick="window.appLogout()">Sair</button>
+        </div>
     </div>
-   <div class="flex justify-between items-center mb-6">
-      <h3>Gestão de Pneus</h3>
-       <button class="btn dark-primary" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
-   </div>
    <div class="flex flex-wrap justify-center mb-6 gap-3">
       <button class="btn dark-primary" onclick="window.mostrarPneusSubpanel('formCadastroPneu')">Cadastrar Pneu</button>
       <button class="btn dark-primary" onclick="window.mostrarPneusSubpanel('consultarPneus')">Consultar Pneus</button>
@@ -955,7 +986,9 @@
    </div>
 </div>
 
-<div id="notification-panel"></div>
+<div id="notification-panel-container" class="relative">
+    <div id="notification-panel"></div>
+</div>
 
 <script type="module">
   // --- FIREBASE SETUP ---
@@ -1117,8 +1150,39 @@
   window.showApp = function(panelId, subPanelId = '') {
     document.querySelectorAll('.card').forEach(panel => panel.style.display = 'none');
 
-    document.getElementById(panelId).style.display = 'block';
+    const targetPanel = document.getElementById(panelId);
+    if (!targetPanel) return;
+    targetPanel.style.display = 'block';
+
+    // Universal Header Logic
+    const allHeaders = document.querySelectorAll('.app-header');
+    allHeaders.forEach(header => {
+        const backButton = header.querySelector('.back-button');
+        if(backButton){
+            if (panelId === 'gestaoDeFrotasPanel') {
+                backButton.style.display = 'none'; // Hide back button on main menu
+            } else {
+                backButton.style.display = 'inline-block';
+            }
+        }
+    });
+
+    // Set title for the active panel
+    const titleElement = targetPanel.querySelector('.panel-title');
+    if (titleElement) {
+        const titles = {
+            dashboardPanel: 'Dashboard',
+            gestaoDeFrotasPanel: 'Menu Principal',
+            localizacaoPanel: 'Localização',
+            statusDeAtividadePanel: 'Status de Atividade',
+            manutencaoPanel: 'Gestão de Manutenção',
+            abastecimentoPanel: 'Gestão de Abastecimento',
+            pneusPanel: 'Gestão de Pneus'
+        };
+        titleElement.textContent = titles[panelId] || 'Gestão de Frotas';
+    }
     
+    // Sub-panel logic
     if (panelId === 'dashboardPanel') {
         loadDashboard();
     } else if (panelId === 'statusDeAtividadePanel') {
