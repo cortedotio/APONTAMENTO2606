@@ -4,7 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gestão de Frotas</title>
+  <meta name="theme-color" content="#ffffff"/>
+  <link rel="manifest" href="manifest.json">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
      body {
@@ -34,12 +37,43 @@
          align-items: center;
          gap: 16px;
      }
-     .alert-icon {
-         color: #4a5568;
-         cursor: pointer;
+     .notification-bell {
+        position: relative;
+        cursor: pointer;
      }
-     .alert-icon:hover {
-         color: #1a202c;
+     .notification-badge {
+        position: absolute;
+        top: -5px;
+        right: -8px;
+        background-color: #ef4444;
+        color: white;
+        border-radius: 50%;
+        padding: 2px 6px;
+        font-size: 10px;
+        font-weight: bold;
+        display: none; /* Hidden by default */
+     }
+     #notification-panel {
+        display: none;
+        position: absolute;
+        top: 40px;
+        right: 0;
+        width: 300px;
+        max-height: 400px;
+        overflow-y: auto;
+        background-color: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        z-index: 1010;
+     }
+     #notification-panel .notification-item {
+        padding: 12px;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 14px;
+     }
+     #notification-panel .notification-item:last-child {
+        border-bottom: none;
      }
      h2 {
        font-size: 2.25rem;
@@ -338,31 +372,57 @@
    <button class="btn dark-primary w-full mt-4" onclick="window.mainLogin()">Entrar</button>
 </div>
 
+<!-- Dashboard Panel -->
+<div class="card" id="dashboardPanel" style="display:none;">
+    <div class="header-actions">
+        <button class="btn dark-primary !p-2 !m-0" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
+    </div>
+    <div class="flex items-center gap-4 mb-4">
+        <img id="logoDashboard" alt="Logotipo da Empresa" class="h-14">
+        <h2 class="flex-grow" style="margin-bottom: 0;">Dashboard</h2>
+    </div>
+    <p class="text-gray-600 mb-8">Visão geral da operação da frota.</p>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <div>
+            <h3 class="text-center">Utilização da Frota (Horas)</h3>
+            <canvas id="utilizationChart"></canvas>
+        </div>
+        <div>
+            <h3 class="text-center">Desempenho por Operador (Horas)</h3>
+            <canvas id="operatorChart"></canvas>
+        </div>
+    </div>
+</div>
+
 
 <!-- Painel Principal de Gestão de Frotas -->
 <div class="card" id="gestaoDeFrotasPanel" style="display:none;">
    <div class="header-actions">
-       <svg class="w-6 h-6 alert-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-           <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-       </svg>
-       <button class="btn dark-primary !p-2 !m-0" onclick="window.appLogout()">Sair</button>
+        <div class="notification-bell" onclick="toggleNotificationPanel()">
+            <svg class="w-6 h-6 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+            </svg>
+            <span id="notificationBadge" class="notification-badge"></span>
+        </div>
+        <div id="notification-panel"></div>
+        <button class="btn dark-primary !p-2 !m-0" onclick="window.appLogout()">Sair</button>
    </div>
    <div class="flex items-center gap-4 mb-4">
        <img id="logoGestao" alt="Logotipo da Empresa" class="h-14">
-       <h2 class="flex-grow" style="margin-bottom: 0;">Gestão de Frotas</h2>
+       <h2 class="flex-grow" style="margin-bottom: 0;">Menu Principal</h2>
    </div>
-   <p class="text-gray-600 mb-8">Selecione uma das opções abaixo para gerenciar a frota de empilhadeiras.</p>
+   <p class="text-gray-600 mb-8">Selecione uma das opções abaixo para gerenciar a frota.</p>
    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-       <button class="btn dark-primary" onclick="window.showApp('statusDeAtividadePanel')">Status de Atividade</button>
-       <button class="btn dark-primary" onclick="window.showApp('manutencaoPanel')">Gestão de Manutenção</button>
-       <button class="btn dark-primary" onclick="window.showApp('abastecimentoPanel')">Gestão de Abastecimento</button>
-       <button class="btn dark-primary" onclick="window.showApp('localizacaoPanel')">Localização</button>
-       <button class="btn dark-primary" onclick="window.showModal('Em Desenvolvimento', 'A função de Gestão de Pneus estará disponível em breve.', null, false)">Gestão de Pneus</button>
-       <button class="btn dark-primary" onclick="window.showApp('statusDeAtividadePanel', 'cadastro')">Cadastro</button>
-       <button class="btn dark-primary" onclick="window.showApp('statusDeAtividadePanel', 'relatorio')">Relatório</button>
-   </div>
-   <div class="flex justify-center mt-4">
-       <button class="btn dark-primary" onclick="window.showApp('statusDeAtividadePanel', 'administrador')">Gerenciamento</button>
+       <button id="btn-dashboard" class="btn dark-primary" onclick="window.showApp('dashboardPanel')">Dashboard</button>
+       <button id="btn-status" class="btn dark-primary" onclick="window.showApp('statusDeAtividadePanel')">Status de Atividade</button>
+       <button id="btn-manutencao" class="btn dark-primary" onclick="window.showApp('manutencaoPanel')">Gestão de Manutenção</button>
+       <button id="btn-abastecimento" class="btn dark-primary" onclick="window.showApp('abastecimentoPanel')">Gestão de Abastecimento</button>
+       <button id="btn-pneus" class="btn dark-primary" onclick="window.showApp('pneusPanel')">Gestão de Pneus</button>
+       <button id="btn-localizacao" class="btn dark-primary" onclick="window.showApp('localizacaoPanel')">Localização</button>
+       <button id="btn-cadastro" class="btn dark-primary" onclick="window.showApp('statusDeAtividadePanel', 'cadastro')">Cadastro</button>
+       <button id="btn-relatorio" class="btn dark-primary" onclick="window.showApp('statusDeAtividadePanel', 'relatorio')">Relatório</button>
+       <button id="btn-gerenciamento" class="btn dark-primary col-span-1 sm:col-span-2" onclick="window.showApp('statusDeAtividadePanel', 'administrador')">Gerenciamento</button>
    </div>
 </div>
 
@@ -603,6 +663,7 @@
             <select id="newUserLevel" required>
                 <option value="">Selecione o Nível</option>
                 <option value="operacao">Operação</option>
+                <option value="operacao_2">Operação II</option>
                 <option value="analista">Analista</option>
                 <option value="administrador">Administrador</option>
             </select>
@@ -793,7 +854,26 @@
       <h3>Gestão de Pneus</h3>
        <button class="btn dark-primary" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
    </div>
-   <p class="text-gray-600 mb-8">Esta seção está em desenvolvimento.</p>
+   <div class="flex flex-wrap justify-center mb-6 gap-3">
+      <button class="btn dark-primary" onclick="window.mostrarPneusSubpanel('formCadastroPneu')">Cadastrar Pneu</button>
+      <button class="btn dark-primary" onclick="window.mostrarPneusSubpanel('consultarPneus')">Consultar Pneus</button>
+   </div>
+   <div id="formCadastroPneu" style="display:none;">
+       <h4>Cadastro de Pneu</h4>
+        <form id="pneuForm">
+            <div class="field"><label for="pneuId">ID do Pneu (DOT)</label><input type="text" id="pneuId" required></div>
+            <div class="field"><label for="pneuMarca">Marca</label><input type="text" id="pneuMarca" required></div>
+            <div class="field"><label for="pneuModelo">Modelo</label><input type="text" id="pneuModelo" required></div>
+            <div class="field"><label for="pneuDataCompra">Data da Compra</label><input type="date" id="pneuDataCompra" required></div>
+            <div class="field"><label for="pneuFrotaInstalado">Frota Instalado</label><input type="text" id="pneuFrotaInstalado" oninput="this.value = this.value.toUpperCase();"></div>
+            <div class="field"><label for="pneuPosicao">Posição</label><input type="text" id="pneuPosicao" placeholder="Ex: Dianteiro Esquerdo"></div>
+            <button class="btn dark-primary mt-4" type="button" onclick="window.salvarPneu()">Salvar Pneu</button>
+        </form>
+    </div>
+    <div id="consultarPneus" style="display:none;">
+       <h4>Pneus Cadastrados</h4>
+        <div id="pneusListContainer"></div>
+    </div>
 </div>
 
 <!-- Confirmation Modal -->
@@ -891,6 +971,9 @@
   let currentUserRole = 'operacao'; // Default role
   let unsubscribeDisponibilidade = null; // To detach the real-time listener
   const DUMMY_DOMAIN = '@gestaodefrotas.app'; // Domain for creating emails from usernames
+  let utilizationChartInstance = null;
+  let operatorChartInstance = null;
+
 
   // Logotipo da Empresa
   const logoUrl = "https://firebasestorage.googleapis.com/v0/b/generative-ai-sandbox-b9894.appspot.com/o/ChatGPT%20Image%203%20de%20jul.%20de%202025%2C%2017_55_58.jpg?alt=media&token=25087595-5028-444f-83a3-6119f448c903";
@@ -916,8 +999,9 @@
       currentUserRole = await fetchUserRole(user.uid);
       console.log(`User ${user.email} signed in with role: ${currentUserRole}`);
       
-      document.getElementById('loginPanel').style.display = 'none';
+      document.querySelectorAll('.card').forEach(panel => panel.style.display = 'none');
       document.getElementById('gestaoDeFrotasPanel').style.display = 'block';
+      updateUIVisibilityBasedOnRole();
       window.populateSelects();
     } else {
       currentUser = null;
@@ -978,21 +1062,20 @@
 
   // --- NAVIGATION ---
   window.showApp = function(panelId, subPanelId = '') {
-    document.getElementById('gestaoDeFrotasPanel').style.display = 'none';
-    document.getElementById('statusDeAtividadePanel').style.display = 'none';
-    document.getElementById('manutencaoPanel').style.display = 'none'; 
-    document.getElementById('abastecimentoPanel').style.display = 'none';
-    document.getElementById('pneusPanel').style.display = 'none'; 
-    document.getElementById('localizacaoPanel').style.display = 'none';
+    document.querySelectorAll('.card').forEach(panel => panel.style.display = 'none');
 
     document.getElementById(panelId).style.display = 'block';
     
-    if (panelId === 'statusDeAtividadePanel') {
+    if (panelId === 'dashboardPanel') {
+        loadDashboard();
+    } else if (panelId === 'statusDeAtividadePanel') {
         window.mostrar(subPanelId || 'disponibilidade'); 
     } else if (panelId === 'manutencaoPanel') {
         window.mostrarManutencaoSubpanel('formAbrirOS'); 
     } else if (panelId === 'abastecimentoPanel') {
         window.mostrarAbastecimentoSubpanel('formAbastecimento');
+    } else if (panelId === 'pneusPanel') {
+        window.mostrarPneusSubpanel('formCadastroPneu');
     }
   }
 
@@ -1849,7 +1932,8 @@
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${user.username || user.email}</td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.level}</td>
                   <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <a href="#" class="text-red-600 hover:text-red-900" onclick="window.deleteUser('${user.id}', '${user.username || user.email}')">Excluir</a>
+                      <a href="#" class="text-blue-600 hover:text-blue-900" onclick="window.handleEdit('usuarios', '${user.id}')">Editar</a>
+                      <a href="#" class="text-red-600 hover:text-red-900 ml-4" onclick="window.deleteUser('${user.id}', '${user.username || user.email}')">Excluir</a>
                   </td>`;
           });
       } catch(error) {
@@ -2057,6 +2141,18 @@
       document.getElementById('logoGestao').src = logoUrl;
       document.getElementById('logoStatus').src = logoUrl;
       document.getElementById('logoLogin').src = logoUrl;
+      document.getElementById('logoDashboard').src = logoUrl;
+      
+      // PWA Service Worker Registration
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js').then(registration => {
+                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            }, err => {
+                console.log('ServiceWorker registration failed: ', err);
+            });
+        });
+      }
   });
 
   // Placeholder for functions that are not fully migrated yet
