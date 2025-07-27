@@ -2255,10 +2255,8 @@
 
   // --- Initialize App ---
   document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('logoGestao').src = logoUrl;
-      document.getElementById('logoStatus').src = logoUrl;
+      document.querySelectorAll('.logo-img').forEach(img => img.src = logoUrl);
       document.getElementById('logoLogin').src = logoUrl;
-      document.getElementById('logoDashboard').src = logoUrl;
       
       // PWA Service Worker Registration
       if ('serviceWorker' in navigator) {
