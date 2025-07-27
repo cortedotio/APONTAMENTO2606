@@ -56,8 +56,8 @@
      #notification-panel {
         display: none;
         position: absolute;
-        top: 40px;
-        right: 0;
+        top: 65px; /* Adjusted position to be below the user name */
+        right: 50px;
         width: 300px;
         max-height: 400px;
         overflow-y: auto;
@@ -375,7 +375,16 @@
 <!-- Dashboard Panel -->
 <div class="card" id="dashboardPanel" style="display:none;">
     <div class="header-actions">
-        <button class="btn dark-primary !p-2 !m-0" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
+        <div class="flex flex-col items-center">
+            <div class="notification-bell" onclick="toggleNotificationPanel()">
+                <svg class="w-6 h-6 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                </svg>
+                <span class="notification-badge"></span>
+            </div>
+            <span class="current-username text-xs text-gray-600 mt-1"></span>
+        </div>
+        <button class="btn dark-primary !p-2 !m-0" onclick="window.appLogout()">Sair</button>
     </div>
     <div class="flex items-center gap-4 mb-4">
         <img id="logoDashboard" alt="Logotipo da Empresa" class="h-14">
@@ -393,19 +402,24 @@
             <canvas id="operatorChart"></canvas>
         </div>
     </div>
+    <div class="flex justify-center mt-4">
+        <button class="btn dark-primary" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar ao Menu</button>
+    </div>
 </div>
 
 
 <!-- Painel Principal de Gestão de Frotas -->
 <div class="card" id="gestaoDeFrotasPanel" style="display:none;">
    <div class="header-actions">
-        <div class="notification-bell" onclick="toggleNotificationPanel()">
-            <svg class="w-6 h-6 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-            </svg>
-            <span id="notificationBadge" class="notification-badge"></span>
+        <div class="flex flex-col items-center">
+            <div class="notification-bell" onclick="toggleNotificationPanel()">
+                <svg class="w-6 h-6 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                </svg>
+                <span class="notification-badge"></span>
+            </div>
+            <span class="current-username text-xs text-gray-600 mt-1"></span>
         </div>
-        <div id="notification-panel"></div>
         <button class="btn dark-primary !p-2 !m-0" onclick="window.appLogout()">Sair</button>
    </div>
    <div class="flex items-center gap-4 mb-4">
@@ -428,6 +442,16 @@
 
 <!-- Location Panel -->
 <div class="card" id="localizacaoPanel" style="display:none;">
+   <div class="header-actions">
+        <div class="flex flex-col items-center">
+            <div class="notification-bell" onclick="toggleNotificationPanel()">
+                <svg class="w-6 h-6 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+                <span class="notification-badge"></span>
+            </div>
+            <span class="current-username text-xs text-gray-600 mt-1"></span>
+        </div>
+        <button class="btn dark-primary !p-2 !m-0" onclick="window.appLogout()">Sair</button>
+    </div>
    <div class="flex justify-between items-center mb-6">
       <h3>Localização de Frotas</h3>
        <button class="btn dark-primary" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
@@ -438,6 +462,16 @@
 
 <!-- Painel da Aplicação de Atividade de Empilhadeiras (oculto por padrão) -->
 <div class="card" id="statusDeAtividadePanel" style="display:none;">
+  <div class="header-actions">
+        <div class="flex flex-col items-center">
+            <div class="notification-bell" onclick="toggleNotificationPanel()">
+                <svg class="w-6 h-6 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+                <span class="notification-badge"></span>
+            </div>
+            <span class="current-username text-xs text-gray-600 mt-1"></span>
+        </div>
+        <button class="btn dark-primary !p-2 !m-0" onclick="window.appLogout()">Sair</button>
+    </div>
   <div class="flex justify-between items-center mb-6">
     <div class="flex items-center gap-4">
         <img id="logoStatus" alt="Logotipo da Empresa" class="h-14">
@@ -850,6 +884,16 @@
 
 <!-- Tires Panel -->
 <div class="card" id="pneusPanel" style="display:none;">
+   <div class="header-actions">
+        <div class="flex flex-col items-center">
+            <div class="notification-bell" onclick="toggleNotificationPanel()">
+                <svg class="w-6 h-6 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+                <span class="notification-badge"></span>
+            </div>
+            <span class="current-username text-xs text-gray-600 mt-1"></span>
+        </div>
+        <button class="btn dark-primary !p-2 !m-0" onclick="window.appLogout()">Sair</button>
+    </div>
    <div class="flex justify-between items-center mb-6">
       <h3>Gestão de Pneus</h3>
        <button class="btn dark-primary" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
@@ -911,6 +955,7 @@
    </div>
 </div>
 
+<div id="notification-panel"></div>
 
 <script type="module">
   // --- FIREBASE SETUP ---
@@ -999,6 +1044,11 @@
       currentUserRole = await fetchUserRole(user.uid);
       console.log(`User ${user.email} signed in with role: ${currentUserRole}`);
       
+      const username = user.email.replace(DUMMY_DOMAIN, '');
+      document.querySelectorAll('.current-username').forEach(el => {
+          el.textContent = username;
+      });
+
       document.querySelectorAll('.card').forEach(panel => panel.style.display = 'none');
       document.getElementById('gestaoDeFrotasPanel').style.display = 'block';
       updateUIVisibilityBasedOnRole();
@@ -1016,6 +1066,9 @@
       // Clear the login fields on logout
       document.getElementById('appUsername').value = '';
       document.getElementById('appPassword').value = '';
+      document.querySelectorAll('.current-username').forEach(el => {
+          el.textContent = '';
+      });
       
       if (unsubscribeDisponibilidade) {
           unsubscribeDisponibilidade();
