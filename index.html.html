@@ -553,9 +553,9 @@
     <div class="flex flex-wrap justify-center mb-6 gap-3">
       <button class="btn dark-primary" onclick="window.mostrarCadastro('cadastroOperador')">Operador</button>
       <button class="btn dark-primary" onclick="window.mostrarCadastro('cadastroFrota')">Frota</button>
+      <button class="btn dark-primary" onclick="window.mostrarCadastro('cadastroImplemento')">Implemento</button>
       <button class="btn dark-primary" onclick="window.mostrarCadastro('cadastroSetor')">Setor</button>
       <button class="btn dark-primary" onclick="window.mostrarCadastro('cadastroAtividade')">Atividade</button>
-      <button class="btn dark-primary" onclick="window.mostrarCadastro('cadastroImplemento')">Implemento</button>
     </div>
     <div id="cadastroOperador" style="display:none; margin-top:10px;">
      <h4>Cadastro de Operador</h4>
@@ -585,6 +585,7 @@
      <h4>Cadastro de Implemento</h4>
       <div class="field"><label for="nomeImplemento">Implemento</label><input type="text" id="nomeImplemento" oninput="this.value = this.value.toUpperCase()"></div>
       <div class="field"><label for="siglaImplemento">Sigla</label><input type="text" id="siglaImplemento" required oninput="this.value = this.value.toUpperCase()"></div>
+      <div class="field"><label for="modeloImplemento">Associar ao Modelo</label><select id="modeloImplemento"></select></div>
       <div class="flex justify-start gap-4 mt-6"><button class="btn dark-primary" onclick="window.salvarImplemento()">Salvar</button><button class="btn dark-primary" type="button" onclick="window.consultarImplemento()">Consultar</button></div>
     </div>
   </div>
@@ -597,6 +598,7 @@
       <div id="userManagement" class="mt-8 p-6 border border-blue-300 rounded-lg bg-blue-50 shadow-md" style="display: none;">
         <h4 class="text-xl font-bold mb-4 text-blue-800">Gerenciamento de Usuários</h4>
         <div class="field"><label for="newUsername">Email do Usuário</label><input type="email" id="newUsername" placeholder="email@exemplo.com" required></div>
+        <div class="field"><label for="newUserPassword">Senha de Acesso</label><input type="password" id="newUserPassword" placeholder="Mínimo 6 caracteres" required></div>
         <div class="field">
             <label for="newUserLevel">Nível de Acesso</label>
             <select id="newUserLevel" required>
@@ -606,8 +608,7 @@
                 <option value="administrador">Administrador</option>
             </select>
         </div>
-        <p class="text-xs text-gray-500 mt-2 mb-4">Nota: A senha inicial deve ser definida pelo usuário no primeiro login ou via reset de senha. A criação de usuários aqui apenas concede permissão de acesso.</p>
-        <button class="btn dark-primary mt-6" onclick="window.salvarUsuario()">Salvar Usuário</button>
+        <button class="btn dark-primary mt-6" onclick="window.salvarUsuario()">Criar Novo Usuário</button>
         <h5 class="font-bold mt-8 mb-4 text-gray-700">Usuários Cadastrados:</h5>
         <div id="userListContainer" class="max-h-60 overflow-y-auto border border-gray-200 rounded-lg bg-white shadow-inner">
           <table class="min-w-full divide-y divide-gray-200">
@@ -1292,10 +1293,28 @@
   }
 
   // --- CADASTRO (REGISTRATION) FUNCTIONS ---
+  async function populateModelosSelect(selectElementId, selectedValue = '') {
+      const selectEl = document.getElementById(selectElementId);
+      selectEl.innerHTML = '<option value="">Nenhum</option>';
+      try {
+          const frotasSnapshot = await getDocs(collection(db, 'frotas'));
+          const modelos = new Set(frotasSnapshot.docs.map(doc => doc.data().modelo));
+          modelos.forEach(modelo => {
+              const isSelected = modelo === selectedValue ? 'selected' : '';
+              selectEl.innerHTML += `<option value="${modelo}" ${isSelected}>${modelo}</option>`;
+          });
+      } catch (error) {
+          console.error("Error populating modelos select:", error);
+      }
+  }
+
   window.mostrarCadastro = function(subpanel) {
       ['cadastroOperador', 'cadastroFrota', 'cadastroSetor', 'cadastroAtividade', 'cadastroImplemento'].forEach(p => {
           document.getElementById(p).style.display = p === subpanel ? 'block' : 'none';
       });
+      if (subpanel === 'cadastroImplemento') {
+          populateModelosSelect('modeloImplemento');
+      }
   }
 
   window.salvarOperador = async function() {
@@ -1382,12 +1401,14 @@
   window.salvarImplemento = async function() {
       const nome = document.getElementById('nomeImplemento').value.trim();
       const sigla = document.getElementById('siglaImplemento').value.trim();
+      const modeloAssociado = document.getElementById('modeloImplemento').value;
       if (!nome || !sigla) { window.showModal('Campos Obrigatórios', 'Nome e Sigla são obrigatórios.', null, true); return; }
       try {
-          await setDoc(doc(db, "implementos", nome), { nome, sigla });
+          await setDoc(doc(db, "implementos", nome), { nome, sigla, modeloAssociado });
           window.showModal('Sucesso', "Implemento salvo com sucesso!");
           document.getElementById('nomeImplemento').value = '';
           document.getElementById('siglaImplemento').value = '';
+          document.getElementById('modeloImplemento').value = '';
           window.populateSelects();
       } catch (error) {
           console.error("Error saving implemento:", error);
@@ -1735,34 +1756,45 @@
 
   window.salvarUsuario = async function() {
       const email = document.getElementById('newUsername').value.trim();
+      const password = document.getElementById('newUserPassword').value.trim();
       const level = document.getElementById('newUserLevel').value;
-      if (!email || !level) { 
-          window.showModal("Campos Obrigatórios", "Email e Nível são obrigatórios.", null, true); 
+      
+      if (!email || !password || !level) { 
+          window.showModal("Campos Obrigatórios", "Email, Senha e Nível são obrigatórios.", null, true); 
           return; 
       }
 
-      try {
-          // This function only sets the role in Firestore. The user MUST be created in the 
-          // Firebase Authentication console first.
-          const userQuery = query(collection(db, "usuarios"), where("email", "==", email));
-          const querySnapshot = await getDocs(userQuery);
-          
-          if (!querySnapshot.empty) {
-              window.showModal('Erro', `O usuário com o email '${email}' já tem um nível de acesso definido.`, null, true);
-          } else {
-              // This is a simplified approach. A robust solution would use Cloud Functions 
-              // to find the user's UID by their email and set the document ID to the UID.
-              // For this client-side version, we'll use the email as the ID, but it's not ideal.
-              await setDoc(doc(db, "usuarios", email), { email, level });
-              window.showModal('Sucesso', `Nível de acesso '${level}' salvo para o usuário ${email}.<br><b>Importante:</b> Certifique-se de que este usuário existe no painel de Autenticação do Firebase.`);
-              window.loadUserList();
-              document.getElementById('newUsername').value = '';
-              document.getElementById('newUserLevel').value = '';
-          }
-      } catch (error) {
-          console.error("Error saving user role:", error);
-          window.showModal('Erro', `Não foi possível salvar o nível de acesso: ${error.message}`, null, true);
-      }
+      // This function requires re-authentication of the admin for security reasons,
+      // which is complex on the client-side. A better approach is a Cloud Function.
+      // For this demo, we will proceed, but this is NOT recommended for production.
+      window.showModal("Aviso de Segurança", "A criação de usuários no cliente não é recomendada para produção. Para este demo, vamos prosseguir. O administrador atual pode precisar fazer login novamente após esta ação.", async () => {
+        try {
+            // NOTE: This is a simplified, non-production approach.
+            // A secondary Firebase app instance should be used to avoid logging out the admin.
+            // For simplicity here, we proceed, but the admin's auth state might be affected.
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const newUser = userCredential.user;
+
+            // Now, set the user's role in Firestore
+            await setDoc(doc(db, "usuarios", newUser.uid), { email, level });
+
+            window.showModal('Sucesso', `Usuário ${email} criado com sucesso com o nível '${level}'.`);
+            window.loadUserList();
+            document.getElementById('newUsername').value = '';
+            document.getElementById('newUserPassword').value = '';
+            document.getElementById('newUserLevel').value = '';
+
+        } catch (error) {
+            console.error("Error creating user:", error);
+            if (error.code === 'auth/email-already-in-use') {
+                window.showModal('Erro', `O email '${email}' já está em uso.`, null, true);
+            } else if (error.code === 'auth/weak-password') {
+                window.showModal('Erro', 'A senha é muito fraca. Use pelo menos 6 caracteres.', null, true);
+            } else {
+                window.showModal('Erro', `Não foi possível criar o usuário: ${error.message}`, null, true);
+            }
+        }
+      });
   }
 
   window.loadUserList = async function() {
@@ -1784,7 +1816,7 @@
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${user.email}</td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.level}</td>
                   <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <a href="#" class="text-red-600 hover:text-red-900" onclick="window.deleteUser('${user.id}')">Excluir</a>
+                      <a href="#" class="text-red-600 hover:text-red-900" onclick="window.deleteUser('${user.id}', '${user.email}')">Excluir</a>
                   </td>`;
           });
       } catch(error) {
@@ -1793,15 +1825,15 @@
       }
   }
 
-  window.deleteUser = function(docId) {
-      if (currentUser.email === docId) {
+  window.deleteUser = function(uid, email) {
+      if (currentUser.uid === uid) {
           window.showModal("Ação Inválida", "Você não pode remover seu próprio acesso.", null, true);
           return;
       }
-      window.showModal('Excluir Permissão', `Tem certeza que deseja remover as permissões para '${docId}'? <br><small>Isso não exclui o usuário do sistema, apenas remove seu nível de acesso.</small>`, async () => {
+      window.showModal('Excluir Permissão', `Tem certeza que deseja remover as permissões para '${email}'? <br><small>Isso NÃO exclui o login do usuário, apenas remove seu nível de acesso do aplicativo.</small>`, async () => {
           try {
-              await deleteDoc(doc(db, "usuarios", docId));
-              window.showModal('Sucesso', `Permissões para ${docId} removidas.`);
+              await deleteDoc(doc(db, "usuarios", uid));
+              window.showModal('Sucesso', `Permissões para ${email} removidas.`);
               window.loadUserList();
           } catch (error) {
               console.error("Error deleting user role:", error);
@@ -1835,7 +1867,7 @@
   window.consultarImplemento = async function() {
       const snapshot = await getDocs(collection(db, 'implementos'));
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      window.showListModal('Implementos Cadastrados', data, { nome: 'Nome', sigla: 'Sigla' }, 'implementos');
+      window.showListModal('Implementos Cadastrados', data, { nome: 'Nome', sigla: 'Sigla', modeloAssociado: 'Modelo Associado' }, 'implementos');
   }
 
   window.handleDelete = async function(storeName, docId, fotoUrl) {
@@ -1869,27 +1901,123 @@
   }
 
   window.handleEdit = async function(storeName, docId) {
-      if (currentUserRole !== 'administrador') {
-          window.showModal('Acesso Negado', 'Você não tem permissão para editar itens.', null, true);
-          return;
-      }
+    if (currentUserRole !== 'administrador') {
+        window.showModal('Acesso Negado', 'Você não tem permissão para editar itens.', null, true);
+        return;
+    }
 
-      try {
-          const docRef = doc(db, storeName, docId);
-          const docSnap = await getDoc(docRef);
-          if (!docSnap.exists()) {
-              window.showModal('Erro', 'Item não encontrado.', null, true);
-              return;
-          }
-          const item = { id: docSnap.id, ...docSnap.data() };
+    try {
+        const docRef = doc(db, storeName, docId);
+        const docSnap = await getDoc(docRef);
+        if (!docSnap.exists()) {
+            window.showModal('Erro', 'Item não encontrado.', null, true);
+            return;
+        }
+        const item = { id: docSnap.id, ...docSnap.data() };
+        
+        const modal = document.getElementById('editModal');
+        const titleEl = document.getElementById('editModalTitle');
+        const formEl = document.getElementById('editForm');
+        
+        titleEl.textContent = `Editar Item (ID: ${item.id})`;
+        formEl.innerHTML = ''; // Clear previous form
 
-          window.showModal('Em Desenvolvimento', `A edição para '${storeName}' ainda não foi totalmente implementada no novo backend.`, null, false);
+        const fields = Object.keys(item);
+        for (const field of fields) {
+            if (field === 'id' || field === 'foto') continue;
 
-      } catch (error) {
-          console.error(`Error fetching item for edit from ${storeName}:`, error);
-          window.showModal('Erro', `Erro ao buscar item para edição de ${storeName}.`, null, true);
-      }
-  }
+            const fieldDiv = document.createElement('div');
+            fieldDiv.className = 'field';
+            
+            const label = document.createElement('label');
+            label.textContent = field.charAt(0).toUpperCase() + field.slice(1);
+            fieldDiv.appendChild(label);
+
+            let input;
+            if (field === 'modeloAssociado') {
+                input = document.createElement('select');
+                input.id = `edit_${field}`;
+                await populateModelosSelect(input.id, item[field]);
+            } else {
+                input = document.createElement('input');
+                input.id = `edit_${field}`;
+                input.value = item[field] || '';
+                if (field === 'cracha' || field === 'codigo' || field === 'nome') {
+                    // Make primary keys readonly
+                    if (['operadores', 'frotas', 'setores', 'atividades', 'implementos'].includes(storeName)) {
+                        input.readOnly = true;
+                        input.classList.add('bg-gray-200');
+                    }
+                }
+            }
+            fieldDiv.appendChild(input);
+            formEl.appendChild(fieldDiv);
+        }
+
+        // Handle photo update
+        if ('foto' in item) {
+            const fieldDiv = document.createElement('div');
+            fieldDiv.className = 'field';
+            const label = document.createElement('label');
+            label.textContent = 'Alterar Foto';
+            const inputFile = document.createElement('input');
+            inputFile.type = 'file';
+            inputFile.id = 'edit_foto';
+            inputFile.accept = 'image/*';
+            fieldDiv.appendChild(label);
+            fieldDiv.appendChild(inputFile);
+            formEl.appendChild(fieldDiv);
+        }
+
+        document.getElementById('editModalSaveBtn').onclick = async () => {
+            const updatedData = {};
+            let newFotoFile = null;
+
+            for (const field of fields) {
+                if (field === 'id' || field === 'foto') continue;
+                const inputEl = document.getElementById(`edit_${field}`);
+                if (inputEl) {
+                    updatedData[field] = inputEl.value;
+                }
+            }
+
+            if (document.getElementById('edit_foto')) {
+                newFotoFile = document.getElementById('edit_foto').files[0];
+            }
+
+            try {
+                if (newFotoFile) {
+                    if (item.foto) { // Delete old photo
+                        try {
+                           const oldFotoRef = ref(storage, item.foto);
+                           await deleteObject(oldFotoRef);
+                        } catch (e) {
+                           console.warn("Old photo not found, could not delete:", e.message);
+                        }
+                    }
+                    const newFotoUrl = await uploadFile(newFotoFile, `${storeName}/${item.id}`);
+                    updatedData.foto = newFotoUrl;
+                }
+
+                await updateDoc(docRef, updatedData);
+                window.showModal('Sucesso', 'Item atualizado com sucesso!');
+                modal.style.display = 'none';
+                document.getElementById('listModal').style.display = 'none';
+
+            } catch (error) {
+                console.error("Error updating item:", error);
+                window.showModal('Erro', `Não foi possível atualizar o item: ${error.message}`, null, true);
+            }
+        };
+
+        modal.style.display = 'flex';
+
+    } catch (error) {
+        console.error(`Error fetching item for edit from ${storeName}:`, error);
+        window.showModal('Erro', `Erro ao buscar item para edição de ${storeName}.`, null, true);
+    }
+}
+
 
   // --- Initialize App ---
   document.addEventListener('DOMContentLoaded', () => {
