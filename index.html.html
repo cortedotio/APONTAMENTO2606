@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gest?o de Frotas</title>
+  <title>Gestão de Frotas</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -81,8 +81,8 @@
      .btn.darkblue { --color-light: #3F51B5; --color-dark: #303F9F; }
      .btn.teal { --color-light: #009688; --color-dark: #00796B; }
      .btn.orange { --color-light: #FF9800; --color-dark: #F57C00; }
-     /* Adicionado para bot?es escuros */
-     .btn.dark-primary { --color-light: #374151; --color-dark: #1F2937; } /* Cor mais escura para bot?es principais */
+     /* Adicionado para botões escuros */
+     .btn.dark-primary { --color-light: #374151; --color-dark: #1F2937; } /* Cor mais escura para botões principais */
      .btn:hover {
        transform: translateY(-2px);
        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
@@ -112,6 +112,7 @@
      .field input[type="date"],
      .field input[type="time"],
      .field input[type="password"],
+     .field input[type="email"],
      .field select,
      .field textarea {
        flex: 1;
@@ -328,7 +329,7 @@
    <p class="text-gray-600 mb-8">Por favor, insira suas credenciais para continuar.</p>
    <div class="field">
        <label for="appUsername">Email</label>
-       <input type="text" id="appUsername" required autocomplete="email">
+       <input type="email" id="appUsername" required autocomplete="email">
    </div>
    <div class="field">
        <label for="appPassword">Senha</label>
@@ -338,7 +339,7 @@
 </div>
 
 
-<!-- Painel Principal de Gest?o de Frotas -->
+<!-- Painel Principal de Gestão de Frotas -->
 <div class="card" id="gestaoDeFrotasPanel" style="display:none;">
    <div class="header-actions">
        <svg class="w-6 h-6 alert-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -348,17 +349,17 @@
    </div>
    <div class="flex items-center gap-4 mb-4">
        <img id="logoGestao" alt="Logotipo da Empresa" class="h-14">
-       <h2 class="flex-grow" style="margin-bottom: 0;">Gest?o de Frotas</h2>
+       <h2 class="flex-grow" style="margin-bottom: 0;">Gestão de Frotas</h2>
    </div>
-   <p class="text-gray-600 mb-8">Selecione uma das op??es abaixo para gerenciar a frota de empilhadeiras.</p>
+   <p class="text-gray-600 mb-8">Selecione uma das opções abaixo para gerenciar a frota de empilhadeiras.</p>
    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
        <button class="btn dark-primary" onclick="window.showApp('statusDeAtividadePanel')">Status de Atividade</button>
-       <button class="btn dark-primary" onclick="window.showApp('manutencaoPanel')">Gest?o de Manuten??o</button>
-       <button class="btn dark-primary" onclick="window.showApp('abastecimentoPanel')">Gest?o de Abastecimento</button>
-       <button class="btn dark-primary" onclick="window.showApp('localizacaoPanel')">Localiza??o</button>
-       <button class="btn dark-primary" onclick="window.showModal('Em Desenvolvimento', 'A fun??o de Gest?o de Pneus estar? dispon?vel em breve.', null, false)">Gest?o de Pneus</button>
+       <button class="btn dark-primary" onclick="window.showApp('manutencaoPanel')">Gestão de Manutenção</button>
+       <button class="btn dark-primary" onclick="window.showApp('abastecimentoPanel')">Gestão de Abastecimento</button>
+       <button class="btn dark-primary" onclick="window.showApp('localizacaoPanel')">Localização</button>
+       <button class="btn dark-primary" onclick="window.showModal('Em Desenvolvimento', 'A função de Gestão de Pneus estará disponível em breve.', null, false)">Gestão de Pneus</button>
        <button class="btn dark-primary" onclick="window.showApp('statusDeAtividadePanel', 'cadastro')">Cadastro</button>
-       <button class="btn dark-primary" onclick="window.showApp('statusDeAtividadePanel', 'relatorio')">Relat?rio</button>
+       <button class="btn dark-primary" onclick="window.showApp('statusDeAtividadePanel', 'relatorio')">Relatório</button>
    </div>
    <div class="flex justify-center mt-4">
        <button class="btn dark-primary" onclick="window.showApp('statusDeAtividadePanel', 'administrador')">Gerenciamento</button>
@@ -368,14 +369,14 @@
 <!-- Location Panel -->
 <div class="card" id="localizacaoPanel" style="display:none;">
    <div class="flex justify-between items-center mb-6">
-      <h3>Localiza??o de Frotas</h3>
+      <h3>Localização de Frotas</h3>
        <button class="btn dark-primary" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
    </div>
-   <p class="text-gray-600 mb-8">Esta funcionalidade est? em desenvolvimento e estar? dispon?vel em breve.</p>
+   <p class="text-gray-600 mb-8">Esta funcionalidade está em desenvolvimento e estará disponível em breve.</p>
 </div>
 
 
-<!-- Painel da Aplica??o de Atividade de Empilhadeiras (oculto por padr?o) -->
+<!-- Painel da Aplicação de Atividade de Empilhadeiras (oculto por padrão) -->
 <div class="card" id="statusDeAtividadePanel" style="display:none;">
   <div class="flex justify-between items-center mb-6">
     <div class="flex items-center gap-4">
@@ -387,23 +388,20 @@
     </div>
   </div>
 
-  <div class="flex flex-wrap justify-center mb-8 gap-3">
+  <div id="mainNavButtons" class="flex flex-wrap justify-center mb-8 gap-3">
     <button class="btn yellow" id="btnDisponibilidade" onclick="window.mostrar('disponibilidade')">Disponibilidade</button>
-    <button class="btn green" id="btnInicioAtividade" onclick="window.mostrar('inicio')">In?cio de Atividade</button>
+    <button class="btn green" id="btnInicioAtividade" onclick="window.mostrar('inicio')">Início de Atividade</button>
     <button class="btn red" id="btnEncerramentoAtividade" onclick="window.mostrar('fim')">Encerramento de Atividade</button>
-    <button class="btn dark-primary" id="btnCadastro" style="display:none;" onclick="window.mostrar('cadastro')">Cadastro</button>
-    <button class="btn dark-primary" id="btnRelatorio" style="display:none;" onclick="window.mostrar('relatorio')">Relat?rio</button>
-    <button class="btn dark-primary" id="btnDados" style="display:none;" onclick="window.mostrar('dados')">Dados</button>
   </div>
 
   <div id="inicio" style="display:none; margin-top:20px; background-color: #f0fff4; padding: 20px; border-radius: 12px;">
-    <h3>In?cio de Atividade</h3>
+    <h3>Início de Atividade</h3>
     <form id="formInicio">
       <div class="flex justify-end mb-4">
-        <button class="btn dark-primary" type="button" onclick="window.limparFormulario('formInicio')">Limpar Formul?rio</button>
+        <button class="btn dark-primary" type="button" onclick="window.limparFormulario('formInicio')">Limpar Formulário</button>
       </div>
       <div class="field">
-        <label for="crachaInicio">Crach?</label>
+        <label for="crachaInicio">Crachá</label>
         <input type="text" name="crachaInicio" id="crachaInicio" oninput="this.value = this.value.toUpperCase(); window.buscarOperador(this.value,'nomeInicio','fotoInicio');" required>
         <label for="nomeInicio">Operador</label>
         <input type="text" id="nomeInicio" readonly>
@@ -427,7 +425,7 @@
         <input type="text" id="equipamentoInicio" readonly>
       </div>
       <div class="field">
-        <label for="horimetroInicial">Hor?metro Inicial</label>
+        <label for="horimetroInicial">Horímetro Inicial</label>
         <input type="text" name="horimetroInicial" id="horimetroInicial" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" required>
       </div>
       <div class="field">
@@ -440,58 +438,58 @@
       </div>
       <div class="field" id="relatoProblemaField" style="display:none;">
         <label for="relatoProblema">Relato do Problema</label>
-        <textarea name="relatoProblema" id="relatoProblema" rows="3" placeholder="Descreva o problema da manuten??o"></textarea>
+        <textarea name="relatoProblema" id="relatoProblema" rows="3" placeholder="Descreva o problema da manutenção"></textarea>
       </div>
       <div class="field">
         <label for="implementoInicio">Implemento</label>
         <select id="implementoInicio" required></select>
       </div>
       <div class="checklist" id="safetyChecklist">
-        <h4 class="font-bold uppercase text-center mb-4">Checklist de Seguran?a</h4>
+        <h4 class="font-bold uppercase text-center mb-4">Checklist de Segurança</h4>
         <div class="grid grid-cols-12 gap-2 items-center text-center font-bold text-gray-700 text-sm mb-2">
             <div class="col-span-1">OK</div>
             <div class="col-span-6 text-left cursor-pointer" onclick="window.hideAllChecklistReports()">ITENS A CONFERIR</div>
-            <div class="col-span-2">N?O CONFORME</div>
+            <div class="col-span-2">NÃO CONFORME</div>
             <div class="col-span-3 text-left">RELATAR</div>
         </div>
         <div class="grid grid-cols-12 gap-2 items-center mb-3">
             <div class="col-span-1 flex justify-center"><input type="radio" name="status_OleoMotor" value="OK" checked required></div>
-            <div class="col-span-6 text-left text-sm">?leo do Motor</div>
-            <div class="col-span-2 flex justify-center"><input type="radio" name="status_OleoMotor" value="N?O CONFORME" data-target-textarea="relato_OleoMotor" onchange="window.toggleNonConformityReport(this)"></div>
-            <div class="col-span-3"><textarea name="relato_OleoMotor" id="relato_OleoMotor" rows="1" placeholder="Relatar n?o conformidade" class="hidden text-xs px-1 py-0.5 w-full border rounded"></textarea></div>
+            <div class="col-span-6 text-left text-sm">Óleo do Motor</div>
+            <div class="col-span-2 flex justify-center"><input type="radio" name="status_OleoMotor" value="NÃO CONFORME" data-target-textarea="relato_OleoMotor" onchange="window.toggleNonConformityReport(this)"></div>
+            <div class="col-span-3"><textarea name="relato_OleoMotor" id="relato_OleoMotor" rows="1" placeholder="Relatar não conformidade" class="hidden text-xs px-1 py-0.5 w-full border rounded"></textarea></div>
         </div>
         <div class="grid grid-cols-12 gap-2 items-center mb-3">
             <div class="col-span-1 flex justify-center"><input type="radio" name="status_OleoHidraulico" value="OK" checked required></div>
-            <div class="col-span-6 text-left text-sm">?leo Hidr?ulico</div>
-            <div class="col-span-2 flex justify-center"><input type="radio" name="status_OleoHidraulico" value="N?O CONFORME" data-target-textarea="relato_OleoHidraulico" onchange="window.toggleNonConformityReport(this)"></div>
-            <div class="col-span-3"><textarea name="relato_OleoHidraulico" id="relato_OleoHidraulico" rows="1" placeholder="Relatar n?o conformidade" class="hidden text-xs px-1 py-0.5 w-full border rounded"></textarea></div>
+            <div class="col-span-6 text-left text-sm">Óleo Hidráulico</div>
+            <div class="col-span-2 flex justify-center"><input type="radio" name="status_OleoHidraulico" value="NÃO CONFORME" data-target-textarea="relato_OleoHidraulico" onchange="window.toggleNonConformityReport(this)"></div>
+            <div class="col-span-3"><textarea name="relato_OleoHidraulico" id="relato_OleoHidraulico" rows="1" placeholder="Relatar não conformidade" class="hidden text-xs px-1 py-0.5 w-full border rounded"></textarea></div>
         </div>
         <div class="grid grid-cols-12 gap-2 items-center mb-3">
             <div class="col-span-1 flex justify-center"><input type="radio" name="status_OleoTransmissao" value="OK" checked required></div>
-            <div class="col-span-6 text-left text-sm">?leo da Transmiss?o</div>
-            <div class="col-span-2 flex justify-center"><input type="radio" name="status_OleoTransmissao" value="N?O CONFORME" data-target-textarea="relato_OleoTransmissao" onchange="window.toggleNonConformityReport(this)"></div>
-            <div class="col-span-3"><textarea name="relato_OleoTransmissao" id="relato_OleoTransmissao" rows="1" placeholder="Relatar n?o conformidade" class="hidden text-xs px-1 py-0.5 w-full border rounded"></textarea></div>
+            <div class="col-span-6 text-left text-sm">Óleo da Transmissão</div>
+            <div class="col-span-2 flex justify-center"><input type="radio" name="status_OleoTransmissao" value="NÃO CONFORME" data-target-textarea="relato_OleoTransmissao" onchange="window.toggleNonConformityReport(this)"></div>
+            <div class="col-span-3"><textarea name="relato_OleoTransmissao" id="relato_OleoTransmissao" rows="1" placeholder="Relatar não conformidade" class="hidden text-xs px-1 py-0.5 w-full border rounded"></textarea></div>
         </div>
         <div class="grid grid-cols-12 gap-2 items-center mb-3">
             <div class="col-span-1 flex justify-center"><input type="radio" name="status_Extintor" value="OK" checked required></div>
             <div class="col-span-6 text-left text-sm">Extintor</div>
-            <div class="col-span-2 flex justify-center"><input type="radio" name="status_Extintor" value="N?O CONFORME" data-target-textarea="relato_Extintor" onchange="window.toggleNonConformityReport(this)"></div>
-            <div class="col-span-3"><textarea name="relato_Extintor" id="relato_Extintor" rows="1" placeholder="Relatar n?o conformidade" class="hidden text-xs px-1 py-0.5 w-full border rounded"></textarea></div>
+            <div class="col-span-2 flex justify-center"><input type="radio" name="status_Extintor" value="NÃO CONFORME" data-target-textarea="relato_Extintor" onchange="window.toggleNonConformityReport(this)"></div>
+            <div class="col-span-3"><textarea name="relato_Extintor" id="relato_Extintor" rows="1" placeholder="Relatar não conformidade" class="hidden text-xs px-1 py-0.5 w-full border rounded"></textarea></div>
         </div>
         <div class="grid grid-cols-12 gap-2 items-center mb-3">
             <div class="col-span-1 flex justify-center"><input type="radio" name="status_Pneus" value="OK" checked required></div>
             <div class="col-span-6 text-left text-sm">Pneus</div>
-            <div class="col-span-2 flex justify-center"><input type="radio" name="status_Pneus" value="N?O CONFORME" data-target-textarea="relato_Pneus" onchange="window.toggleNonConformityReport(this)"></div>
-            <div class="col-span-3"><textarea name="relato_Pneus" id="relato_Pneus" rows="1" placeholder="Relatar n?o conformidade" class="hidden text-xs px-1 py-0.5 w-full border rounded"></textarea></div>
+            <div class="col-span-2 flex justify-center"><input type="radio" name="status_Pneus" value="NÃO CONFORME" data-target-textarea="relato_Pneus" onchange="window.toggleNonConformityReport(this)"></div>
+            <div class="col-span-3"><textarea name="relato_Pneus" id="relato_Pneus" rows="1" placeholder="Relatar não conformidade" class="hidden text-xs px-1 py-0.5 w-full border rounded"></textarea></div>
         </div>
         <div class="grid grid-cols-12 gap-2 items-center mb-3">
             <div class="col-span-1 flex justify-center"><input type="radio" name="status_ParteEletrica" value="OK" checked required></div>
-            <div class="col-span-6 text-left text-sm">Parte El?trica</div>
-            <div class="col-span-2 flex justify-center"><input type="radio" name="status_ParteEletrica" value="N?O CONFORME" data-target-textarea="relato_ParteEletrica" onchange="window.toggleNonConformityReport(this)"></div>
-            <div class="col-span-3"><textarea name="relato_ParteEletrica" id="relato_ParteEletrica" rows="1" placeholder="Relatar n?o conformidade" class="hidden text-xs px-1 py-0.5 w-full border rounded"></textarea></div>
+            <div class="col-span-6 text-left text-sm">Parte Elétrica</div>
+            <div class="col-span-2 flex justify-center"><input type="radio" name="status_ParteEletrica" value="NÃO CONFORME" data-target-textarea="relato_ParteEletrica" onchange="window.toggleNonConformityReport(this)"></div>
+            <div class="col-span-3"><textarea name="relato_ParteEletrica" id="relato_ParteEletrica" rows="1" placeholder="Relatar não conformidade" class="hidden text-xs px-1 py-0.5 w-full border rounded"></textarea></div>
         </div>
       </div>
-      <button class="btn dark-primary mt-6" type="button" onclick="window.enviarInicio(event)">Salvar In?cio</button>
+      <button class="btn dark-primary mt-6" type="button" onclick="window.enviarInicio(event)">Salvar Início</button>
     </form>
   </div>
 
@@ -499,7 +497,7 @@
    <h3>Disponibilidade</h3>
     <div id="disponibilidadeContent"><p class="text-gray-600">Nenhuma frota cadastrada ou atividade em andamento para exibir.</p></div>
     <div id="frotasEmManutencaoList" class="mt-8 p-6 border border-red-300 rounded-lg bg-red-50 shadow-md" style="display: none;">
-      <h4 class="text-xl font-bold mb-4 text-red-700">Frotas em Manuten??o</h4>
+      <h4 class="text-xl font-bold mb-4 text-red-700">Frotas em Manutenção</h4>
       <ul id="manutencaoItems" class="list-disc pl-5 text-red-600 text-base leading-relaxed"></ul>
     </div>
   </div>
@@ -507,9 +505,9 @@
   <div id="fim" style="display:none; margin-top:20px; background-color: #ebf8ff; padding: 20px; border-radius: 12px;">
     <h3>Fim de Atividade</h3>
     <form id="formFim">
-      <div class="flex justify-end mb-4"><button class="btn dark-primary" type="button" onclick="window.limparFormulario('formFim')">Limpar Formul?rio</button></div>
+      <div class="flex justify-end mb-4"><button class="btn dark-primary" type="button" onclick="window.limparFormulario('formFim')">Limpar Formulário</button></div>
       <div class="field">
-        <label for="crachaFim">Crach?</label>
+        <label for="crachaFim">Crachá</label>
         <input type="text" name="crachaFim" id="crachaFim" oninput="this.value = this.value.toUpperCase(); window.handleCrachaFimChange();" required>
         <label for="nomeFim">Operador</label>
         <input type="text" id="nomeFim" readonly>
@@ -538,11 +536,11 @@
         <input type="text" id="equipamentoFim" readonly>
       </div>
       <div class="field">
-        <label for="horimetroFim">Hor?metro Final</label>
+        <label for="horimetroFim">Horímetro Final</label>
         <input type="text" name="horimetroFim" id="horimetroFim" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" required>
       </div>
       <div class="field">
-        <label for="observacoesFim">Observa??es</label>
+        <label for="observacoesFim">Observações</label>
         <textarea name="observacoesFim" id="observacoesFim" rows="3"></textarea>
       </div>
       <button class="btn dark-primary mt-6" type="button" onclick="window.enviarFim(event)">Finalizar</button>
@@ -560,7 +558,7 @@
     </div>
     <div id="cadastroOperador" style="display:none; margin-top:10px;">
      <h4>Cadastro de Operador</h4>
-     <form><div class="field"><label for="crachaOperador">Crach?</label><input type="text" id="crachaOperador" oninput="this.value = this.value.toUpperCase()"></div>
+     <form><div class="field"><label for="crachaOperador">Crachá</label><input type="text" id="crachaOperador" oninput="this.value = this.value.toUpperCase()"></div>
       <div class="field"><label for="nomeOperador">Operador</label><input type="text" id="nomeOperador" oninput="this.value = this.value.toUpperCase()"></div>
       <div class="field"><label for="fotoOperador">Foto</label><input type="file" id="fotoOperador" accept="image/*" capture></div>
       <div class="flex justify-start gap-4 mt-6"><button class="btn dark-primary" type="button" onclick="window.salvarOperador()">Salvar</button><button class="btn dark-primary" type="button" onclick="window.consultarOperador()">Consultar</button></div></form>
@@ -592,82 +590,73 @@
 
   <div id="administrador" class="admin-panel">
     <h3>Painel Administrativo</h3>
-    <div id="adminLogin" style="display:block;">
-      <h4>Login de Administrador</h4>
-      <div class="field"><label for="adminUsername">Usu?rio</label><input type="text" id="adminUsername" required></div>
-      <div class="field"><label for="adminPassword">Senha</label><input type="password" id="adminPassword" required></div>
-      <button class="btn dark-primary mt-6" onclick="window.handleLogin()">Entrar</button>
-      <p class="text-sm text-gray-600 mt-4">Axyn: Menos custos, mais controle. Simples assim.</p>
-    </div>
     <div id="adminDashboard" style="display:none; margin-top:20px;">
-     <h4>Bem-vindo, <span id="loggedInUserRoleDisplay"></span>!</h4>
-      <p class="mb-4 text-gray-700">Voc? est? logado com acesso <span id="loggedInUserLevelDisplay" class="font-bold"></span>.</p>
+     <h4>Bem-vindo, <span id="loggedInUserEmailDisplay"></span>!</h4>
+      <p class="mb-4 text-gray-700">Você está logado com acesso de <span id="loggedInUserLevelDisplay" class="font-bold"></span>.</p>
       <div id="userManagement" class="mt-8 p-6 border border-blue-300 rounded-lg bg-blue-50 shadow-md" style="display: none;">
-        <h4 class="text-xl font-bold mb-4 text-blue-800">Gerenciamento de Usu?rios</h4>
-        <div class="field"><label for="newUsername">Usu?rio</label><input type="text" id="newUsername" placeholder="Novo usu?rio" required></div>
-        <div class="field"><label for="newPassword">Senha</label><input type="password" id="newPassword" placeholder="Nova senha" required></div>
+        <h4 class="text-xl font-bold mb-4 text-blue-800">Gerenciamento de Usuários</h4>
+        <div class="field"><label for="newUsername">Email do Usuário</label><input type="email" id="newUsername" placeholder="email@exemplo.com" required></div>
         <div class="field">
-            <label for="newUserLevel">N?vel</label>
+            <label for="newUserLevel">Nível de Acesso</label>
             <select id="newUserLevel" required>
-                <option value="">Selecione o N?vel</option>
-                <option value="operacao">Opera??o</option>
+                <option value="">Selecione o Nível</option>
+                <option value="operacao">Operação</option>
                 <option value="analista">Analista</option>
                 <option value="administrador">Administrador</option>
             </select>
         </div>
-        <button class="btn dark-primary mt-6" onclick="window.salvarUsuario()">Salvar Usu?rio</button>
-        <h5 class="font-bold mt-8 mb-4 text-gray-700">Usu?rios Cadastrados:</h5>
+        <p class="text-xs text-gray-500 mt-2 mb-4">Nota: A senha inicial deve ser definida pelo usuário no primeiro login ou via reset de senha. A criação de usuários aqui apenas concede permissão de acesso.</p>
+        <button class="btn dark-primary mt-6" onclick="window.salvarUsuario()">Salvar Usuário</button>
+        <h5 class="font-bold mt-8 mb-4 text-gray-700">Usuários Cadastrados:</h5>
         <div id="userListContainer" class="max-h-60 overflow-y-auto border border-gray-200 rounded-lg bg-white shadow-inner">
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
              <tr>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usu?rio</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">N?vel</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">A??es</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nível</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
              </tr>
             </thead>
             <tbody id="userList" class="bg-white divide-y divide-gray-200"></tbody>
           </table>
         </div>
       </div>
-      <button class="btn dark-primary mt-6" onclick="window.logout()">Sair</button>
     </div>
   </div>
 
   <div id="relatorio" style="display:none; margin-top:20px;">
-   <h3>Relat?rios</h3>
+   <h3>Relatórios</h3>
     <div class="field">
-        <label for="tipoRelatorio">Tipo de Relat?rio</label>
+        <label for="tipoRelatorio">Tipo de Relatório</label>
         <select id="tipoRelatorio">
             <option value="horasFrota">Horas por Frota</option>
             <option value="atividadesOperador">Atividades por Operador</option>
-            <option value="manutencoes">Manuten??es</option>
+            <option value="manutencoes">Manutenções</option>
             <option value="disponibilidade">Tempo de Disponibilidade de Frotas</option>
-            <option value="comparativoHoras">Hor?metro vs. Apontamento</option>
-            <option value="atividades">Relat?rio de Atividades</option>
-            <option value="setor">Relat?rio por Setor</option>
-            <option value="edicoes">Relat?rio de Apontamentos Inconsistentes</option>
+            <option value="comparativoHoras">Horímetro vs. Apontamento</option>
+            <option value="atividades">Relatório de Atividades</option>
+            <option value="setor">Relatório por Setor</option>
+            <option value="edicoes">Relatório de Apontamentos Inconsistentes</option>
             <option value="consumoFrota">Consumo por Frota</option>
-            <option value="custosCombustivel">Custos de Combust?vel</option>
+            <option value="custosCombustivel">Custos de Combustível</option>
         </select>
     </div>
     <div class="field">
-      <label for="relatorioDataInicio">Data de In?cio</label>
+      <label for="relatorioDataInicio">Data de Início</label>
       <input type="date" id="relatorioDataInicio">
     </div>
     <div class="field">
       <label for="relatorioDataFim">Data de Fim</label>
       <input type="date" id="relatorioDataFim">
     </div>
-    <button class="btn dark-primary mt-4" onclick="window.gerarRelatorio()">Gerar Relat?rio</button>
-    <!-- Bot?o Dados movido para c? -->
+    <button class="btn dark-primary mt-4" onclick="window.gerarRelatorio()">Gerar Relatório</button>
     <button class="btn dark-primary mt-4" onclick="window.mostrar('dados')">Dados</button>
     <div id="relatorioResultado" class="mt-6"></div>
   </div>
 
   <div id="dados" style="display:none; margin-top:20px;">
-    <h3>Banco de Dados de Lan?amentos</h3>
-    <p class="text-gray-600 mb-4">Visualize e gerencie todos os lan?amentos hist?ricos. Altera??es requerem senha de administrador.</p>
+    <h3>Banco de Dados de Lançamentos</h3>
+    <p class="text-gray-600 mb-4">Visualize e gerencie todos os lançamentos históricos.</p>
     <div id="dadosContent" class="mt-4"></div>
   </div>
 </div>
@@ -675,38 +664,38 @@
 <!-- Maintenance Panel -->
 <div class="card" id="manutencaoPanel" style="display:none;">
    <div class="flex justify-between items-center mb-6">
-      <h3>Gest?o de Manuten??o</h3>
+      <h3>Gestão de Manutenção</h3>
        <button class="btn dark-primary" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
    </div>
    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-       <button class="btn dark-primary" onclick="window.mostrarManutencaoSubpanel('formAbrirOS')">Abrir Ordem de Servi?o</button>
-       <button class="btn dark-primary" onclick="window.mostrarManutencaoSubpanel('formPlanosManutencao')">Planos de Manuten??o</button>
-       <button class="btn dark-primary" onclick="window.mostrarManutencaoSubpanel('consultarOS')">Consultar Ordens de Servi?o</button>
-       <button class="btn dark-primary" onclick="window.mostrarManutencaoSubpanel('gestaoPecas')">Gest?o de Pe?as</button>
-       <button class="btn dark-primary" onclick="window.mostrarManutencaoSubpanel('orcamentosAprovacoes')">Or?amentos e Aprova??es</button>
-       <button class="btn dark-primary" onclick="window.mostrarManutencaoSubpanel('historicoManutencao')">Hist?rico de Manuten??o</button>
+       <button class="btn dark-primary" onclick="window.mostrarManutencaoSubpanel('formAbrirOS')">Abrir Ordem de Serviço</button>
+       <button class="btn dark-primary" onclick="window.mostrarManutencaoSubpanel('formPlanosManutencao')">Planos de Manutenção</button>
+       <button class="btn dark-primary" onclick="window.mostrarManutencaoSubpanel('consultarOS')">Consultar Ordens de Serviço</button>
+       <button class="btn dark-primary" onclick="window.mostrarManutencaoSubpanel('gestaoPecas')">Gestão de Peças</button>
+       <button class="btn dark-primary" onclick="window.mostrarManutencaoSubpanel('orcamentosAprovacoes')">Orçamentos e Aprovações</button>
+       <button class="btn dark-primary" onclick="window.mostrarManutencaoSubpanel('historicoManutencao')">Histórico de Manutenção</button>
    </div>
 
     <div id="formAbrirOS" style="display:none;">
-       <h4>Abrir Ordem de Servi?o</h4>
+       <h4>Abrir Ordem de Serviço</h4>
         <form id="osForm">
             <div class="field"><label for="osFrota">Frota</label><input type="text" id="osFrota" oninput="this.value = this.value.toUpperCase(); window.mostrarModeloFrota(this.value, 'osModelo')" required><input type="text" id="osModelo" readonly placeholder="Modelo"></div>
             <div class="field"><label for="osDataAbertura">Data Abertura</label><input type="text" id="osDataAbertura" readonly></div>
             <div class="field"><label for="osSolicitante">Solicitante</label><input type="text" id="osSolicitante" required></div>
-            <div class="field"><label for="osDescricao">Descri??o do Problema</label><textarea id="osDescricao" rows="3" required></textarea></div>
+            <div class="field"><label for="osDescricao">Descrição do Problema</label><textarea id="osDescricao" rows="3" required></textarea></div>
             <div class="field"><label for="osTipo">Tipo</label><select id="osTipo"><option value="Corretiva">Corretiva</option><option value="Preventiva">Preventiva</option></select></div>
             <button class="btn dark-primary mt-4" type="button" onclick="window.salvarOS()">Abrir OS</button>
         </form>
     </div>
     <div id="formPlanosManutencao" style="display:none;">
-       <h4>Planos de Manuten??o</h4>
+       <h4>Planos de Manutenção</h4>
         <form id="planosManutencaoForm">
             <div class="field"><label for="planoFrota">Frota</label><input type="text" id="planoFrota" oninput="this.value = this.value.toUpperCase(); window.mostrarModeloFrota(this.value, 'planoModelo')" required><input type="text" id="planoModelo" readonly placeholder="Modelo"></div>
-            <div class="field"><label for="planoDescricao">Descri??o</label><textarea id="planoDescricao" rows="2" required></textarea></div>
-            <div class="field"><label for="tipoManutencao">Tipo</label><select id="tipoManutencao" required><option value="Hor?metro">Baseado em Hor?metro</option><option value="Tempo">Baseado em Tempo</option></select></div>
-            <div class="field" id="horimetroIntervalField"><label for="horimetroInterval">Intervalo (Hor?metro)</label><input type="text" id="horimetroInterval" oninput="this.value = this.value.replace(/[^0-9.]/g, '')"></div>
+            <div class="field"><label for="planoDescricao">Descrição</label><textarea id="planoDescricao" rows="2" required></textarea></div>
+            <div class="field"><label for="tipoManutencao">Tipo</label><select id="tipoManutencao" required><option value="Horímetro">Baseado em Horímetro</option><option value="Tempo">Baseado em Tempo</option></select></div>
+            <div class="field" id="horimetroIntervalField"><label for="horimetroInterval">Intervalo (Horímetro)</label><input type="text" id="horimetroInterval" oninput="this.value = this.value.replace(/[^0-9.]/g, '')"></div>
             <div class="field" id="tempoIntervalField" style="display:none;"><label for="tempoInterval">Intervalo (dias)</label><input type="text" id="tempoInterval" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
-            <div class="field"><label for="ultimaManutencao">?ltima Manuten??o</label><input type="date" id="ultimaManutencao"></div>
+            <div class="field"><label for="ultimaManutencao">Última Manutenção</label><input type="date" id="ultimaManutencao"></div>
             <button class="btn dark-primary mt-4" type="button" onclick="window.salvarPlanoManutencao()">Salvar Plano</button>
         </form>
         <div id="planosManutencaoListContainer" class="mt-6">
@@ -715,44 +704,44 @@
         </div>
     </div>
     <div id="consultarOS" style="display:none;">
-       <h4>Consultar Ordens de Servi?o</h4>
+       <h4>Consultar Ordens de Serviço</h4>
         <div id="osListContainer">
-            <p class="text-gray-600">Nenhuma Ordem de Servi?o para exibir.</p>
+            <p class="text-gray-600">Nenhuma Ordem de Serviço para exibir.</p>
         </div>
     </div>
     <div id="gestaoPecas" style="display:none;">
-       <h4>Gest?o de Pe?as</h4>
+       <h4>Gestão de Peças</h4>
         <form id="pecaForm">
-            <div class="field"><label for="nomePeca">Nome da Pe?a</label><input type="text" id="nomePeca" required></div>
-            <div class="field"><label for="codPeca">C?d. Pe?a</label><input type="text" id="codPeca"></div>
+            <div class="field"><label for="nomePeca">Nome da Peça</label><input type="text" id="nomePeca" required></div>
+            <div class="field"><label for="codPeca">Cód. Peça</label><input type="text" id="codPeca"></div>
             <div class="field"><label for="stockPeca">Stock</label><input type="number" id="stockPeca" required min="0"></div>
-            <div class="field"><label for="minStockPeca">Stock M?nimo</label><input type="number" id="minStockPeca" min="0"></div>
-            <div class="field"><label for="custoPeca">Custo Unit?rio (R$)</label><input type="text" id="custoPeca" oninput="this.value = this.value.replace(/[^0-9.]/g, '')"></div>
-            <button class="btn dark-primary mt-4" type="button" onclick="window.salvarPeca()">Salvar Pe?a</button>
+            <div class="field"><label for="minStockPeca">Stock Mínimo</label><input type="number" id="minStockPeca" min="0"></div>
+            <div class="field"><label for="custoPeca">Custo Unitário (R$)</label><input type="text" id="custoPeca" oninput="this.value = this.value.replace(/[^0-9.]/g, '')"></div>
+            <button class="btn dark-primary mt-4" type="button" onclick="window.salvarPeca()">Salvar Peça</button>
         </form>
         <div id="pecasListContainer" class="mt-6">
-           <h4>Invent?rio de Pe?as</h4>
+           <h4>Inventário de Peças</h4>
             <div id="pecasTable"></div>
         </div>
     </div>
     <div id="orcamentosAprovacoes" style="display:none;">
-       <h4>Or?amentos e Aprova??es</h4>
+       <h4>Orçamentos e Aprovações</h4>
         <form id="orcamentoForm">
             <div class="field"><label for="orcamentoOsId">OS ID</label><input type="text" id="orcamentoOsId" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required></div>
-            <div class="field"><label for="orcamentoDescricao">Descri??o Or?amento</label><textarea id="orcamentoDescricao" rows="2"></textarea></div>
+            <div class="field"><label for="orcamentoDescricao">Descrição Orçamento</label><textarea id="orcamentoDescricao" rows="2"></textarea></div>
             <div class="field"><label for="orcamentoValor">Valor Estimado (R$)</label><input type="text" id="orcamentoValor" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" required></div>
-            <button class="btn dark-primary mt-4" type="button" onclick="window.salvarOrcamento()">Submeter Or?amento</button>
+            <button class="btn dark-primary mt-4" type="button" onclick="window.salvarOrcamento()">Submeter Orçamento</button>
         </form>
         <div id="orcamentosListContainer" class="mt-6">
-           <h4>Or?amentos Pendentes</h4>
+           <h4>Orçamentos Pendentes</h4>
             <div id="orcamentosTable"></div>
         </div>
     </div>
     <div id="historicoManutencao" style="display:none;">
-       <h4>Hist?rico de Manuten??o</h4>
+       <h4>Histórico de Manutenção</h4>
         <div class="field"><label for="historicoFrotaFilter">Filtrar por Frota</label><input type="text" id="historicoFrotaFilter" oninput="this.value = this.value.toUpperCase(); window.consultarHistoricoManutencao()"></div>
         <div id="historicoManutencaoListContainer" class="mt-4">
-            <p class="text-gray-600">Nenhum hist?rico de manuten??o para exibir.</p>
+            <p class="text-gray-600">Nenhum histórico de manutenção para exibir.</p>
         </div>
     </div>
 </div>
@@ -761,12 +750,12 @@
 <!-- Fueling Panel -->
 <div class="card" id="abastecimentoPanel" style="display:none;">
    <div class="flex justify-between items-center mb-6">
-      <h3>Gest?o de Abastecimento</h3>
+      <h3>Gestão de Abastecimento</h3>
        <button class="btn dark-primary" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
    </div>
    <div class="flex flex-wrap justify-center mb-6 gap-3">
       <button class="btn dark-primary" onclick="window.mostrarAbastecimentoSubpanel('formAbastecimento')">Registrar Abastecimento</button>
-      <button class="btn dark-primary" onclick="window.mostrarAbastecimentoSubpanel('formCompraCombustivel')">Registrar Compra de Combust?vel</button>
+      <button class="btn dark-primary" onclick="window.mostrarAbastecimentoSubpanel('formCompraCombustivel')">Registrar Compra de Combustível</button>
    </div>
    <div id="formAbastecimento" style="display:none;">
        <h4>Registrar Abastecimento</h4>
@@ -774,21 +763,21 @@
             <div class="field"><label for="abastecimentoFrota">Frota</label><input type="text" id="abastecimentoFrota" oninput="this.value = this.value.toUpperCase(); window.mostrarModeloFrota(this.value, 'abastecimentoModelo')" required><input type="text" id="abastecimentoModelo" readonly placeholder="Modelo"></div>
             <div class="field"><label for="abastecimentoDoc">Documento/NF</label><input type="text" id="abastecimentoDoc" required></div>
             <div class="field"><label for="abastecimentoEmpresa">Empresa</label><input type="text" id="abastecimentoEmpresa" required></div>
-            <div class="field"><label for="abastecimentoHorimetro">Hor?metro</label><input type="text" id="abastecimentoHorimetro" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" required></div>
+            <div class="field"><label for="abastecimentoHorimetro">Horímetro</label><input type="text" id="abastecimentoHorimetro" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" required></div>
             <div class="field"><label for="abastecimentoData">Data</label><input type="date" id="abastecimentoData" required></div>
             <div class="field"><label for="abastecimentoHora">Hora</label><input type="time" id="abastecimentoHora" required></div>
-            <div class="field"><label for="abastecimentoMotorista">Crach? Motorista</label><input type="text" id="abastecimentoMotorista" oninput="this.value = this.value.toUpperCase(); window.buscarOperador(this.value, 'nomeMotorista')" required><input type="text" id="nomeMotorista" readonly placeholder="Nome do Motorista"></div>
-            <div class="field"><label for="abastecimentoFrentista">Crach? Frentista</label><input type="text" id="abastecimentoFrentista" oninput="this.value = this.value.toUpperCase(); window.buscarOperador(this.value, 'nomeFrentista')" required><input type="text" id="nomeFrentista" readonly placeholder="Nome do Frentista"></div>
-            <div class="field"><label for="abastecimentoCodProduto">C?d. Produto</label><input type="text" id="abastecimentoCodProduto" oninput="this.value = this.value.toUpperCase(); window.buscarProduto(this.value, 'nomeProduto')" required><input type="text" id="nomeProduto" readonly placeholder="Nome do Produto"></div>
+            <div class="field"><label for="abastecimentoMotorista">Crachá Motorista</label><input type="text" id="abastecimentoMotorista" oninput="this.value = this.value.toUpperCase(); window.buscarOperador(this.value, 'nomeMotorista')" required><input type="text" id="nomeMotorista" readonly placeholder="Nome do Motorista"></div>
+            <div class="field"><label for="abastecimentoFrentista">Crachá Frentista</label><input type="text" id="abastecimentoFrentista" oninput="this.value = this.value.toUpperCase(); window.buscarOperador(this.value, 'nomeFrentista')" required><input type="text" id="nomeFrentista" readonly placeholder="Nome do Frentista"></div>
+            <div class="field"><label for="abastecimentoCodProduto">Cód. Produto</label><input type="text" id="abastecimentoCodProduto" oninput="this.value = this.value.toUpperCase(); window.buscarProduto(this.value, 'nomeProduto')" required><input type="text" id="nomeProduto" readonly placeholder="Nome do Produto"></div>
             <div class="field"><label for="abastecimentoLocal">Local</label><select id="abastecimentoLocal" onchange="window.toggleVolumeRestante(this.value)"><option value="interno">Dentro da Empresa</option><option value="externo">Fora da Empresa</option></select></div>
             <div class="field" id="volumeRestanteField"><label for="volumeRestante">Volume Restante</label><input type="text" id="volumeRestante" readonly></div>
             <button class="btn dark-primary mt-4" type="button" onclick="window.salvarAbastecimento()">Salvar</button>
         </form>
     </div>
     <div id="formCompraCombustivel" style="display:none;">
-       <h4>Registrar Compra de Combust?vel</h4>
+       <h4>Registrar Compra de Combustível</h4>
         <form id="compraCombustivelForm">
-            <div class="field"><label for="compraCodProduto">C?d. Produto</label><input type="text" id="compraCodProduto" oninput="this.value = this.value.toUpperCase();" required></div>
+            <div class="field"><label for="compraCodProduto">Cód. Produto</label><input type="text" id="compraCodProduto" oninput="this.value = this.value.toUpperCase();" required></div>
             <div class="field"><label for="compraEmpresa">Empresa Comprado</label><input type="text" id="compraEmpresa" required></div>
             <div class="field"><label for="compraVolume">Volume (L)</label><input type="text" id="compraVolume" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" required></div>
             <div class="field"><label for="compraValor">Valor (R$)</label><input type="text" id="compraValor" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" required></div>
@@ -800,17 +789,17 @@
 <!-- Tires Panel -->
 <div class="card" id="pneusPanel" style="display:none;">
    <div class="flex justify-between items-center mb-6">
-      <h3>Gest?o de Pneus</h3>
+      <h3>Gestão de Pneus</h3>
        <button class="btn dark-primary" onclick="window.showApp('gestaoDeFrotasPanel')">Voltar</button>
    </div>
-   <p class="text-gray-600 mb-8">Esta se??o est? em desenvolvimento.</p>
+   <p class="text-gray-600 mb-8">Esta seção está em desenvolvimento.</p>
 </div>
 
 <!-- Confirmation Modal -->
 <div id="confirmationModal" class="modal">
    <div class="modal-content" id="modalContent">
-       <h3 id="modalTitle">Confirma??o</h3>
-       <p id="modalMessage">Voc? tem certeza?</p>
+       <h3 id="modalTitle">Confirmação</h3>
+       <p id="modalMessage">Você tem certeza?</p>
        <div class="modal-buttons">
            <button id="modalConfirmBtn" class="btn dark-primary">Confirmar</button>
            <button id="modalCancelBtn" class="btn dark-primary">Cancelar</button>
@@ -896,23 +885,40 @@
 
   // --- GLOBAL STATE ---
   let currentUser = null;
+  let currentUserRole = 'operacao'; // Default role
   let unsubscribeDisponibilidade = null; // To detach the real-time listener
 
   // Logotipo da Empresa
   const logoUrl = "https://firebasestorage.googleapis.com/v0/b/generative-ai-sandbox-b9894.appspot.com/o/ChatGPT%20Image%203%20de%20jul.%20de%202025%2C%2017_55_58.jpg?alt=media&token=25087595-5028-444f-83a3-6119f448c903";
 
-  // --- AUTHENTICATION ---
-  onAuthStateChanged(auth, (user) => {
+  // --- AUTHENTICATION & ROLE MANAGEMENT ---
+  async function fetchUserRole(uid) {
+      try {
+          const userDocRef = doc(db, "usuarios", uid);
+          const userDocSnap = await getDoc(userDocRef);
+          if (userDocSnap.exists()) {
+              return userDocSnap.data().level || 'operacao';
+          }
+          return 'operacao'; // Default if no role is defined
+      } catch (error) {
+          console.error("Error fetching user role:", error);
+          return 'operacao'; // Default on error
+      }
+  }
+
+  onAuthStateChanged(auth, async (user) => {
     if (user) {
       currentUser = user;
-      console.log("User is signed in:", user.uid);
+      currentUserRole = await fetchUserRole(user.uid);
+      console.log(`User ${user.email} signed in with role: ${currentUserRole}`);
+      
       document.getElementById('loginPanel').style.display = 'none';
       document.getElementById('gestaoDeFrotasPanel').style.display = 'block';
       window.populateSelects();
     } else {
       currentUser = null;
+      currentUserRole = 'operacao';
       console.log("User is signed out.");
-      // Hide all panels except login
       document.querySelectorAll('.card').forEach(panel => {
           if (panel.id !== 'loginPanel') {
               panel.style.display = 'none';
@@ -920,7 +926,7 @@
       });
       document.getElementById('loginPanel').style.display = 'block';
       if (unsubscribeDisponibilidade) {
-          unsubscribeDisponibilidade(); // Stop listening when logged out
+          unsubscribeDisponibilidade();
           unsubscribeDisponibilidade = null;
       }
     }
@@ -937,11 +943,10 @@
 
     try {
         await signInWithEmailAndPassword(auth, email, password);
-        // onAuthStateChanged will handle UI changes
     } catch (error) {
         console.error("Login Error:", error);
         if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-            window.showModal('Erro de Login', 'Email ou senha inv?lidos.', null, true);
+            window.showModal('Erro de Login', 'Email ou senha inválidos.', null, true);
         } else {
             window.showModal('Erro de Login', `Ocorreu um erro: ${error.message}`, null, true);
         }
@@ -951,10 +956,9 @@
   window.appLogout = async function() {
       try {
           await signOut(auth);
-          // onAuthStateChanged will handle UI changes
       } catch (error) {
           console.error("Logout Error:", error);
-          window.showModal('Erro', 'N?o foi poss?vel sair. Tente novamente.', null, true);
+          window.showModal('Erro', 'Não foi possível sair. Tente novamente.', null, true);
       }
   };
 
@@ -982,22 +986,24 @@
   window.mostrar = function(idToShow) {
     const sections = ['inicio', 'disponibilidade', 'fim', 'cadastro', 'administrador', 'relatorio', 'dados'];
     const panelTitle = document.getElementById('panelTitle');
-    
-    const btnDisponibilidade = document.getElementById('btnDisponibilidade');
-    const btnInicioAtividade = document.getElementById('btnInicioAtividade');
-    const btnEncerramentoAtividade = document.getElementById('btnEncerramentoAtividade');
-    const btnCadastro = document.getElementById('btnCadastro');
-    const btnRelatorio = document.getElementById('btnRelatorio');
-    const btnDados = document.getElementById('btnDados');
+    const mainNavButtons = document.getElementById('mainNavButtons');
 
-    [btnDisponibilidade, btnInicioAtividade, btnEncerramentoAtividade, btnCadastro, btnRelatorio, btnDados].forEach(btn => {
-        if (btn) btn.style.display = 'inline-block'; // Show all buttons by default in this panel
-    });
-
+    // Hide all sections first
     sections.forEach(id => {
         const el = document.getElementById(id);
-        if (el) el.style.display = (id === idToShow) ? 'block' : 'none';
+        if (el) el.style.display = 'none';
     });
+    
+    // Show the target section
+    const targetSection = document.getElementById(idToShow);
+    if(targetSection) targetSection.style.display = 'block';
+
+    // Control visibility of main navigation buttons
+    if (['cadastro', 'administrador', 'relatorio', 'dados'].includes(idToShow)) {
+        mainNavButtons.style.display = 'none';
+    } else {
+        mainNavButtons.style.display = 'flex';
+    }
 
     switch(idToShow) {
         case 'disponibilidade': 
@@ -1019,12 +1025,10 @@
             break;
         case 'administrador': 
             panelTitle.textContent = 'Painel Administrativo';
-            // Admin logic needs rework for Firebase custom claims, placeholder for now
-            window.showModal("Acesso Restrito", "Acesso ao painel administrativo requer permiss?es especiais.", null, true);
-            window.mostrar('disponibilidade'); // Go back to default view
+            window.showAdminDashboard();
             break;
         case 'relatorio': 
-            panelTitle.textContent = 'Relat?rios';
+            panelTitle.textContent = 'Relatórios';
             document.getElementById('relatorioResultado').innerHTML = ''; 
             break;
         case 'dados': 
@@ -1053,7 +1057,7 @@
       } else if (subPanelId === 'formPlanosManutencao') {
           window.consultarPlanosManutencao();
           const tipoManutencao = document.getElementById('tipoManutencao').value;
-          document.getElementById('horimetroIntervalField').style.display = tipoManutencao === 'Hor?metro' ? 'flex' : 'none';
+          document.getElementById('horimetroIntervalField').style.display = tipoManutencao === 'Horímetro' ? 'flex' : 'none';
           document.getElementById('tempoIntervalField').style.display = tipoManutencao === 'Tempo' ? 'flex' : 'none';
       } else if (subPanelId === 'gestaoPecas') {
           window.consultarPecas();
@@ -1091,17 +1095,6 @@
       return await getDownloadURL(storageRef);
   }
 
-  window.fileToBase64 = function(file) {
-      // This is no longer the primary method for storage but kept for potential legacy/other uses.
-      // Firebase Storage is preferred.
-      return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => resolve(reader.result);
-          reader.onerror = error => reject(error);
-      });
-  }
-
   window.populateSelects = async function() {
       if (!currentUser) return;
       try {
@@ -1124,7 +1117,7 @@
           formatOptions(implementos).forEach(item => implementoSelect.innerHTML += `<option value="${item.nome}">${item.nome} (${item.sigla})</option>`);
       } catch (error) {
           console.error("Failed to populate selects:", error);
-          window.showModal("Erro de Dados", "N?o foi poss?vel carregar as op??es de cadastro.", null, true);
+          window.showModal("Erro de Dados", "Não foi possível carregar as opções de cadastro.", null, true);
       }
   }
   
@@ -1183,7 +1176,7 @@
 
       if (!dateInput.value && !timeInput.value) {
           window.showModal(
-              'Preenchimento Autom?tico',
+              'Preenchimento Automático',
               'Deseja preencher a data e a hora com o momento atual?',
               () => { // onConfirm callback
                   window.populateCurrentDateTime(dateInputId, timeInputId);
@@ -1206,7 +1199,7 @@
       const now = new Date();
 
       if (selectedDateTime.getTime() > now.getTime() + 120000) { // 2 min buffer
-          window.showModal("Data/Hora Inv?lida", "A data e hora n?o podem ser futuras. Por favor, corrija.", null, true);
+          window.showModal("Data/Hora Inválida", "A data e hora não podem ser futuras. Por favor, corrija.", null, true);
           return false;
       }
       return true;
@@ -1255,7 +1248,7 @@
           headerRow.appendChild(th);
       }
       const thActions = document.createElement('th');
-      thActions.textContent = 'A??es';
+      thActions.textContent = 'Ações';
       headerRow.appendChild(thActions);
 
       const tbody = table.createTBody();
@@ -1304,14 +1297,14 @@
       const cracha = document.getElementById('crachaOperador').value.trim();
       const nome = document.getElementById('nomeOperador').value.trim();
       const fotoFile = document.getElementById('fotoOperador').files[0];
-      if (!cracha || !nome) { window.showModal('Campos Obrigat?rios', 'Crach? e Nome s?o obrigat?rios.', null, true); return; }
+      if (!cracha || !nome) { window.showModal('Campos Obrigatórios', 'Crachá e Nome são obrigatórios.', null, true); return; }
 
       try {
           const docRef = doc(db, "operadores", cracha);
           const docSnap = await getDoc(docRef);
 
           if (docSnap.exists()) {
-              window.showModal('Erro de Cadastro', `O operador com o crach? '${cracha}' j? existe.`, null, true);
+              window.showModal('Erro de Cadastro', `O operador com o crachá '${cracha}' já existe.`, null, true);
           } else {
               const fotoUrl = await uploadFile(fotoFile, `operadores/${cracha}`);
               const data = { cracha, nome, foto: fotoUrl };
@@ -1321,7 +1314,7 @@
           }
       } catch (error) {
           console.error('Error saving operator:', error);
-          window.showModal('Erro de Banco de Dados', 'N?o foi poss?vel salvar o operador.', null, true);
+          window.showModal('Erro de Banco de Dados', 'Não foi possível salvar o operador.', null, true);
       }
   }
 
@@ -1330,7 +1323,7 @@
       const modelo = document.getElementById('modeloFrota').value.trim();
       const fotoFile = document.getElementById('fotoFrota').files[0];
       if (!codigo || !modelo) {
-          window.showModal('Campos Obrigat?rios', 'Os campos Frota e Modelo s?o obrigat?rios.', null, true);
+          window.showModal('Campos Obrigatórios', 'Os campos Frota e Modelo são obrigatórios.', null, true);
           return;
       }
 
@@ -1339,7 +1332,7 @@
           const docSnap = await getDoc(docRef);
 
           if (docSnap.exists()) {
-              window.showModal('Erro de Cadastro', `A frota com o c?digo '${codigo}' j? existe.`, null, true);
+              window.showModal('Erro de Cadastro', `A frota com o código '${codigo}' já existe.`, null, true);
           } else {
               const fotoUrl = await uploadFile(fotoFile, `frotas/${codigo}`);
               const frotaData = { codigo, modelo, foto: fotoUrl };
@@ -1355,7 +1348,7 @@
 
   window.salvarSetor = async function() {
       const nome = document.getElementById('nomeSetor').value.trim();
-      if (!nome) { window.showModal('Campo Obrigat?rio', 'O nome do setor ? obrigat?rio.', null, true); return; }
+      if (!nome) { window.showModal('Campo Obrigatório', 'O nome do setor é obrigatório.', null, true); return; }
       try {
           await setDoc(doc(db, "setores", nome), { nome });
           window.showModal('Sucesso', "Setor salvo com sucesso!");
@@ -1369,7 +1362,7 @@
 
   window.salvarAtividade = async function() {
       const nome = document.getElementById('nomeAtividade').value.trim();
-      if (!nome) { window.showModal('Campo Obrigat?rio', 'O nome da atividade ? obrigat?rio.', null, true); return; }
+      if (!nome) { window.showModal('Campo Obrigatório', 'O nome da atividade é obrigatório.', null, true); return; }
       try {
           await setDoc(doc(db, "atividades", nome), { nome });
           window.showModal('Sucesso', "Atividade salva com sucesso!");
@@ -1384,7 +1377,7 @@
   window.salvarImplemento = async function() {
       const nome = document.getElementById('nomeImplemento').value.trim();
       const sigla = document.getElementById('siglaImplemento').value.trim();
-      if (!nome || !sigla) { window.showModal('Campos Obrigat?rios', 'Nome e Sigla s?o obrigat?rios.', null, true); return; }
+      if (!nome || !sigla) { window.showModal('Campos Obrigatórios', 'Nome e Sigla são obrigatórios.', null, true); return; }
       try {
           await setDoc(doc(db, "implementos", nome), { nome, sigla });
           window.showModal('Sucesso', "Implemento salvo com sucesso!");
@@ -1398,7 +1391,7 @@
   }
 
 
-  // --- IN?CIO/FIM DE ATIVIDADE FUNCTIONS ---
+  // --- INÍCIO/FIM DE ATIVIDADE FUNCTIONS ---
   window.buscarOperador = async function(cracha, nomeFieldId, fotoFieldId) {
       const nomeInput = document.getElementById(nomeFieldId);
       const fotoImg = document.getElementById(fotoFieldId);
@@ -1418,7 +1411,7 @@
               fotoImg.src = op.foto || 'https://placehold.co/100x100/A0AEC0/000000?text=OPERADOR';
               return op;
           } else {
-              nomeInput.value = 'Operador n?o encontrado';
+              nomeInput.value = 'Operador não encontrado';
               fotoImg.src = 'https://placehold.co/100x100/A0AEC0/000000?text=OPERADOR';
               return null;
           }
@@ -1449,7 +1442,7 @@
               if (fotoImg) fotoImg.src = frota.foto || 'https://placehold.co/100x100/A0AEC0/000000?text=FROTA';
               return frota;
           } else {
-              modeloInput.value = 'Frota n?o encontrada';
+              modeloInput.value = 'Frota não encontrada';
               if (fotoImg) fotoImg.src = 'https://placehold.co/100x100/A0AEC0/000000?text=FROTA';
               return null;
           }
@@ -1465,16 +1458,16 @@
       const atividade = document.getElementById('atividadeInicio').value;
       const relatoField = document.getElementById('relatoProblemaField');
       const relatoTextarea = document.getElementById('relatoProblema');
-      const isMaintenance = atividade.toLowerCase().includes('manuten??o');
+      const isMaintenance = atividade.toLowerCase().includes('manutenção');
       relatoField.style.display = isMaintenance ? 'flex' : 'none';
       relatoTextarea.required = isMaintenance;
   }
   
   window.toggleNonConformityReport = function(radio) {
       const textarea = document.getElementById(radio.dataset.targetTextarea);
-      textarea.classList.toggle('hidden', radio.value !== 'N?O CONFORME');
-      textarea.required = radio.value === 'N?O CONFORME';
-      if(radio.value !== 'N?O CONFORME') textarea.value = '';
+      textarea.classList.toggle('hidden', radio.value !== 'NÃO CONFORME');
+      textarea.required = radio.value === 'NÃO CONFORME';
+      if(radio.value !== 'NÃO CONFORME') textarea.value = '';
   }
   
   window.hideAllChecklistReports = function() {
@@ -1495,7 +1488,7 @@
 
       const frotaCadastrada = await window.mostrarModeloFrota(document.getElementById('frotaInicio').value, 'equipamentoInicio', 'fotoEquipInicio');
       if (!frotaCadastrada) {
-          window.showModal('Erro', 'Frota n?o cadastrada. Verifique o c?digo da frota e tente novamente.', null, true);
+          window.showModal('Erro', 'Frota não cadastrada. Verifique o código da frota e tente novamente.', null, true);
           return;
       }
 
@@ -1508,7 +1501,7 @@
           const q = query(collection(db, "atividadesEmAndamento"), where("frota", "==", frota));
           const querySnapshot = await getDocs(q);
           if (!querySnapshot.empty) {
-              window.showModal('Erro', `A frota ${frota} j? est? em atividade.`, null, true);
+              window.showModal('Erro', `A frota ${frota} já está em atividade.`, null, true);
               return;
           }
 
@@ -1533,7 +1526,7 @@
           window.mostrar('disponibilidade');
       } catch (error) {
           console.error("Error starting activity:", error);
-          window.showModal('Erro', `N?o foi poss?vel iniciar a atividade: ${error.message}`, null, true);
+          window.showModal('Erro', `Não foi possível iniciar a atividade: ${error.message}`, null, true);
       }
   }
 
@@ -1543,7 +1536,7 @@
 
       const atividadeId = document.getElementById('horimetroFim').dataset.atividadeId;
       if (!atividadeId) {
-          window.showModal("Erro", "Nenhuma atividade selecionada para finalizar. Verifique o crach? e a frota.", null, true);
+          window.showModal("Erro", "Nenhuma atividade selecionada para finalizar. Verifique o crachá e a frota.", null, true);
           return;
       }
 
@@ -1552,7 +1545,7 @@
       try {
           const atividadeAbertaSnap = await getDoc(atividadeAbertaRef);
           if (!atividadeAbertaSnap.exists()) {
-              window.showModal("Erro", "Atividade em andamento n?o encontrada. Pode j? ter sido finalizada.", null, true);
+              window.showModal("Erro", "Atividade em andamento não encontrada. Pode já ter sido finalizada.", null, true);
               return;
           }
           const atividadeEncerrada = atividadeAbertaSnap.data();
@@ -1561,7 +1554,7 @@
           const horimetroInicial = parseFloat(atividadeEncerrada.horimetroInicial);
           
           if (horimetroFinal < horimetroInicial) {
-              window.showModal('Erro de Hor?metro', `O hor?metro final (${horimetroFinal}) ? menor que o inicial (${horimetroInicial}).`, null, true);
+              window.showModal('Erro de Horímetro', `O horímetro final (${horimetroFinal}) é menor que o inicial (${horimetroInicial}).`, null, true);
               return;
           }
           
@@ -1591,7 +1584,7 @@
 
       } catch (error) {
           console.error("Error ending activity:", error);
-          window.showModal('Erro', `N?o foi poss?vel finalizar a atividade: ${error.message}`, null, true);
+          window.showModal('Erro', `Não foi possível finalizar a atividade: ${error.message}`, null, true);
       }
   }
 
@@ -1682,36 +1675,134 @@
 
               const table = document.createElement('table');
               table.className = 'availability-table';
-              table.innerHTML = `<thead><tr><th>Frota</th><th>Status</th><th>Operador</th><th>Atividade</th><th>In?cio</th></tr></thead><tbody></tbody>`;
+              table.innerHTML = `<thead><tr><th>Frota</th><th>Status</th><th>Operador</th><th>Atividade</th><th>Início</th></tr></thead><tbody></tbody>`;
               const tbody = table.querySelector('tbody');
 
               frotasAgrupadas[modelo].forEach(frota => {
                   const atividade = atividadesEmAndamento.find(a => a.frota === frota.codigo);
                   
                   let statusClass = 'status-ok';
-                  let statusText = 'Dispon?vel';
+                  let statusText = 'Disponível';
                   let operadorText = '-';
                   let inicioText = '-';
                   let atividadeText = '-';
 
                   if (atividade) {
                       statusText = atividade.atividade;
-                      statusClass = atividade.atividade.toUpperCase() === 'MANUTEN??O' ? 'status-maintenance-strong' : 'status-active';
+                      statusClass = atividade.atividade.toUpperCase() === 'MANUTENÇÃO' ? 'status-maintenance-strong' : 'status-active';
                       operadorText = `${atividade.operador} (${atividade.cracha})`;
                       inicioText = `${new Date(atividade.dataInicial + 'T' + atividade.horaInicial).toLocaleDateString('pt-BR')} ${atividade.horaInicial}`;
                       atividadeText = atividade.atividade;
                   }
 
                   const row = tbody.insertRow();
-                  row.innerHTML = `<td data-label="Frota">${frota.codigo}</td><td data-label="Status"><span class="status-cell ${statusClass}">${statusText}</span></td><td data-label="Operador">${operadorText}</td><td data-label="Atividade">${atividadeText}</td><td data-label="In?cio">${inicioText}</td>`;
+                  row.innerHTML = `<td data-label="Frota">${frota.codigo}</td><td data-label="Status"><span class="status-cell ${statusClass}">${statusText}</span></td><td data-label="Operador">${operadorText}</td><td data-label="Atividade">${atividadeText}</td><td data-label="Início">${inicioText}</td>`;
               });
               groupDiv.appendChild(table);
               contentDiv.appendChild(groupDiv);
           }
       }, (error) => {
           console.error("Error with real-time listener:", error);
-          window.showModal("Erro de Conex?o", "N?o foi poss?vel carregar os dados em tempo real.", null, true);
+          window.showModal("Erro de Conexão", "Não foi possível carregar os dados em tempo real.", null, true);
       });
+  }
+
+
+  // --- ADMIN PANEL FUNCTIONS ---
+  window.showAdminDashboard = function() {
+      if (!currentUser) return;
+      
+      const adminDashboard = document.getElementById('adminDashboard');
+      const userManagement = document.getElementById('userManagement');
+      
+      adminDashboard.style.display = 'block';
+      document.getElementById('loggedInUserEmailDisplay').textContent = currentUser.email;
+      document.getElementById('loggedInUserLevelDisplay').textContent = currentUserRole;
+
+      if (currentUserRole === 'administrador') {
+          userManagement.style.display = 'block';
+          window.loadUserList();
+      } else {
+          userManagement.style.display = 'none';
+          window.showModal("Acesso Negado", "Você não tem permissão para gerenciar usuários.", null, true);
+      }
+  }
+
+  window.salvarUsuario = async function() {
+      const email = document.getElementById('newUsername').value.trim();
+      const level = document.getElementById('newUserLevel').value;
+      if (!email || !level) { 
+          window.showModal("Campos Obrigatórios", "Email e Nível são obrigatórios.", null, true); 
+          return; 
+      }
+
+      try {
+          // This function only sets the role in Firestore. The user MUST be created in the 
+          // Firebase Authentication console first.
+          const userQuery = query(collection(db, "usuarios"), where("email", "==", email));
+          const querySnapshot = await getDocs(userQuery);
+          
+          if (!querySnapshot.empty) {
+              window.showModal('Erro', `O usuário com o email '${email}' já tem um nível de acesso definido.`, null, true);
+          } else {
+              // This is a simplified approach. A robust solution would use Cloud Functions 
+              // to find the user's UID by their email and set the document ID to the UID.
+              // For this client-side version, we'll use the email as the ID, but it's not ideal.
+              await setDoc(doc(db, "usuarios", email), { email, level });
+              window.showModal('Sucesso', `Nível de acesso '${level}' salvo para o usuário ${email}.<br><b>Importante:</b> Certifique-se de que este usuário existe no painel de Autenticação do Firebase.`);
+              window.loadUserList();
+              document.getElementById('newUsername').value = '';
+              document.getElementById('newUserLevel').value = '';
+          }
+      } catch (error) {
+          console.error("Error saving user role:", error);
+          window.showModal('Erro', `Não foi possível salvar o nível de acesso: ${error.message}`, null, true);
+      }
+  }
+
+  window.loadUserList = async function() {
+      const userListBody = document.getElementById('userList');
+      userListBody.innerHTML = '<tr><td colspan="3">Carregando...</td></tr>';
+      try {
+          const querySnapshot = await getDocs(collection(db, "usuarios"));
+          const users = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          
+          userListBody.innerHTML = '';
+          if (users.length === 0) {
+              userListBody.innerHTML = '<tr><td colspan="3">Nenhum usuário com permissão definida.</td></tr>';
+              return;
+          }
+
+          users.forEach(user => {
+              const row = userListBody.insertRow();
+              row.innerHTML = `
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${user.email}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.level}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <a href="#" class="text-red-600 hover:text-red-900" onclick="window.deleteUser('${user.id}')">Excluir</a>
+                  </td>`;
+          });
+      } catch(error) {
+          console.error("Error loading user list:", error);
+          userListBody.innerHTML = '<tr><td colspan="3">Erro ao carregar usuários.</td></tr>';
+      }
+  }
+
+  window.deleteUser = function(docId) {
+      if (currentUser.email === docId) {
+          window.showModal("Ação Inválida", "Você não pode remover seu próprio acesso.", null, true);
+          return;
+      }
+      window.showModal('Excluir Permissão', `Tem certeza que deseja remover as permissões para '${docId}'? <br><small>Isso não exclui o usuário do sistema, apenas remove seu nível de acesso.</small>`, async () => {
+          try {
+              await deleteDoc(doc(db, "usuarios", docId));
+              window.showModal('Sucesso', `Permissões para ${docId} removidas.`);
+              window.loadUserList();
+          } catch (error) {
+              console.error("Error deleting user role:", error);
+              window.showModal('Erro', `Não foi possível remover as permissões: ${error.message}`, null, true);
+          }
+      }, true);
   }
 
 
@@ -1719,12 +1810,12 @@
   window.consultarOperador = async function() {
       const snapshot = await getDocs(collection(db, 'operadores'));
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      window.showListModal('Operadores Cadastrados', data, { cracha: 'Crach?', nome: 'Nome', foto: 'Foto' }, 'operadores');
+      window.showListModal('Operadores Cadastrados', data, { cracha: 'Crachá', nome: 'Nome', foto: 'Foto' }, 'operadores');
   }
   window.consultarFrota = async function() {
       const snapshot = await getDocs(collection(db, 'frotas'));
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      window.showListModal('Frotas Cadastradas', data, { codigo: 'C?digo', modelo: 'Modelo', foto: 'Foto' }, 'frotas');
+      window.showListModal('Frotas Cadastradas', data, { codigo: 'Código', modelo: 'Modelo', foto: 'Foto' }, 'frotas');
   }
   window.consultarSetor = async function() {
       const snapshot = await getDocs(collection(db, 'setores'));
@@ -1743,37 +1834,38 @@
   }
 
   window.handleDelete = async function(storeName, docId, fotoUrl) {
-      // For simplicity, using a simple prompt. In a real app, use a secure method.
-      const password = prompt("Para excluir, digite a senha de administrador (admin123):");
-      if (password !== 'admin123') { 
-          window.showModal('Acesso Negado', 'Senha incorreta.', null, true);
+      if (currentUserRole !== 'administrador') {
+          window.showModal('Acesso Negado', 'Você não tem permissão para excluir itens.', null, true);
           return;
       }
 
-      try {
-          // Delete firestore document
-          await deleteDoc(doc(db, storeName, docId));
+      window.showModal('Confirmar Exclusão', `Tem certeza que deseja excluir este item? Esta ação não pode ser desfeita.`, async () => {
+        try {
+            // Delete firestore document
+            await deleteDoc(doc(db, storeName, docId));
 
-          // If there's a photo, delete it from storage
-          if (fotoUrl) {
-              const fotoRef = ref(storage, fotoUrl);
-              await deleteObject(fotoRef);
-          }
+            // If there's a photo, delete it from storage
+            if (fotoUrl) {
+                try {
+                    const fotoRef = ref(storage, fotoUrl);
+                    await deleteObject(fotoRef);
+                } catch (storageError) {
+                    console.warn("Could not delete photo from storage, it might have been already deleted:", storageError);
+                }
+            }
 
-          window.showModal('Sucesso', 'Item exclu?do com sucesso!');
-          document.getElementById('listModal').style.display = 'none';
-          // You might want to refresh the list view here, e.g., window.consultarOperador();
-      } catch (error) {
-          console.error(`Error deleting from ${storeName}:`, error);
-          window.showModal('Erro', `Erro ao excluir item de ${storeName}.`, null, true);
-      }
+            window.showModal('Sucesso', 'Item excluído com sucesso!');
+            document.getElementById('listModal').style.display = 'none';
+        } catch (error) {
+            console.error(`Error deleting from ${storeName}:`, error);
+            window.showModal('Erro', `Erro ao excluir item de ${storeName}.`, null, true);
+        }
+      }, true);
   }
 
   window.handleEdit = async function(storeName, docId) {
-      // For simplicity, using a simple prompt.
-      const password = prompt("Para editar, digite a senha de administrador (admin123):");
-      if (password !== 'admin123') {
-          window.showModal('Acesso Negado', 'Senha incorreta.', null, true);
+      if (currentUserRole !== 'administrador') {
+          window.showModal('Acesso Negado', 'Você não tem permissão para editar itens.', null, true);
           return;
       }
 
@@ -1781,18 +1873,16 @@
           const docRef = doc(db, storeName, docId);
           const docSnap = await getDoc(docRef);
           if (!docSnap.exists()) {
-              window.showModal('Erro', 'Item n?o encontrado.', null, true);
+              window.showModal('Erro', 'Item não encontrado.', null, true);
               return;
           }
           const item = { id: docSnap.id, ...docSnap.data() };
 
-          // The rest of your handleEdit logic to build the form can go here...
-          // For now, just showing a message.
-          window.showModal('Em Desenvolvimento', `A edi??o para '${storeName}' ainda n?o foi totalmente implementada no novo backend.`, null, false);
+          window.showModal('Em Desenvolvimento', `A edição para '${storeName}' ainda não foi totalmente implementada no novo backend.`, null, false);
 
       } catch (error) {
           console.error(`Error fetching item for edit from ${storeName}:`, error);
-          window.showModal('Erro', `Erro ao buscar item para edi??o de ${storeName}.`, null, true);
+          window.showModal('Erro', `Erro ao buscar item para edição de ${storeName}.`, null, true);
       }
   }
 
@@ -1804,19 +1894,19 @@
   });
 
   // Placeholder for functions that are not fully migrated yet
-  window.gerarRelatorio = () => window.showModal('Em Desenvolvimento', 'A gera??o de relat?rios est? sendo atualizada para o novo banco de dados.', null, false);
-  window.mostrarBancoDeDados = () => window.showModal('Em Desenvolvimento', 'A visualiza??o de dados brutos est? sendo atualizada para o novo banco de dados.', null, false);
-  window.salvarOS = () => window.showModal('Em Desenvolvimento', 'A gest?o de OS est? sendo atualizada para o novo banco de dados.', null, false);
-  window.consultarOrdensServico = () => window.showModal('Em Desenvolvimento', 'A gest?o de OS est? sendo atualizada para o novo banco de dados.', null, false);
-  window.salvarPlanoManutencao = () => window.showModal('Em Desenvolvimento', 'A gest?o de Planos de Manuten??o est? sendo atualizada.', null, false);
-  window.consultarPlanosManutencao = () => window.showModal('Em Desenvolvimento', 'A gest?o de Planos de Manuten??o est? sendo atualizada.', null, false);
-  window.salvarPeca = () => window.showModal('Em Desenvolvimento', 'A gest?o de Pe?as est? sendo atualizada.', null, false);
-  window.consultarPecas = () => window.showModal('Em Desenvolvimento', 'A gest?o de Pe?as est? sendo atualizada.', null, false);
-  window.salvarOrcamento = () => window.showModal('Em Desenvolvimento', 'A gest?o de Or?amentos est? sendo atualizada.', null, false);
-  window.consultarOrcamentos = () => window.showModal('Em Desenvolvimento', 'A gest?o de Or?amentos est? sendo atualizada.', null, false);
-  window.consultarHistoricoManutencao = () => window.showModal('Em Desenvolvimento', 'A gest?o de Hist?rico est? sendo atualizada.', null, false);
-  window.salvarAbastecimento = () => window.showModal('Em Desenvolvimento', 'A gest?o de Abastecimento est? sendo atualizada.', null, false);
-  window.salvarCompraCombustivel = () => window.showModal('Em Desenvolvimento', 'A gest?o de Abastecimento est? sendo atualizada.', null, false);
+  window.gerarRelatorio = () => window.showModal('Em Desenvolvimento', 'A geração de relatórios está sendo atualizada para o novo banco de dados.', null, false);
+  window.mostrarBancoDeDados = () => window.showModal('Em Desenvolvimento', 'A visualização de dados brutos está sendo atualizada para o novo banco de dados.', null, false);
+  window.salvarOS = () => window.showModal('Em Desenvolvimento', 'A gestão de OS está sendo atualizada para o novo banco de dados.', null, false);
+  window.consultarOrdensServico = () => window.showModal('Em Desenvolvimento', 'A gestão de OS está sendo atualizada para o novo banco de dados.', null, false);
+  window.salvarPlanoManutencao = () => window.showModal('Em Desenvolvimento', 'A gestão de Planos de Manutenção está sendo atualizada.', null, false);
+  window.consultarPlanosManutencao = () => window.showModal('Em Desenvolvimento', 'A gestão de Planos de Manutenção está sendo atualizada.', null, false);
+  window.salvarPeca = () => window.showModal('Em Desenvolvimento', 'A gestão de Peças está sendo atualizada.', null, false);
+  window.consultarPecas = () => window.showModal('Em Desenvolvimento', 'A gestão de Peças está sendo atualizada.', null, false);
+  window.salvarOrcamento = () => window.showModal('Em Desenvolvimento', 'A gestão de Orçamentos está sendo atualizada.', null, false);
+  window.consultarOrcamentos = () => window.showModal('Em Desenvolvimento', 'A gestão de Orçamentos está sendo atualizada.', null, false);
+  window.consultarHistoricoManutencao = () => window.showModal('Em Desenvolvimento', 'A gestão de Histórico está sendo atualizada.', null, false);
+  window.salvarAbastecimento = () => window.showModal('Em Desenvolvimento', 'A gestão de Abastecimento está sendo atualizada.', null, false);
+  window.salvarCompraCombustivel = () => window.showModal('Em Desenvolvimento', 'A gestão de Abastecimento está sendo atualizada.', null, false);
   
 </script>
 </body>
