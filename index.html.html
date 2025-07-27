@@ -328,13 +328,12 @@
    </div>
    <p class="text-gray-600 mb-8">Por favor, insira suas credenciais para continuar.</p>
    <div class="field">
-       <label for="appUsername">Email</label>
-       <input type="email" id="appUsername" required autocomplete="email">
+       <label for="appUsername">Usuário</label>
+       <input type="text" id="appUsername" required autocomplete="username">
    </div>
    <div class="field">
        <label for="appPassword">Senha</label>
-       <!-- Changed autocomplete to "new-password" to prevent browser from saving/autofilling the password -->
-       <input type="password" id="appPassword" required autocomplete="new-password">
+       <input type="password" id="appPassword" required autocomplete="current-password">
    </div>
    <button class="btn dark-primary w-full mt-4" onclick="window.mainLogin()">Entrar</button>
 </div>
@@ -392,10 +391,10 @@
   <div id="mainNavButtons" class="flex flex-wrap justify-center mb-8 gap-3">
     <button class="btn yellow" id="btnDisponibilidade" onclick="window.mostrar('disponibilidade')">Disponibilidade</button>
     <button class="btn green" id="btnInicioAtividade" onclick="window.mostrar('inicio')">Início de Atividade</button>
-    <button class="btn red" id="btnEncerramentoAtividade" onclick="window.mostrar('fim')">Encerramento de Atividade</button>
+    <button class="btn blue" id="btnEncerramentoAtividade" onclick="window.mostrar('fim')">Encerramento de Atividade</button>
   </div>
 
-  <div id="inicio" style="display:none; margin-top:20px; background-color: #f0fff4; padding: 20px; border-radius: 12px;">
+  <div id="inicio" style="display:none; margin-top:20px; background-color: #dbeafe; padding: 20px; border-radius: 12px;">
     <h3>Início de Atividade</h3>
     <form id="formInicio">
       <div class="flex justify-end mb-4">
@@ -426,6 +425,10 @@
         <input type="text" id="equipamentoInicio" readonly>
       </div>
       <div class="field">
+        <label for="implementoInicio">Implemento</label>
+        <select id="implementoInicio" required></select>
+      </div>
+      <div class="field">
         <label for="horimetroInicial">Horímetro Inicial</label>
         <input type="text" name="horimetroInicial" id="horimetroInicial" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" required>
       </div>
@@ -440,10 +443,6 @@
       <div class="field" id="relatoProblemaField" style="display:none;">
         <label for="relatoProblema">Relato do Problema</label>
         <textarea name="relatoProblema" id="relatoProblema" rows="3" placeholder="Descreva o problema da manutenção"></textarea>
-      </div>
-      <div class="field">
-        <label for="implementoInicio">Implemento</label>
-        <select id="implementoInicio" required></select>
       </div>
       <div class="checklist" id="safetyChecklist">
         <h4 class="font-bold uppercase text-center mb-4">Checklist de Segurança</h4>
@@ -494,7 +493,7 @@
     </form>
   </div>
 
-  <div id="disponibilidade" style="display:none; margin-top:20px; background-color: #fffbeb; padding: 20px; border-radius: 12px;">
+  <div id="disponibilidade" style="display:none; margin-top:20px; background-color: #fffbeb; padding: 20px; border-radius: 12px; border: 2px solid #FBBF24;">
    <h3>Disponibilidade</h3>
     <div id="disponibilidadeContent"><p class="text-gray-600">Nenhuma frota cadastrada ou atividade em andamento para exibir.</p></div>
     <div id="frotasEmManutencaoList" class="mt-8 p-6 border border-red-300 rounded-lg bg-red-50 shadow-md" style="display: none;">
@@ -503,7 +502,7 @@
     </div>
   </div>
 
-  <div id="fim" style="display:none; margin-top:20px; background-color: #ebf8ff; padding: 20px; border-radius: 12px;">
+  <div id="fim" style="display:none; margin-top:20px; background-color: #dbeafe; padding: 20px; border-radius: 12px;">
     <h3>Fim de Atividade</h3>
     <form id="formFim">
       <div class="flex justify-end mb-4"><button class="btn dark-primary" type="button" onclick="window.limparFormulario('formFim')">Limpar Formulário</button></div>
@@ -597,7 +596,7 @@
       <p class="mb-4 text-gray-700">Você está logado com acesso de <span id="loggedInUserLevelDisplay" class="font-bold"></span>.</p>
       <div id="userManagement" class="mt-8 p-6 border border-blue-300 rounded-lg bg-blue-50 shadow-md" style="display: none;">
         <h4 class="text-xl font-bold mb-4 text-blue-800">Gerenciamento de Usuários</h4>
-        <div class="field"><label for="newUsername">Email do Usuário</label><input type="email" id="newUsername" placeholder="email@exemplo.com" required></div>
+        <div class="field"><label for="newUsername">Usuário</label><input type="text" id="newUsername" placeholder="nome.sobrenome" required></div>
         <div class="field"><label for="newUserPassword">Senha de Acesso</label><input type="password" id="newUserPassword" placeholder="Mínimo 6 caracteres" required></div>
         <div class="field">
             <label for="newUserLevel">Nível de Acesso</label>
@@ -614,7 +613,7 @@
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
              <tr>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usuário (Email)</th>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nível</th>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
              </tr>
@@ -889,6 +888,7 @@
   let currentUser = null;
   let currentUserRole = 'operacao'; // Default role
   let unsubscribeDisponibilidade = null; // To detach the real-time listener
+  const DUMMY_DOMAIN = '@gestaodefrotas.app'; // Domain for creating emails from usernames
 
   // Logotipo da Empresa
   const logoUrl = "https://firebasestorage.googleapis.com/v0/b/generative-ai-sandbox-b9894.appspot.com/o/ChatGPT%20Image%203%20de%20jul.%20de%202025%2C%2017_55_58.jpg?alt=media&token=25087595-5028-444f-83a3-6119f448c903";
@@ -939,20 +939,25 @@
   });
 
   window.mainLogin = async function() {
-    const email = document.getElementById('appUsername').value;
+    let username = document.getElementById('appUsername').value;
     const password = document.getElementById('appPassword').value;
 
-    if (!email || !password) {
-        window.showModal('Erro de Login', 'Por favor, insira o email e a senha.', null, true);
+    if (!username || !password) {
+        window.showModal('Erro de Login', 'Por favor, insira o usuário e a senha.', null, true);
         return;
     }
 
+    // If the entered username is not an email, append the dummy domain
+    if (!username.includes('@')) {
+        username += DUMMY_DOMAIN;
+    }
+
     try {
-        await signInWithEmailAndPassword(auth, email, password);
+        await signInWithEmailAndPassword(auth, username, password);
     } catch (error) {
         console.error("Login Error:", error);
         if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-            window.showModal('Erro de Login', 'Email ou senha inválidos.', null, true);
+            window.showModal('Erro de Login', 'Usuário ou senha inválidos.', null, true);
         } else {
             window.showModal('Erro de Login', `Ocorreu um erro: ${error.message}`, null, true);
         }
@@ -1449,6 +1454,21 @@
       }
   }
 
+  async function checkAndSetImplemento(modelo) {
+      const implementoSelect = document.getElementById('implementoInicio');
+      try {
+          const q = query(collection(db, "implementos"), where("modeloAssociado", "==", modelo));
+          const querySnapshot = await getDocs(q);
+          const implementosCompativeis = querySnapshot.docs.map(d => d.data());
+
+          if (implementosCompativeis.length === 1) {
+              implementoSelect.value = implementosCompativeis[0].nome;
+          }
+      } catch (error) {
+          console.error("Error auto-setting implemento:", error);
+      }
+  }
+
   window.mostrarModeloFrota = async function(codigo, modeloFieldId, fotoFieldId) {
       const modeloInput = document.getElementById(modeloFieldId);
       const fotoImg = document.getElementById(fotoFieldId);
@@ -1466,6 +1486,7 @@
               const frota = docSnap.data();
               modeloInput.value = frota.modelo;
               if (fotoImg) fotoImg.src = frota.foto || 'https://placehold.co/100x100/A0AEC0/000000?text=FROTA';
+              checkAndSetImplemento(frota.modelo); // Auto-set implement if possible
               return frota;
           } else {
               modeloInput.value = 'Frota não encontrada';
@@ -1555,6 +1576,50 @@
           window.showModal('Erro', `Não foi possível iniciar a atividade: ${error.message}`, null, true);
       }
   }
+  
+  window.finalizarAtividade = async function(atividadeId, atividadeAberta) {
+    const horimetroFinal = parseFloat(document.getElementById('horimetroFim').value);
+    const horimetroInicial = parseFloat(atividadeAberta.horimetroInicial);
+    const dataFinalVal = document.getElementById('dataFinal').value;
+    const horaFinalVal = document.getElementById('horaFinal').value;
+    const inicioTimestamp = new Date(`${atividadeAberta.dataInicial}T${atividadeAberta.horaInicial}`).getTime();
+    const fimTimestamp = new Date(`${dataFinalVal}T${horaFinalVal}`).getTime();
+
+    let isInconsistente = false;
+    if (horimetroFinal < horimetroInicial || fimTimestamp < inicioTimestamp) {
+        isInconsistente = true;
+    }
+
+    const batch = writeBatch(db);
+
+    // Add to history
+    const historicoRef = doc(collection(db, "historicoAtividades"));
+    const dadosHistorico = {
+        ...atividadeAberta,
+        dataFinal: dataFinalVal,
+        horaFinal: horaFinalVal,
+        horimetroFinal: horimetroFinal,
+        observacoes: document.getElementById('observacoesFim').value,
+        horasHorimetro: (horimetroFinal - horimetroInicial).toFixed(2),
+        inconsistente: isInconsistente
+    };
+    batch.set(historicoRef, dadosHistorico);
+
+    // Delete from current activities
+    const atividadeAbertaRef = doc(db, "atividadesEmAndamento", atividadeId);
+    batch.delete(atividadeAbertaRef);
+
+    try {
+        await batch.commit();
+        window.showModal("Sucesso", "Atividade finalizada com sucesso!");
+        window.limparFormulario('formFim');
+        window.mostrar('disponibilidade');
+    } catch (error) {
+        console.error("Error ending activity:", error);
+        window.showModal('Erro', `Não foi possível finalizar a atividade: ${error.message}`, null, true);
+    }
+  }
+
 
   window.enviarFim = async function(event) {
       event.preventDefault();
@@ -1574,42 +1639,13 @@
               window.showModal("Erro", "Atividade em andamento não encontrada. Pode já ter sido finalizada.", null, true);
               return;
           }
-          const atividadeEncerrada = atividadeAbertaSnap.data();
-
-          const horimetroFinal = parseFloat(document.getElementById('horimetroFim').value);
-          const horimetroInicial = parseFloat(atividadeEncerrada.horimetroInicial);
+          const atividadeAberta = atividadeAbertaSnap.data();
           
-          if (horimetroFinal < horimetroInicial) {
-              window.showModal('Erro de Horímetro', `O horímetro final (${horimetroFinal}) é menor que o inicial (${horimetroInicial}).`, null, true);
-              return;
-          }
-          
-          const batch = writeBatch(db);
-
-          // Add to history
-          const historicoRef = doc(collection(db, "historicoAtividades"));
-          const dadosHistorico = {
-              ...atividadeEncerrada,
-              dataFinal: document.getElementById('dataFinal').value,
-              horaFinal: document.getElementById('horaFinal').value,
-              horimetroFinal: horimetroFinal,
-              observacoes: document.getElementById('observacoesFim').value,
-              horasHorimetro: (horimetroFinal - horimetroInicial).toFixed(2),
-              inconsistente: false // Add logic for this if needed
-          };
-          batch.set(historicoRef, dadosHistorico);
-
-          // Delete from current activities
-          batch.delete(atividadeAbertaRef);
-
-          await batch.commit();
-
-          window.showModal("Sucesso", "Atividade finalizada com sucesso!");
-          window.limparFormulario('formFim');
-          window.mostrar('disponibilidade');
+          // Directly call the finalization logic
+          await finalizarAtividade(atividadeId, atividadeAberta);
 
       } catch (error) {
-          console.error("Error ending activity:", error);
+          console.error("Error preparing to end activity:", error);
           window.showModal('Erro', `Não foi possível finalizar a atividade: ${error.message}`, null, true);
       }
   }
@@ -1755,30 +1791,25 @@
   }
 
   window.salvarUsuario = async function() {
-      const email = document.getElementById('newUsername').value.trim();
+      let username = document.getElementById('newUsername').value.trim();
       const password = document.getElementById('newUserPassword').value.trim();
       const level = document.getElementById('newUserLevel').value;
       
-      if (!email || !password || !level) { 
-          window.showModal("Campos Obrigatórios", "Email, Senha e Nível são obrigatórios.", null, true); 
+      if (!username || !password || !level) { 
+          window.showModal("Campos Obrigatórios", "Usuário, Senha e Nível são obrigatórios.", null, true); 
           return; 
       }
 
-      // This function requires re-authentication of the admin for security reasons,
-      // which is complex on the client-side. A better approach is a Cloud Function.
-      // For this demo, we will proceed, but this is NOT recommended for production.
+      const email = username.includes('@') ? username : username + DUMMY_DOMAIN;
+
       window.showModal("Aviso de Segurança", "A criação de usuários no cliente não é recomendada para produção. Para este demo, vamos prosseguir. O administrador atual pode precisar fazer login novamente após esta ação.", async () => {
         try {
-            // NOTE: This is a simplified, non-production approach.
-            // A secondary Firebase app instance should be used to avoid logging out the admin.
-            // For simplicity here, we proceed, but the admin's auth state might be affected.
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const newUser = userCredential.user;
 
-            // Now, set the user's role in Firestore
-            await setDoc(doc(db, "usuarios", newUser.uid), { email, level });
+            await setDoc(doc(db, "usuarios", newUser.uid), { email: newUser.email, level: level, username: username });
 
-            window.showModal('Sucesso', `Usuário ${email} criado com sucesso com o nível '${level}'.`);
+            window.showModal('Sucesso', `Usuário ${username} criado com sucesso com o nível '${level}'.`);
             window.loadUserList();
             document.getElementById('newUsername').value = '';
             document.getElementById('newUserPassword').value = '';
@@ -1787,7 +1818,7 @@
         } catch (error) {
             console.error("Error creating user:", error);
             if (error.code === 'auth/email-already-in-use') {
-                window.showModal('Erro', `O email '${email}' já está em uso.`, null, true);
+                window.showModal('Erro', `O usuário (email: ${email}) já está em uso.`, null, true);
             } else if (error.code === 'auth/weak-password') {
                 window.showModal('Erro', 'A senha é muito fraca. Use pelo menos 6 caracteres.', null, true);
             } else {
@@ -1813,10 +1844,10 @@
           users.forEach(user => {
               const row = userListBody.insertRow();
               row.innerHTML = `
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${user.email}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${user.username || user.email}</td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.level}</td>
                   <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <a href="#" class="text-red-600 hover:text-red-900" onclick="window.deleteUser('${user.id}', '${user.email}')">Excluir</a>
+                      <a href="#" class="text-red-600 hover:text-red-900" onclick="window.deleteUser('${user.id}', '${user.username || user.email}')">Excluir</a>
                   </td>`;
           });
       } catch(error) {
@@ -1825,15 +1856,15 @@
       }
   }
 
-  window.deleteUser = function(uid, email) {
+  window.deleteUser = function(uid, username) {
       if (currentUser.uid === uid) {
           window.showModal("Ação Inválida", "Você não pode remover seu próprio acesso.", null, true);
           return;
       }
-      window.showModal('Excluir Permissão', `Tem certeza que deseja remover as permissões para '${email}'? <br><small>Isso NÃO exclui o login do usuário, apenas remove seu nível de acesso do aplicativo.</small>`, async () => {
+      window.showModal('Excluir Permissão', `Tem certeza que deseja remover as permissões para '${username}'? <br><small>Isso NÃO exclui o login do usuário, apenas remove seu nível de acesso do aplicativo.</small>`, async () => {
           try {
               await deleteDoc(doc(db, "usuarios", uid));
-              window.showModal('Sucesso', `Permissões para ${email} removidas.`);
+              window.showModal('Sucesso', `Permissões para ${username} removidas.`);
               window.loadUserList();
           } catch (error) {
               console.error("Error deleting user role:", error);
