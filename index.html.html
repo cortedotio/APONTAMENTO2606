@@ -926,6 +926,10 @@
           }
       });
       document.getElementById('loginPanel').style.display = 'block';
+      // Clear the login fields on logout
+      document.getElementById('appUsername').value = '';
+      document.getElementById('appPassword').value = '';
+      
       if (unsubscribeDisponibilidade) {
           unsubscribeDisponibilidade();
           unsubscribeDisponibilidade = null;
