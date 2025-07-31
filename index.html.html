@@ -147,7 +147,6 @@
       }
       .field input[type="text"],
       .field input[type="date"],
-      .field input[type="time"],
       .field input[type="password"],
       .field input[type="email"],
       .field select,
@@ -309,7 +308,13 @@
       .data-table tbody tr:nth-child(even) {
        background-color: #f7fafc;
       }
-     .availability-table tbody tr:hover,
+     .availability-table tbody tr:hover {
+       background-color: #ebf4ff;
+      }
+      .availability-table tbody tr.editable:hover {
+        cursor: pointer;
+        background-color: #dbeafe;
+      }
       .consult-table tbody tr:hover,
       .data-table tbody tr:hover {
        background-color: #ebf4ff;
@@ -353,6 +358,15 @@
       }
       .status-ok { background-color: #c8e6c9; color: #2e7d32; }
      .status-inconsistente { background-color: #ffebee; color: #d32f2f; }
+     .search-icon {
+        cursor: pointer;
+        padding: 8px;
+        margin-left: -40px;
+        z-index: 10;
+     }
+     select[multiple] {
+        height: 120px;
+     }
   </style>
 </head>
 <body>
@@ -498,7 +512,10 @@
        </div>
        <div class="field">
          <label for="crachaInicio">Crachá</label>
-         <input type="text" name="crachaInicio" id="crachaInicio" oninput="this.value = this.value.toUpperCase(); window.buscarOperador(this.value,'nomeInicio','fotoInicio'); window.checkIfChecklistIsNeeded();" required>
+         <input type="text" name="crachaInicio" id="crachaInicio" oninput="this.value = this.value.toUpperCase(); window.buscarOperador(this.value,'nomeInicio','fotoInicio');" required>
+         <div class="search-icon" onclick="window.showOperatorSearchModal('crachaInicio')">
+            <svg class="w-6 h-6 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+         </div>
          <label for="nomeInicio">Operador</label>
          <input type="text" id="nomeInicio" readonly>
          <img id="fotoInicio" src="https://placehold.co/100x100/A0AEC0/000000?text=OPERADOR" alt="Foto Operador">
@@ -509,11 +526,11 @@
        </div>
        <div class="field">
          <label for="horaInicial">Hora Inicial</label>
-         <input type="time" id="horaInicial" name="horaInicial" required>
+         <input type="text" id="horaInicial" name="horaInicial" required placeholder="HH:mm" oninput="this.value = this.value.replace(/\D/g, '').replace(/(\d{2})(\d)/, '$1:$2').slice(0, 5)">
        </div>
        <div class="field">
          <label for="frotaInicio">Frota</label>
-         <input type="text" name="frotaInicio" id="frotaInicio" oninput="this.value = this.value.toUpperCase(); window.mostrarModeloFrota(this.value,'modeloInicio','fotoEquipInicio'); window.checkIfChecklistIsNeeded();" required>
+         <input type="text" name="frotaInicio" id="frotaInicio" oninput="this.value = this.value.toUpperCase(); window.mostrarModeloFrota(this.value,'modeloInicio','fotoEquipInicio');" required>
          <img id="fotoEquipInicio" src="https://placehold.co/100x100/A0AEC0/000000?text=FROTA" alt="Foto Frota">
        </div>
        <div class="field">
@@ -605,6 +622,9 @@
        <div class="field">
          <label for="crachaFim">Crachá</label>
          <input type="text" name="crachaFim" id="crachaFim" oninput="this.value = this.value.toUpperCase(); window.handleCrachaFimChange();" required>
+         <div class="search-icon" onclick="window.showOperatorSearchModal('crachaFim')">
+            <svg class="w-6 h-6 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+         </div>
          <label for="nomeFim">Operador</label>
          <input type="text" id="nomeFim" readonly>
          <img id="fotoFim" src="https://placehold.co/100x100/A0AEC0/000000?text=OPERADOR" alt="Foto Operador">
@@ -615,7 +635,7 @@
        </div>
        <div class="field">
          <label for="horaFinal">Hora Final</label>
-         <input type="time" id="horaFinal" name="horaFinal" required>
+         <input type="text" id="horaFinal" name="horaFinal" required placeholder="HH:mm" oninput="this.value = this.value.replace(/\D/g, '').replace(/(\d{2})(\d)/, '$1:$2').slice(0, 5)">
        </div>
        <div class="field">
          <label for="frotaFim">Frota</label>
@@ -680,7 +700,7 @@
       <h4>Cadastro de Implemento</h4>
        <div class="field"><label for="nomeImplemento">Implemento</label><input type="text" id="nomeImplemento" oninput="this.value = this.value.toUpperCase()"></div>
        <div class="field"><label for="siglaImplemento">Sigla</label><input type="text" id="siglaImplemento" required oninput="this.value = this.value.toUpperCase()"></div>
-       <div class="field"><label for="modeloImplemento">Associar ao Modelo</label><select id="modeloImplemento"></select></div>
+       <div class="field"><label for="modeloImplemento">Associar aos Modelos</label><select id="modeloImplemento" multiple></select></div>
        <div class="flex justify-start gap-4 mt-6"><button class="btn dark-primary" onclick="window.salvarImplemento()">Salvar</button><button class="btn dark-primary" type="button" onclick="window.consultarImplemento()">Consultar</button></div>
      </div>
    </div>
@@ -889,7 +909,7 @@
              <div class="field"><label for="abastecimentoEmpresa">Empresa</label><input type="text" id="abastecimentoEmpresa" required></div>
              <div class="field"><label for="abastecimentoHorimetro">Horímetro</label><input type="text" id="abastecimentoHorimetro" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" required></div>
              <div class="field"><label for="abastecimentoData">Data</label><input type="date" id="abastecimentoData" required></div>
-             <div class="field"><label for="abastecimentoHora">Hora</label><input type="time" id="abastecimentoHora" required></div>
+             <div class="field"><label for="abastecimentoHora">Hora</label><input type="text" id="abastecimentoHora" required placeholder="HH:mm" oninput="this.value = this.value.replace(/\D/g, '').replace(/(\d{2})(\d)/, '$1:$2').slice(0, 5)"></div>
              <div class="field"><label for="abastecimentoMotorista">Crachá Motorista</label><input type="text" id="abastecimentoMotorista" oninput="this.value = this.value.toUpperCase(); window.buscarOperador(this.value, 'nomeMotorista')" required><input type="text" id="nomeMotorista" readonly placeholder="Nome do Motorista"></div>
              <div class="field"><label for="abastecimentoFrentista">Crachá Frentista</label><input type="text" id="abastecimentoFrentista" oninput="this.value = this.value.toUpperCase(); window.buscarOperador(this.value, 'nomeFrentista')" required><input type="text" id="nomeFrentista" readonly placeholder="Nome do Frentista"></div>
              <div class="field"><label for="abastecimentoCodProduto">Cód. Produto</label><input type="text" id="abastecimentoCodProduto" oninput="this.value = this.value.toUpperCase(); window.buscarProduto(this.value, 'nomeProduto')" required><input type="text" id="nomeProduto" readonly placeholder="Nome do Produto"></div>
@@ -1475,7 +1495,10 @@
                    img.alt = 'Foto';
                    img.className = 'w-12 h-12 object-cover rounded';
                    cell.appendChild(img);
-               } else {
+               } else if (Array.isArray(item[key])) {
+                    cell.textContent = item[key].join(', ') || '-';
+               }
+               else {
                    cell.textContent = item[key] || '-';
                }
            }
@@ -1500,14 +1523,14 @@
    }
 
    // --- CADASTRO (REGISTRATION) FUNCTIONS ---
-   async function populateModelosSelect(selectElementId, selectedValue = '') {
+   async function populateModelosSelect(selectElementId, selectedValues = []) {
        const selectEl = document.getElementById(selectElementId);
-       selectEl.innerHTML = '<option value="">Nenhum</option>';
+       selectEl.innerHTML = ''; // Clear previous options
        try {
            const frotasSnapshot = await getDocs(collection(db, 'frotas'));
            const modelos = new Set(frotasSnapshot.docs.map(doc => doc.data().modelo));
            modelos.forEach(modelo => {
-               const isSelected = modelo === selectedValue ? 'selected' : '';
+               const isSelected = selectedValues.includes(modelo) ? 'selected' : '';
                selectEl.innerHTML += `<option value="${modelo}" ${isSelected}>${modelo}</option>`;
            });
        } catch (error) {
@@ -1608,14 +1631,19 @@
    window.salvarImplemento = async function() {
        const nome = document.getElementById('nomeImplemento').value.trim();
        const sigla = document.getElementById('siglaImplemento').value.trim();
-       const modeloAssociado = document.getElementById('modeloImplemento').value;
+       const modelosSelect = document.getElementById('modeloImplemento');
+       const modelosAssociados = [...modelosSelect.options]
+                                 .filter(option => option.selected)
+                                 .map(option => option.value);
+
        if (!nome || !sigla) { window.showModal('Campos Obrigatórios', 'Nome e Sigla são obrigatórios.', null, true); return; }
+       
        try {
-           await setDoc(doc(db, "implementos", nome), { nome, sigla, modeloAssociado });
+           await setDoc(doc(db, "implementos", nome), { nome, sigla, modelosAssociados });
            window.showModal('Sucesso', "Implemento salvo com sucesso!");
            document.getElementById('nomeImplemento').value = '';
            document.getElementById('siglaImplemento').value = '';
-           document.getElementById('modeloImplemento').value = '';
+           modelosSelect.selectedIndex = -1; // Deselect all
            window.populateSelects();
        } catch (error) {
            console.error("Error saving implemento:", error);
@@ -1659,7 +1687,7 @@
    async function checkAndSetImplemento(modelo) {
        const implementoSelect = document.getElementById('implementoInicio');
        try {
-           const q = query(collection(db, "implementos"), where("modeloAssociado", "==", modelo));
+           const q = query(collection(db, "implementos"), where("modelosAssociados", "array-contains", modelo));
            const querySnapshot = await getDocs(q);
            const implementosCompativeis = querySnapshot.docs.map(d => d.data());
 
@@ -1951,6 +1979,7 @@
                    let inicioText = '-';
                    let atividadeText = '-';
                    let setorText = '-';
+                   let isEditable = false;
 
                    if (atividade) {
                        const atividadeNomeUpper = atividade.atividade.toUpperCase();
@@ -1969,9 +1998,15 @@
                        inicioText = `${new Date(atividade.dataInicial + 'T' + atividade.horaInicial).toLocaleDateString('pt-BR')} ${atividade.horaInicial}`;
                        atividadeText = atividade.atividade;
                        setorText = atividade.setor || '-';
+                       isEditable = ['operacao_2', 'analista', 'administrador'].includes(currentUserRole);
                    }
 
                    const row = tbody.insertRow();
+                   if(isEditable && atividade) {
+                       row.classList.add('editable');
+                       row.setAttribute('data-atividade-id', atividade.id);
+                       row.onclick = () => window.handleDisponibilidadeClick(atividade.id);
+                   }
                    row.innerHTML = `<td data-label="Frota">${frota.codigo}</td><td data-label="Status"><span class="status-cell ${statusClass}">${statusText}</span></td><td data-label="Setor">${setorText}</td><td data-label="Operador">${operadorText}</td><td data-label="Atividade">${atividadeText}</td><td data-label="Início">${inicioText}</td>`;
                });
                groupDiv.appendChild(table);
@@ -1981,6 +2016,15 @@
            console.error("Error with real-time listener:", error);
            window.showModal("Erro de Conexão", "Não foi possível carregar os dados em tempo real.", null, true);
        });
+   }
+   
+   window.handleDisponibilidadeClick = function(atividadeId) {
+        if (!['operacao_2', 'analista', 'administrador'].includes(currentUserRole)) {
+            return;
+        }
+        if (atividadeId) {
+            window.showEditAtividadeModal(atividadeId);
+        }
    }
 
 
@@ -2113,7 +2157,7 @@
    window.consultarImplemento = async function() {
        const snapshot = await getDocs(collection(db, 'implementos'));
        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-       window.showListModal('Implementos Cadastrados', data, { nome: 'Nome', sigla: 'Sigla', modeloAssociado: 'Modelo Associado' }, 'implementos');
+       window.showListModal('Implementos Cadastrados', data, { nome: 'Nome', sigla: 'Sigla', modelosAssociados: 'Modelos Associados' }, 'implementos');
    }
 
    window.handleDelete = async function(storeName, docId, fotoUrl) {
@@ -2180,10 +2224,11 @@
              fieldDiv.appendChild(label);
 
              let input;
-             if (field === 'modeloAssociado') {
+             if (field === 'modelosAssociados') {
                  input = document.createElement('select');
                  input.id = `edit_${field}`;
-                 await populateModelosSelect(input.id, item[field]);
+                 input.multiple = true;
+                 await populateModelosSelect(input.id, item[field] || []);
              } else {
                  input = document.createElement('input');
                  input.id = `edit_${field}`;
@@ -2223,7 +2268,13 @@
                  if (field === 'id' || field === 'foto') continue;
                  const inputEl = document.getElementById(`edit_${field}`);
                  if (inputEl) {
-                     updatedData[field] = inputEl.value;
+                    if (inputEl.multiple) {
+                        updatedData[field] = [...inputEl.options]
+                                            .filter(option => option.selected)
+                                            .map(option => option.value);
+                    } else {
+                        updatedData[field] = inputEl.value;
+                    }
                  }
              }
 
@@ -2262,6 +2313,123 @@
          console.error(`Error fetching item for edit from ${storeName}:`, error);
          window.showModal('Erro', `Erro ao buscar item para edição de ${storeName}.`, null, true);
      }
+}
+
+window.showEditAtividadeModal = async function(atividadeId) {
+    try {
+        const docRef = doc(db, "atividadesEmAndamento", atividadeId);
+        const docSnap = await getDoc(docRef);
+        if (!docSnap.exists()) {
+            window.showModal('Erro', 'Atividade não encontrada. Pode ter sido finalizada.', null, true);
+            return;
+        }
+        const item = { id: docSnap.id, ...docSnap.data() };
+
+        const modal = document.getElementById('editModal');
+        const titleEl = document.getElementById('editModalTitle');
+        const formEl = document.getElementById('editForm');
+        
+        titleEl.textContent = `Editar Atividade da Frota: ${item.frota}`;
+        formEl.innerHTML = ''; // Clear previous form
+
+        // Create fields for editing
+        const fieldsToEdit = {
+            cracha: 'Crachá',
+            setor: 'Setor',
+            atividade: 'Atividade',
+            horimetroInicial: 'Horímetro Inicial'
+        };
+
+        for (const field in fieldsToEdit) {
+            const fieldDiv = document.createElement('div');
+            fieldDiv.className = 'field';
+            const label = document.createElement('label');
+            label.textContent = fieldsToEdit[field];
+            fieldDiv.appendChild(label);
+            const input = document.createElement('input');
+            input.id = `edit_atividade_${field}`;
+            input.value = item[field] || '';
+            fieldDiv.appendChild(input);
+            formEl.appendChild(fieldDiv);
+        }
+
+        document.getElementById('editModalSaveBtn').onclick = async () => {
+            const updatedData = {};
+            for (const field in fieldsToEdit) {
+                updatedData[field] = document.getElementById(`edit_atividade_${field}`).value;
+            }
+            // Ensure horimetro is a number
+            updatedData.horimetroInicial = parseFloat(updatedData.horimetroInicial) || 0;
+
+            try {
+                await updateDoc(docRef, updatedData);
+                window.showModal('Sucesso', 'Atividade atualizada com sucesso!');
+                modal.style.display = 'none';
+            } catch (error) {
+                console.error("Error updating activity:", error);
+                window.showModal('Erro', `Não foi possível atualizar a atividade: ${error.message}`, null, true);
+            }
+        };
+
+        modal.style.display = 'flex';
+
+    } catch (error) {
+        console.error("Error fetching activity for edit:", error);
+        window.showModal('Erro', 'Não foi possível carregar os dados da atividade.', null, true);
+    }
+}
+
+
+window.showOperatorSearchModal = async function(targetCrachaId) {
+    const modal = document.getElementById('listModal');
+    const titleEl = document.getElementById('listModalTitle');
+    const contentEl = document.getElementById('listModalContent');
+
+    titleEl.textContent = 'Selecionar Operador';
+    contentEl.innerHTML = '<p>Carregando...</p>';
+    modal.style.display = 'flex';
+
+    try {
+        const snapshot = await getDocs(collection(db, 'operadores'));
+        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+        if (!data || data.length === 0) {
+            contentEl.innerHTML = '<p class="text-gray-600">Nenhum operador cadastrado.</p>';
+            return;
+        }
+
+        contentEl.innerHTML = '';
+        const table = document.createElement('table');
+        table.className = 'consult-table w-full';
+        table.innerHTML = `<thead><tr><th>Crachá</th><th>Nome</th><th>Ação</th></tr></thead><tbody></tbody>`;
+        const tbody = table.querySelector('tbody');
+
+        data.forEach(item => {
+            const row = tbody.insertRow();
+            row.innerHTML = `
+                <td data-label="Crachá">${item.cracha}</td>
+                <td data-label="Nome">${item.nome}</td>
+                <td data-label="Ação"></td>
+            `;
+            const actionCell = row.cells[2];
+            const selectBtn = document.createElement('button');
+            selectBtn.textContent = 'Selecionar';
+            selectBtn.className = 'btn dark-primary text-xs p-1';
+            selectBtn.onclick = () => {
+                const crachaInput = document.getElementById(targetCrachaId);
+                crachaInput.value = item.cracha;
+                // Trigger the oninput event to auto-fill other fields
+                crachaInput.dispatchEvent(new Event('input', { bubbles: true }));
+                modal.style.display = 'none';
+            };
+            actionCell.appendChild(selectBtn);
+        });
+        contentEl.appendChild(table);
+
+    } catch (error) {
+        console.error("Error showing operator search modal:", error);
+        contentEl.innerHTML = '<p class="text-red-500">Erro ao carregar operadores.</p>';
+    }
 }
 
 
