@@ -1383,14 +1383,13 @@
                snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
            const setorSelect = document.getElementById('setorInicio');
-           const atividadeSelect = document.getElementById('atividadeInicio');
            const implementoSelect = document.getElementById('implementoInicio');
 
-           [setorSelect, atividadeSelect, implementoSelect].forEach(s => s.innerHTML = '<option value="">Selecione...</option>');
+           [setorSelect, implementoSelect].forEach(s => s.innerHTML = '<option value="">Selecione...</option>');
 
            formatOptions(setores).forEach(item => setorSelect.innerHTML += `<option value="${item.nome}">${item.nome}</option>`);
-           formatOptions(atividades).forEach(item => atividadeSelect.innerHTML += `<option value="${item.nome}">${item.nome}</option>`);
            formatOptions(implementos).forEach(item => implementoSelect.innerHTML += `<option value="${item.nome}">${item.nome} (${item.sigla})</option>`);
+           document.getElementById('atividadeInicio').innerHTML = '<option value="">Selecione um setor primeiro</option>';
        } catch (error) {
            console.error("Failed to populate selects:", error);
            window.showModal("Erro de Dados", "Não foi possível carregar as opções de cadastro.", null, true);
