@@ -1939,7 +1939,7 @@
 
               const table = document.createElement('table');
               table.className = 'availability-table';
-              table.innerHTML = `<thead><tr><th>Frota</th><th>Status</th><th>Operador</th><th>Atividade</th><th>Início</th></tr></thead><tbody></tbody>`;
+              table.innerHTML = `<thead><tr><th>Frota</th><th>Status</th><th>Setor</th><th>Operador</th><th>Atividade</th><th>Início</th></tr></thead><tbody></tbody>`;
               const tbody = table.querySelector('tbody');
 
               frotasAgrupadas[modelo].forEach(frota => {
@@ -1950,6 +1950,7 @@
                   let operadorText = '-';
                   let inicioText = '-';
                   let atividadeText = '-';
+                  let setorText = '-';
 
                   if (atividade) {
                       statusText = atividade.atividade;
@@ -1957,10 +1958,11 @@
                       operadorText = `${atividade.operador} (${atividade.cracha})`;
                       inicioText = `${new Date(atividade.dataInicial + 'T' + atividade.horaInicial).toLocaleDateString('pt-BR')} ${atividade.horaInicial}`;
                       atividadeText = atividade.atividade;
+                      setorText = atividade.setor || '-';
                   }
 
                   const row = tbody.insertRow();
-                  row.innerHTML = `<td data-label="Frota">${frota.codigo}</td><td data-label="Status"><span class="status-cell ${statusClass}">${statusText}</span></td><td data-label="Operador">${operadorText}</td><td data-label="Atividade">${atividadeText}</td><td data-label="Início">${inicioText}</td>`;
+                  row.innerHTML = `<td data-label="Frota">${frota.codigo}</td><td data-label="Status"><span class="status-cell ${statusClass}">${statusText}</span></td><td data-label="Setor">${setorText}</td><td data-label="Operador">${operadorText}</td><td data-label="Atividade">${atividadeText}</td><td data-label="Início">${inicioText}</td>`;
               });
               groupDiv.appendChild(table);
               contentDiv.appendChild(groupDiv);
