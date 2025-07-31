@@ -303,6 +303,9 @@
        text-transform: uppercase;
          font-size: 0.8rem;
       }
+      .consult-table thead th {
+        cursor: pointer;
+      }
      .availability-table tbody tr:nth-child(even),
       .consult-table tbody tr:nth-child(even),
       .data-table tbody tr:nth-child(even) {
@@ -366,6 +369,27 @@
      }
      select[multiple] {
         height: 120px;
+     }
+     .association-container {
+        display: flex;
+        gap: 2rem;
+        margin-top: 1rem;
+     }
+     .association-list {
+        flex: 1;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 1rem;
+        max-height: 300px;
+        overflow-y: auto;
+     }
+     .association-list h5 {
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+     }
+     .association-list label {
+        display: block;
+        margin-bottom: 0.5rem;
      }
   </style>
 </head>
@@ -547,7 +571,7 @@
        </div>
        <div class="field">
          <label for="setorInicio">Setor</label>
-         <select id="setorInicio" required></select>
+         <select id="setorInicio" required onchange="window.populateAtividadesPorSetor(this.value, 'atividadeInicio')"></select>
        </div>
        <div class="field">
          <label for="atividadeInicio">Atividade</label>
@@ -671,6 +695,7 @@
        <button class="btn dark-primary" onclick="window.mostrarCadastro('cadastroImplemento')">Implemento</button>
        <button class="btn dark-primary" onclick="window.mostrarCadastro('cadastroSetor')">Setor</button>
        <button class="btn dark-primary" onclick="window.mostrarCadastro('cadastroAtividade')">Atividade</button>
+       <button class="btn dark-primary" onclick="window.mostrarCadastro('associarAtividadeSetor')">Associar Atividade/Setor</button>
      </div>
      <div id="cadastroOperador" style="display:none; margin-top:10px;">
       <h4>Cadastro de Operador</h4>
@@ -703,6 +728,24 @@
        <div class="field"><label for="modeloImplemento">Associar aos Modelos</label><select id="modeloImplemento" multiple></select></div>
        <div class="flex justify-start gap-4 mt-6"><button class="btn dark-primary" onclick="window.salvarImplemento()">Salvar</button><button class="btn dark-primary" type="button" onclick="window.consultarImplemento()">Consultar</button></div>
      </div>
+     <div id="associarAtividadeSetor" style="display:none; margin-top:10px;">
+        <h4>Associar Atividades a Setores</h4>
+        <div class="field">
+            <label for="selectSetorParaAssociar">Selecione um Setor</label>
+            <select id="selectSetorParaAssociar" onchange="window.loadAtividadesParaSetor(this.value)"></select>
+        </div>
+        <div id="associacaoContainer" class="association-container" style="display:none;">
+            <div id="atividadesDisponiveis" class="association-list">
+                <h5>Atividades Disponíveis</h5>
+                <div id="listaAtividadesDisponiveis"></div>
+            </div>
+            <div id="atividadesAssociadas" class="association-list">
+                <h5>Atividades Associadas</h5>
+                <div id="listaAtividadesAssociadas"></div>
+            </div>
+        </div>
+        <button class="btn dark-primary mt-4" onclick="window.salvarAssociacaoAtividadeSetor()">Salvar Associação</button>
+    </div>
    </div>
 
    <div id="administrador" class="admin-panel">
@@ -1478,6 +1521,8 @@
        for (const key in headers) {
            const th = document.createElement('th');
            th.textContent = headers[key];
+           th.dataset.sortKey = key;
+           th.onclick = (e) => sortTable(e.target);
            headerRow.appendChild(th);
        }
        const thActions = document.createElement('th');
@@ -1539,11 +1584,14 @@
    }
 
    window.mostrarCadastro = function(subpanel) {
-       ['cadastroOperador', 'cadastroFrota', 'cadastroSetor', 'cadastroAtividade', 'cadastroImplemento'].forEach(p => {
+       ['cadastroOperador', 'cadastroFrota', 'cadastroSetor', 'cadastroAtividade', 'cadastroImplemento', 'associarAtividadeSetor'].forEach(p => {
            document.getElementById(p).style.display = p === subpanel ? 'block' : 'none';
        });
        if (subpanel === 'cadastroImplemento') {
            populateModelosSelect('modeloImplemento');
+       }
+       if (subpanel === 'associarAtividadeSetor') {
+            populateSetorParaAssociacao();
        }
    }
 
@@ -1957,7 +2005,9 @@
                return acc;
            }, {});
 
-           for (const modelo in frotasAgrupadas) {
+           const sortedModelos = Object.keys(frotasAgrupadas).sort();
+
+           for (const modelo of sortedModelos) {
                const groupDiv = document.createElement('div');
                groupDiv.className = 'mb-8';
                const groupTitle = document.createElement('h4');
@@ -2401,28 +2451,24 @@ window.showOperatorSearchModal = async function(targetCrachaId) {
         contentEl.innerHTML = '';
         const table = document.createElement('table');
         table.className = 'consult-table w-full';
-        table.innerHTML = `<thead><tr><th>Crachá</th><th>Nome</th><th>Ação</th></tr></thead><tbody></tbody>`;
+        table.innerHTML = `<thead><tr><th></th><th>Crachá</th><th>Nome</th></tr></thead><tbody></tbody>`;
         const tbody = table.querySelector('tbody');
 
         data.forEach(item => {
             const row = tbody.insertRow();
             row.innerHTML = `
+                <td><input type="checkbox" class="operator-select-checkbox" data-cracha="${item.cracha}"></td>
                 <td data-label="Crachá">${item.cracha}</td>
                 <td data-label="Nome">${item.nome}</td>
-                <td data-label="Ação"></td>
             `;
-            const actionCell = row.cells[2];
-            const selectBtn = document.createElement('button');
-            selectBtn.textContent = 'Selecionar';
-            selectBtn.className = 'btn dark-primary text-xs p-1';
-            selectBtn.onclick = () => {
-                const crachaInput = document.getElementById(targetCrachaId);
-                crachaInput.value = item.cracha;
-                // Trigger the oninput event to auto-fill other fields
-                crachaInput.dispatchEvent(new Event('input', { bubbles: true }));
-                modal.style.display = 'none';
+            row.querySelector('.operator-select-checkbox').onchange = (e) => {
+                 if (e.target.checked) {
+                    const crachaInput = document.getElementById(targetCrachaId);
+                    crachaInput.value = item.cracha;
+                    crachaInput.dispatchEvent(new Event('input', { bubbles: true }));
+                    modal.style.display = 'none';
+                 }
             };
-            actionCell.appendChild(selectBtn);
         });
         contentEl.appendChild(table);
 
