@@ -855,9 +855,18 @@
          <form id="osForm">
              <div class="field"><label for="osFrota">Frota</label><input type="text" id="osFrota" oninput="this.value = this.value.toUpperCase(); window.mostrarModeloFrota(this.value, 'osModelo')" required><input type="text" id="osModelo" readonly placeholder="Modelo"></div>
              <div class="field"><label for="osDataAbertura">Data Abertura</label><input type="text" id="osDataAbertura" readonly></div>
-             <div class="field"><label for="osSolicitante">Solicitante</label><input type="text" id="osSolicitante" required></div>
+             <div class="field">
+                <label for="osCrachaSolicitante">Crachá Solicitante</label>
+                <input type="text" id="osCrachaSolicitante" oninput="this.value = this.value.toUpperCase(); window.buscarOperador(this.value, 'osNomeSolicitante')" required>
+                <div class="search-icon" onclick="window.showOperatorSearchModal('osCrachaSolicitante')">
+                    <svg class="w-6 h-6 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+                </div>
+                <input type="text" id="osNomeSolicitante" readonly placeholder="Nome do Solicitante">
+            </div>
              <div class="field"><label for="osDescricao">Descrição do Problema</label><textarea id="osDescricao" rows="3" required></textarea></div>
              <div class="field"><label for="osTipo">Tipo</label><select id="osTipo"><option value="Corretiva">Corretiva</option><option value="Preventiva">Preventiva</option></select></div>
+             <div class="field"><label for="osAgenteCausador">Agente Causador</label><input type="text" id="osAgenteCausador" oninput="this.value = this.value.toUpperCase()"></div>
+             <div class="field"><label for="osHorimetro">Horímetro</label><input type="text" id="osHorimetro" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"></div>
              <button class="btn dark-primary mt-4" type="button" onclick="window.salvarOS()">Abrir OS</button>
          </form>
      </div>
@@ -1079,7 +1088,8 @@
        onSnapshot,
        writeBatch,
        orderBy,
-       limit
+       limit,
+       runTransaction
    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
    import { 
        getStorage, 
@@ -1415,6 +1425,7 @@
          document.getElementById('frotaSelectionContainer').style.display = 'none';
      } else if (formId === 'osForm') {
          document.getElementById('osModelo').value = '';
+         document.getElementById('osNomeSolicitante').value = '';
      } else if (formId === 'abastecimentoForm') {
          document.getElementById('abastecimentoModelo').value = '';
          document.getElementById('nomeMotorista').value = '';
@@ -1706,7 +1717,7 @@
       
        if (!cracha) {
            nomeInput.value = '';
-           fotoImg.src = 'https://placehold.co/100x100/A0AEC0/000000?text=OPERADOR';
+           if(fotoImg) fotoImg.src = 'https://placehold.co/100x100/A0AEC0/000000?text=OPERADOR';
            return null;
        }
       
@@ -1716,17 +1727,17 @@
            if (docSnap.exists()) {
                const op = docSnap.data();
                nomeInput.value = op.nome;
-               fotoImg.src = op.foto || 'https://placehold.co/100x100/A0AEC0/000000?text=OPERADOR';
+               if(fotoImg) fotoImg.src = op.foto || 'https://placehold.co/100x100/A0AEC0/000000?text=OPERADOR';
                return op;
            } else {
                nomeInput.value = 'Operador não encontrado';
-               fotoImg.src = 'https://placehold.co/100x100/A0AEC0/000000?text=OPERADOR';
+               if(fotoImg) fotoImg.src = 'https://placehold.co/100x100/A0AEC0/000000?text=OPERADOR';
                return null;
            }
        } catch (e) {
            console.error("Erro ao buscar operador:", e);
            nomeInput.value = 'Erro na busca';
-           fotoImg.src = 'https://placehold.co/100x100/A0AEC0/000000?text=ERRO';
+           if(fotoImg) fotoImg.src = 'https://placehold.co/100x100/A0AEC0/000000?text=ERRO';
            return null;
        }
    }
@@ -1911,7 +1922,7 @@
        const atividadeAbertaRef = doc(db, "atividadesEmAndamento", atividadeId);
       
        try {
-           const atividadeAbertaSnap = await getDoc(atividadeAbertaRef);
+           const atividadeAbertaSnap = await getDoc(docRef);
            if (!atividadeAbertaSnap.exists()) {
                window.showModal("Erro", "Atividade em andamento não encontrada. Pode já ter sido finalizada.", null, true);
                return;
@@ -2282,9 +2293,9 @@
                  input = document.createElement('input');
                  input.id = `edit_${field}`;
                  input.value = item[field] || '';
-                 if (field === 'cracha' || field === 'codigo' || field === 'nome') {
+                 if (field === 'cracha' || field === 'codigo' || field === 'nome' || field === 'pneuId') {
                      // Make primary keys readonly
-                     if (['operadores', 'frotas', 'setores', 'atividades', 'implementos'].includes(storeName)) {
+                     if (['operadores', 'frotas', 'setores', 'atividades', 'implementos', 'pneus'].includes(storeName)) {
                          input.readOnly = true;
                          input.classList.add('bg-gray-200');
                      }
@@ -2450,7 +2461,7 @@ window.showOperatorSearchModal = async function(targetCrachaId) {
         contentEl.innerHTML = '';
         const table = document.createElement('table');
         table.className = 'consult-table w-full';
-        table.innerHTML = `<thead><tr><th></th><th>Crachá</th><th>Nome</th></tr></thead><tbody></tbody>`;
+        table.innerHTML = `<thead><tr><th></th><th data-sort-key="cracha" onclick="sortTable(this)">Crachá</th><th data-sort-key="nome" onclick="sortTable(this)">Nome</th></tr></thead><tbody></tbody>`;
         const tbody = table.querySelector('tbody');
 
         data.forEach(item => {
@@ -2498,8 +2509,6 @@ window.showOperatorSearchModal = async function(targetCrachaId) {
    // Placeholder for functions that are not fully migrated yet
    window.gerarRelatorio = () => window.showModal('Em Desenvolvimento', 'A geração de relatórios está sendo atualizada para o novo banco de dados.', null, false);
    window.mostrarBancoDeDados = () => window.showModal('Em Desenvolvimento', 'A visualização de dados brutos está sendo atualizada para o novo banco de dados.', null, false);
-   window.salvarOS = () => window.showModal('Em Desenvolvimento', 'A gestão de OS está sendo atualizada para o novo banco de dados.', null, false);
-   window.consultarOrdensServico = () => window.showModal('Em Desenvolvimento', 'A gestão de OS está sendo atualizada para o novo banco de dados.', null, false);
    window.salvarPlanoManutencao = () => window.showModal('Em Desenvolvimento', 'A gestão de Planos de Manutenção está sendo atualizada.', null, false);
    window.consultarPlanosManutencao = () => window.showModal('Em Desenvolvimento', 'A gestão de Planos de Manutenção está sendo atualizada.', null, false);
    window.salvarPeca = () => window.showModal('Em Desenvolvimento', 'A gestão de Peças está sendo atualizada.', null, false);
