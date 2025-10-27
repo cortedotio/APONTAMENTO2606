@@ -433,7 +433,30 @@
          </div>
      </div>
      <p class="text-gray-600 mb-8">Visão geral da operação da frota.</p>
-    
+
+     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6" id="dashboardFilters">
+       <div class="field">
+         <label for="dashboardStartDate">Período - Início</label>
+         <input type="date" id="dashboardStartDate">
+       </div>
+       <div class="field">
+         <label for="dashboardEndDate">Período - Fim</label>
+         <input type="date" id="dashboardEndDate">
+       </div>
+       <div class="field">
+         <label for="dashboardFrotaFilter">Filtrar por Frota(s)</label>
+         <select id="dashboardFrotaFilter" multiple size="6"></select>
+       </div>
+       <div class="field">
+         <label for="dashboardOperadorFilter">Filtrar por Operador(es)</label>
+         <select id="dashboardOperadorFilter" multiple size="6"></select>
+       </div>
+     </div>
+     <div class="flex gap-4 mb-6">
+       <button class="btn dark-primary" onclick="window.loadDashboard()">Aplicar Filtros</button>
+       <button class="btn dark-primary" onclick="document.getElementById('dashboardStartDate').value='';document.getElementById('dashboardEndDate').value='';Array.from(document.getElementById('dashboardFrotaFilter').options).forEach(o=>o.selected=false);Array.from(document.getElementById('dashboardOperadorFilter').options).forEach(o=>o.selected=false);window.loadDashboard();">Limpar Filtros</button>
+     </div>
+
      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
          <div>
              <h3 class="text-center">Utilização da Frota (Horas)</h3>
@@ -627,6 +650,10 @@
          </div>
        </div>
        <button class="btn dark-primary mt-6" type="button" onclick="window.enviarInicio(event)">Salvar Início</button>
+       <div class="field mt-4">
+         <label for="observacoesInicio">Observações</label>
+         <textarea id="observacoesInicio" name="observacoesInicio" rows="3" placeholder="Observações adicionais"></textarea>
+       </div>
      </form>
    </div>
 
@@ -709,7 +736,7 @@
       <form><div class="field"><label for="codigoFrota">Frota</label><input type="text" id="codigoFrota" oninput="this.value = this.value.toUpperCase()"></div>
        <div class="field"><label for="modeloFrota">Modelo</label><input type="text" id="modeloFrota" oninput="this.value = this.value.toUpperCase()"></div>
        <div class="field"><label for="fotoFrota">Foto</label><input type="file" id="fotoFrota" accept="image/*" capture></div>
-       <div class="flex justify-start gap-4 mt-6"><button class="btn dark-primary" type="button" onclick="window.salvarFrota()">Salvar</button><button class="btn dark-primary" type="button" onclick="window.consultarFrota()">Consultar</button></div></form>
+       <div class="flex justify-start gap-4 mt-6"><button class="btn dark-primary" type="button" onclick="window.salvarFrota()">Salvar</button><button class="btn dark-primary" type="button" onclick="window.consultarFrota()">Consultar</button><button class="btn dark-primary" type="button" onclick="window.mostrarCadastro('cadastroCompletoFrota')">Cadastro Completo</button></div></form>
      </div>
      <div id="cadastroSetor" style="display:none; margin-top:10px;">
       <h4>Cadastro de Setor</h4>
@@ -720,6 +747,16 @@
       <h4>Cadastro de Atividade</h4>
        <div class="field"><label for="nomeAtividade">Atividade</label><input type="text" id="nomeAtividade" oninput="this.value = this.value.toUpperCase()"></div>
        <div class="flex justify-start gap-4 mt-6"><button class="btn dark-primary" type="button" onclick="window.salvarAtividade()">Salvar</button><button class="btn dark-primary" type="button" onclick="window.consultarAtividade()">Consultar</button></div></form>
+     </div>
+     <div id="cadastroCompletoFrota" style="display:none; margin-top:10px;">
+       <h4>Cadastro Completo de Frota</h4>
+       <div class="field"><label for="cadCompletoCodigoFrota">Frota</label><input type="text" id="cadCompletoCodigoFrota" placeholder="Informe a frota" oninput="this.value = this.value.toUpperCase()"></div>
+       <div class="field"><label for="numeroEixos">Número de Eixos</label><input type="number" id="numeroEixos" min="1" max="10" value="2" onchange="window.renderEstruturaEixos()"></div>
+       <div class="field"><label for="pneusPorEixo">Pneus por Eixo</label><input type="number" id="pneusPorEixo" min="2" max="12" value="4" onchange="window.renderEstruturaEixos()"></div>
+       <div id="estruturaEixosContainer" class="mt-4"></div>
+       <div class="flex justify-start gap-4 mt-6">
+         <button class="btn dark-primary" type="button" onclick="window.salvarCadastroCompletoFrota()">Salvar Configuração</button>
+       </div>
      </div>
      <div id="cadastroImplemento" style="display:none; margin-top:10px;">
       <h4>Cadastro de Implemento</h4>
@@ -1004,6 +1041,7 @@
    <div class="flex flex-wrap justify-center mb-6 gap-3">
        <button class="btn dark-primary" onclick="window.mostrarPneusSubpanel('formCadastroPneu')">Cadastrar Pneu</button>
        <button class="btn dark-primary" onclick="window.mostrarPneusSubpanel('consultarPneus')">Consultar Pneus</button>
+       <button class="btn dark-primary" onclick="window.mostrarPneusSubpanel('alocarPneusPanel')">Alocar Pneu</button>
    </div>
    <div id="formCadastroPneu" style="display:none;">
          <h4>Cadastro de Pneu</h4>
@@ -1020,6 +1058,14 @@
      <div id="consultarPneus" style="display:none;">
          <h4>Pneus Cadastrados</h4>
          <div id="pneusListContainer"></div>
+     </div>
+     <div id="alocarPneusPanel" style="display:none;">
+         <h4>Alocar Pneu</h4>
+         <div class="field">
+             <label for="alocacaoFrota">Selecione a Frota</label>
+             <select id="alocacaoFrota" onchange="window.renderMapaPneus(this.value)"></select>
+         </div>
+         <div id="mapaPneusContainer" class="mt-4"></div>
      </div>
 </div>
 
@@ -1124,10 +1170,276 @@
    const DUMMY_DOMAIN = '@gestaodefrotas.app'; // Domain for creating emails from usernames
    let utilizationChartInstance = null;
    let operatorChartInstance = null;
+   // --- NOTIFICATIONS STATE & FUNCTIONS ---
+   let unsubscribeNotificationsHistorico = null;
+   let unsubscribeNotificationsAtividades = null;
+   let notifications = [];
+
+   function updateNotificationBadge() {
+       const count = notifications.length;
+       document.querySelectorAll('.notification-badge').forEach(badge => {
+           if (count > 0) {
+               badge.textContent = String(count);
+               badge.style.display = 'inline-block';
+           } else {
+               badge.textContent = '';
+               badge.style.display = 'none';
+           }
+       });
+   }
+
+   function renderNotificationsPanel() {
+       const panel = document.getElementById('notification-panel');
+       if (!panel) return;
+       if (notifications.length === 0) {
+           panel.innerHTML = '<div class="notification-item">Nenhuma notificação no momento.</div>';
+           return;
+       }
+       panel.innerHTML = notifications.slice(0, 50).map(n => `<div class="notification-item">${n.text}</div>`).join('');
+   }
+
+   window.toggleNotificationPanel = function() {
+       const panel = document.getElementById('notification-panel');
+       if (!panel) return;
+       const isVisible = panel.style.display === 'block';
+       panel.style.display = isVisible ? 'none' : 'block';
+       if (!isVisible) {
+           renderNotificationsPanel();
+       }
+   };
+
+   function initNotificationListeners() {
+       // Reinicia estado
+       cleanupNotificationListeners();
+       notifications = [];
+       updateNotificationBadge();
+
+       // Inconsistências no histórico de atividades
+       try {
+           const qHist = query(collection(db, 'historicoAtividades'), where('inconsistente', '==', true));
+           unsubscribeNotificationsHistorico = onSnapshot(qHist, (snapshot) => {
+               const items = snapshot.docs.map(docSnap => {
+                   const d = docSnap.data();
+                   const cracha = d.cracha || (d.atividadeAberta && d.atividadeAberta.cracha) || 'CRA';
+                   const frota = d.frota || (d.atividadeAberta && d.atividadeAberta.frota) || 'FROTA';
+                   const dataFinal = d.dataFinal || (d.atividadeAberta && d.atividadeAberta.dataInicial) || '';
+                   const horaFinal = d.horaFinal || (d.atividadeAberta && d.atividadeAberta.horaInicial) || '';
+                   const whenStr = (dataFinal && horaFinal) ? `${dataFinal} ${horaFinal}` : '';
+                   return { id: `hist-${docSnap.id}`, type: 'inconsistente', text: `Apontamento inconsistente: Crachá ${cracha} • Frota ${frota} • ${whenStr}` };
+               });
+               // Remove antigos e adiciona novos do tipo inconsistente
+               notifications = notifications.filter(n => n.type !== 'inconsistente').concat(items);
+               // Deduplicar
+               const seen = new Set();
+               notifications = notifications.filter(n => { if (seen.has(n.id)) return false; seen.add(n.id); return true; });
+               updateNotificationBadge();
+               const panel = document.getElementById('notification-panel');
+               if (panel && panel.style.display === 'block') renderNotificationsPanel();
+           }, (error) => {
+               console.warn('Erro no listener de inconsistentes:', error);
+           });
+       } catch (e) { console.warn('Falha ao iniciar listener de historico:', e); }
+
+       // Atividades em andamento
+       try {
+           const qAtiv = collection(db, 'atividadesEmAndamento');
+           unsubscribeNotificationsAtividades = onSnapshot(qAtiv, (snapshot) => {
+               const count = snapshot.docs.length;
+               const item = { id: 'atividades-summary', type: 'andamento', text: count > 0 ? `Atividades em andamento: ${count}` : '' };
+               notifications = notifications.filter(n => n.type !== 'andamento');
+               if (item.text) notifications.unshift(item);
+               updateNotificationBadge();
+               const panel = document.getElementById('notification-panel');
+               if (panel && panel.style.display === 'block') renderNotificationsPanel();
+           }, (error) => { console.warn('Erro no listener de atividades em andamento:', error); });
+       } catch (e) { console.warn('Falha ao iniciar listener de atividades:', e); }
+   }
+
+   function cleanupNotificationListeners() {
+       if (unsubscribeNotificationsHistorico) { try { unsubscribeNotificationsHistorico(); } catch(e){} unsubscribeNotificationsHistorico = null; }
+       if (unsubscribeNotificationsAtividades) { try { unsubscribeNotificationsAtividades(); } catch(e){} unsubscribeNotificationsAtividades = null; }
+       notifications = [];
+       updateNotificationBadge();
+       const panel = document.getElementById('notification-panel');
+       if (panel) panel.style.display = 'none';
+   }
+
+   // Carregar gráficos do Dashboard (Utilização por Frota e Atividades por Operador)
+   window.loadDashboard = async function() {
+       try {
+           // Verifica Chart.js
+           if (typeof Chart === 'undefined') {
+               console.warn('Chart.js não carregado');
+               return;
+           }
+
+           const utilCanvas = document.getElementById('utilizationChart');
+           const opCanvas = document.getElementById('operatorChart');
+           if (!utilCanvas || !opCanvas) return;
+
+           const ctxUtil = utilCanvas.getContext('2d');
+           const ctxOp = opCanvas.getContext('2d');
+
+           // Destroi instâncias anteriores para evitar vazamento de memória
+           if (utilizationChartInstance) { utilizationChartInstance.destroy(); utilizationChartInstance = null; }
+           if (operatorChartInstance) { operatorChartInstance.destroy(); operatorChartInstance = null; }
+
+           // Coleta dados do histórico e aplica filtros do Dashboard (período, frota e operador)
+           const inicioJanela = new Date();
+           inicioJanela.setDate(inicioJanela.getDate() - 60);
+
+           // Ler filtros da UI
+           const startDateStr = (document.getElementById('dashboardStartDate')?.value || '').trim();
+           const endDateStr = (document.getElementById('dashboardEndDate')?.value || '').trim();
+
+           const startTS = startDateStr ? new Date(`${startDateStr}T00:00`).getTime() : null;
+           const endTS = endDateStr ? new Date(`${endDateStr}T23:59:59`).getTime() : null;
+
+           const frotaSelectEl = document.getElementById('dashboardFrotaFilter');
+           const operadorSelectEl = document.getElementById('dashboardOperadorFilter');
+           const frotaFilters = frotaSelectEl ? Array.from(frotaSelectEl.selectedOptions).map(o => o.value.toUpperCase()).filter(Boolean) : [];
+           const operadorFilters = operadorSelectEl ? Array.from(operadorSelectEl.selectedOptions).map(o => o.value.toUpperCase()).filter(Boolean) : [];
+
+           const historicoSnap = await getDocs(query(collection(db, 'historicoAtividades'), orderBy('dataFinal', 'desc'), limit(1000)));
+           const frotaHoras = {};
+           const operadorAtividades = {};
+
+           historicoSnap.forEach(docSnap => {
+               const d = docSnap.data();
+               if (d.inconsistente) return; // Ignora registros inconsistentes
+
+               const df = d.dataFinal || d.dataInicial;
+               const hf = d.horaFinal || d.horaInicial;
+               let fimTs = NaN;
+               if (df && hf) {
+                   fimTs = new Date(`${df}T${hf}`).getTime();
+               }
+
+               // Verificar janela temporal: usa período informado se presente; caso contrário, últimos 60 dias
+               let dentroJanela = true;
+               if (!isNaN(fimTs)) {
+                   if (startTS !== null) dentroJanela = dentroJanela && (fimTs >= startTS);
+                   if (endTS !== null) dentroJanela = dentroJanela && (fimTs <= endTS);
+                   if (startTS === null && endTS === null) {
+                       dentroJanela = fimTs >= inicioJanela.getTime();
+                   }
+               } else {
+                   // Se não há data/hora, considera dentro apenas quando não há filtro de período explícito
+                   dentroJanela = (startTS === null && endTS === null) ? true : false;
+               }
+               if (!dentroJanela) return;
+
+               const frotaVal = (d.frota || d.equipamento || 'N/D').toString().toUpperCase();
+               const operadorVal = (d.operador || d.cracha || 'N/D').toString().toUpperCase();
+
+               // Aplicar filtros de Frota/Operador (aceita múltiplos valores separados por vírgula e também correspondência parcial)
+               const frotaOk = frotaFilters.length === 0 ? true : frotaFilters.some(f => f && (frotaVal === f || frotaVal.includes(f)));
+               const operadorOk = operadorFilters.length === 0 ? true : operadorFilters.some(o => o && (operadorVal === o || operadorVal.includes(o)));
+               if (!frotaOk || !operadorOk) return;
+
+               let horas = parseFloat(d.horasHorimetro);
+               if (isNaN(horas)) {
+                   const di = d.dataInicial, hi = d.horaInicial;
+                   const df2 = d.dataFinal, hf2 = d.horaFinal;
+                   if (di && hi && df2 && hf2) {
+                       const ts1 = new Date(`${di}T${hi}`).getTime();
+                       const ts2 = new Date(`${df2}T${hf2}`).getTime();
+                       horas = (ts2 - ts1) / 3600000; // horas por diferença de tempo
+                   } else {
+                       horas = 0;
+                   }
+               }
+
+               frotaHoras[frotaVal] = (frotaHoras[frotaVal] || 0) + Math.max(0, horas);
+               operadorAtividades[operadorVal] = (operadorAtividades[operadorVal] || 0) + 1;
+           });
+
+           // Ordena e limita Top 10 para melhor legibilidade
+           const frotaEntries = Object.entries(frotaHoras).sort((a, b) => b[1] - a[1]).slice(0, 10);
+           const operatorEntries = Object.entries(operadorAtividades).sort((a, b) => b[1] - a[1]).slice(0, 10);
+
+           const utilLabels = frotaEntries.map(([f]) => f);
+           const utilData = frotaEntries.map(([_, h]) => parseFloat(h.toFixed(2)));
+
+           const opLabels = operatorEntries.map(([o]) => o);
+           const opData = operatorEntries.map(([_, c]) => c);
+
+           // Mensagem de informação no painel
+           const dashPanel = document.getElementById('dashboardPanel');
+           const infoId = 'dashboardInfo';
+           let infoEl = dashPanel ? dashPanel.querySelector(`#${infoId}`) : null;
+           if (!infoEl && dashPanel) {
+               infoEl = document.createElement('p');
+               infoEl.id = infoId;
+               infoEl.className = 'text-gray-600 mt-2';
+               dashPanel.appendChild(infoEl);
+           }
+           if (infoEl) {
+               if (utilData.length === 0 && opData.length === 0) {
+                   infoEl.textContent = 'Sem dados recentes para o dashboard.';
+               } else {
+                   infoEl.textContent = '';
+               }
+           }
+
+           // Paleta de cores
+           const palette = ['#1E88E5','#43A047','#FB8C00','#8E24AA','#E53935','#00ACC1','#7CB342','#FDD835','#3949AB','#6D4C41'];
+
+           // Gráfico de Utilização por Frota
+           utilizationChartInstance = new Chart(ctxUtil, {
+               type: 'bar',
+               data: {
+                   labels: utilLabels,
+                   datasets: [{
+                       label: 'Horas',
+                       data: utilData,
+                       backgroundColor: utilLabels.map((_, i) => palette[i % palette.length])
+                   }]
+               },
+               options: {
+                   responsive: true,
+                   plugins: {
+                       legend: { display: false },
+                       title: { display: true, text: 'Utilização da Frota (últimos 60 dias)' }
+                   },
+                   scales: {
+                       y: { beginAtZero: true, ticks: { precision: 0 } }
+                   }
+               }
+           });
+
+           // Gráfico de Atividades por Operador
+           operatorChartInstance = new Chart(ctxOp, {
+               type: 'bar',
+               data: {
+                   labels: opLabels,
+                   datasets: [{
+                       label: 'Atividades',
+                       data: opData,
+                       backgroundColor: opLabels.map((_, i) => palette[(i + 3) % palette.length])
+                   }]
+               },
+               options: {
+                   responsive: true,
+                   plugins: {
+                       legend: { display: false },
+                       title: { display: true, text: 'Atividades por Operador (últimos 60 dias)' }
+                   },
+                   scales: {
+                       y: { beginAtZero: true, ticks: { precision: 0 } }
+                   }
+               }
+           });
+
+       } catch (err) {
+           console.error('Erro ao carregar dashboard:', err);
+           window.showModal('Erro', 'Não foi possível carregar os gráficos do dashboard.', null, true);
+       }
+   };
 
 
    // Logotipo da Empresa
-   const logoUrl = "https://firebasestorage.googleapis.com/v0/b/generative-ai-sandbox-b9894.appspot.com/o/ChatGPT%20Image%203%20de%20jul.%20de%202025%2C%2017_55_58.jpg?alt=media&token=25087595-5028-444f-83a3-6119f448c903";
+   const logoUrl = "https://placehold.co/160x40/1A202C/FFFFFF?text=LOGO";
 
    // --- AUTHENTICATION & ROLE MANAGEMENT ---
    async function fetchUserRole(uid) {
@@ -1157,8 +1469,16 @@
 
        document.querySelectorAll('.card').forEach(panel => panel.style.display = 'none');
        document.getElementById('gestaoDeFrotasPanel').style.display = 'block';
+       if (typeof updateUIVisibilityBasedOnRole !== 'function') {
+         window.updateUIVisibilityBasedOnRole = function() {
+           // Fallback: show all panels/buttons accessible for default role
+           // You can refine role-based visibility later.
+           return;
+         };
+       }
        updateUIVisibilityBasedOnRole();
        window.populateSelects();
+       initNotificationListeners();
      } else {
        currentUser = null;
        currentUserRole = 'operacao';
@@ -1180,6 +1500,7 @@
            unsubscribeDisponibilidade();
            unsubscribeDisponibilidade = null;
        }
+       cleanupNotificationListeners();
      }
    });
 
@@ -1254,11 +1575,22 @@
          };
          titleElement.textContent = titles[panelId] || 'Gestão de Frotas';
      }
+
+     // Ensure notification panel anchored to current header and hidden on navigation
+     const notifPanel = document.getElementById('notification-panel');
+     if (notifPanel) {
+         notifPanel.style.display = 'none';
+     }
+
+     if (panelId === 'dashboardPanel') {
+         if (typeof window.populateDashboardFilters === 'function') {
+             window.populateDashboardFilters();
+         }
+         window.loadDashboard();
+     }
     
      // Sub-panel logic
-     if (panelId === 'dashboardPanel') {
-         loadDashboard();
-     } else if (panelId === 'statusDeAtividadePanel') {
+     if (panelId === 'statusDeAtividadePanel') {
          window.mostrar(subPanelId || 'disponibilidade'); 
      } else if (panelId === 'manutencaoPanel') {
          window.mostrarManutencaoSubpanel('formAbrirOS'); 
@@ -1266,6 +1598,19 @@
          window.mostrarAbastecimentoSubpanel('formAbastecimento');
      } else if (panelId === 'pneusPanel') {
          window.mostrarPneusSubpanel('formCadastroPneu');
+     }
+
+     window.mostrarPneusSubpanel = function(subpanelId){
+         const ids = ['formCadastroPneu','consultarPneus','alocarPneusPanel'];
+         ids.forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.style.display = (id === subpanelId) ? 'block' : 'none';
+         });
+         if (subpanelId === 'consultarPneus') {
+             window.listarPneus();
+         } else if (subpanelId === 'alocarPneusPanel') {
+             window.populateFrotasSelect('alocacaoFrota');
+         }
      }
    }
 
@@ -1300,6 +1645,11 @@
              panelTitle.textContent = 'Iniciar Atividade'; 
              window.populateSelects();
              window.populateCurrentDateTime('dataInicial', 'horaInicial'); 
+             window.evaluateChecklistRequirement();
+             const frotaField = document.getElementById('frotaInicio');
+             const dataField = document.getElementById('dataInicial');
+             if (frotaField) frotaField.addEventListener('change', window.evaluateChecklistRequirement);
+             if (dataField) dataField.addEventListener('change', window.evaluateChecklistRequirement);
              break;
          case 'fim': 
              panelTitle.textContent = 'Encerrar Atividade';
@@ -1354,6 +1704,54 @@
        }
    }
 
+   // Funções de Pneus
+   window.salvarPneu = async function(){
+     try{
+       const id = document.getElementById('pneuId').value.trim().toUpperCase();
+       const marca = document.getElementById('pneuMarca').value.trim().toUpperCase();
+       const modelo = document.getElementById('pneuModelo').value.trim().toUpperCase();
+       const dataCompra = document.getElementById('pneuDataCompra').value;
+       const frotaInstalado = document.getElementById('pneuFrotaInstalado').value.trim().toUpperCase();
+       const posicao = document.getElementById('pneuPosicao').value.trim().toUpperCase();
+       if(!id || !marca || !modelo || !dataCompra){
+         return window.showModal('Dados incompletos','Preencha ID, Marca, Modelo e Data da Compra.', null, true);
+       }
+       await setDoc(doc(db,'pneus', id), { id, marca, modelo, dataCompra, frotaInstalado, posicao }, { merge: true });
+       window.showModal('Sucesso','Pneu salvo com sucesso.');
+       document.getElementById('pneuForm').reset();
+     }catch(err){
+       console.error('Erro ao salvar pneu:', err);
+       window.showModal('Erro','Falha ao salvar pneu.', null, true);
+     }
+   }
+
+   window.listarPneus = async function(){
+     try{
+       const cont = document.getElementById('pneusListContainer');
+       cont.innerHTML = '';
+       const snap = await getDocs(collection(db,'pneus'));
+       if(snap.empty){
+         cont.innerHTML = '<p>Nenhum pneu cadastrado.</p>';
+         return;
+       }
+       const table = document.createElement('table');
+       table.className = 'w-full';
+       table.innerHTML = '<thead><tr><th>ID</th><th>Marca</th><th>Modelo</th><th>Compra</th><th>Frota</th><th>Posição</th></tr></thead>';
+       const tbody = document.createElement('tbody');
+       snap.forEach(d=>{
+         const p = d.data();
+         const tr = document.createElement('tr');
+         tr.innerHTML = `<td>${p.id||''}</td><td>${p.marca||''}</td><td>${p.modelo||''}</td><td>${p.dataCompra||''}</td><td>${p.frotaInstalado||''}</td><td>${p.posicao||''}</td>`;
+         tbody.appendChild(tr);
+       });
+       table.appendChild(tbody);
+       cont.appendChild(table);
+     }catch(err){
+       console.error('Erro ao listar pneus:', err);
+       document.getElementById('pneusListContainer').innerHTML = '<p>Falha ao listar pneus.</p>';
+     }
+   }
+
    window.mostrarAbastecimentoSubpanel = function(subPanelId) {
        const subPanelsAbastecimento = ['formAbastecimento', 'formCompraCombustivel'];
        subPanelsAbastecimento.forEach(id => {
@@ -1406,6 +1804,254 @@
        }
    }
   
+   // Popula selects múltiplos do Dashboard (Frotas e Operadores)
+   window.populateDashboardFilters = async function() {
+     if (!currentUser) return;
+     try {
+       const frotaSelect = document.getElementById('dashboardFrotaFilter');
+       const operadorSelect = document.getElementById('dashboardOperadorFilter');
+       if (!frotaSelect || !operadorSelect) return;
+
+       // Limpa opções atuais
+       frotaSelect.innerHTML = '';
+       operadorSelect.innerHTML = '';
+
+       // Helper para adicionar opção
+       const addOption = (selectEl, value, text) => {
+         const opt = document.createElement('option');
+         opt.value = value;
+         opt.textContent = text;
+         selectEl.appendChild(opt);
+       };
+
+       // Carregar frotas
+       const frotasSnapshot = await getDocs(collection(db, 'frotas'));
+       const frotas = frotasSnapshot.docs
+         .map(doc => doc.data())
+         .map(f => (f.codigo || f.nome || '').toString().toUpperCase())
+         .filter(v => v && v.trim().length > 0)
+         .sort((a, b) => a.localeCompare(b));
+
+       // Carregar operadores
+       const operadoresSnapshot = await getDocs(collection(db, 'operadores'));
+       const operadores = operadoresSnapshot.docs
+         .map(doc => doc.data())
+         .map(o => (o.nome || o.cracha || '').toString().toUpperCase())
+         .filter(v => v && v.trim().length > 0)
+         .sort((a, b) => a.localeCompare(b));
+
+       if (frotas.length === 0) {
+         addOption(frotaSelect, '', 'Nenhuma frota cadastrada');
+       } else {
+         frotas.forEach(f => addOption(frotaSelect, f, f));
+       }
+
+       if (operadores.length === 0) {
+         addOption(operadorSelect, '', 'Nenhum operador cadastrado');
+       } else {
+         operadores.forEach(o => addOption(operadorSelect, o, o));
+       }
+     } catch (err) {
+       console.error('Falha ao popular filtros do dashboard:', err);
+     }
+   }
+  
+   // --- Gestão de Pneus & Cadastro Completo de Frota ---
+   window.populateFrotasSelect = async function(selectId){
+     const el = document.getElementById(selectId);
+     if (!el) return;
+     const prevValue = el.value;
+     el.disabled = true;
+     el.innerHTML = '<option value="">Carregando...</option>';
+     try {
+       const snap = await getDocs(collection(db, 'frotas'));
+       const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+       const seen = new Set();
+       const options = [];
+       list.forEach(f => {
+         const code = ((f.codigo ?? f.id) ?? '').toString().trim().toUpperCase();
+         if (!code || seen.has(code)) return;
+         seen.add(code);
+         const label = `${code}${f.modelo ? ' - ' + f.modelo : ''}`;
+         options.push({ code, label });
+       });
+       options.sort((a, b) => a.code.localeCompare(b.code));
+
+       el.innerHTML = '<option value="">Selecione...</option>';
+       if (options.length === 0) {
+         const opt = document.createElement('option');
+         opt.value = '';
+         opt.textContent = 'Nenhuma frota cadastrada';
+         opt.disabled = true;
+         el.appendChild(opt);
+       } else {
+         options.forEach(o => {
+           const opt = document.createElement('option');
+           opt.value = o.code;
+           opt.textContent = o.label;
+           el.appendChild(opt);
+         });
+         if (prevValue && seen.has(prevValue)) {
+           el.value = prevValue;
+         }
+       }
+     } catch (err) {
+       console.error('Erro ao popular frotas:', err);
+       el.innerHTML = '<option value="">Falha ao carregar frotas</option>';
+     } finally {
+       el.disabled = false;
+       el.style.minWidth = '220px';
+     }
+   }
+
+   window.renderEstruturaEixos = function(){
+     const eixos = parseInt(document.getElementById('numeroEixos').value || '0', 10);
+     const pneus = parseInt(document.getElementById('pneusPorEixo').value || '0', 10);
+     const cont = document.getElementById('estruturaEixosContainer');
+     cont.innerHTML = '';
+     if (!eixos || !pneus) return;
+     for(let i=1;i<=eixos;i++){
+       const row = document.createElement('div');
+       row.className = 'mt-2';
+       row.innerHTML = `<strong>Eixo ${i}</strong>`;
+       const slots = document.createElement('div');
+       slots.className = 'flex gap-2 mt-1 flex-wrap';
+       for(let j=1;j<=pneus;j++){
+         const slot = document.createElement('div');
+         slot.className = 'card p-2';
+         slot.innerHTML = `
+           <div class="field"><label>Posição ${j}</label><input type="text" value="${i}-${j}" disabled></div>
+         `;
+         slots.appendChild(slot);
+       }
+       cont.appendChild(row);
+       cont.appendChild(slots);
+     }
+   }
+
+   window.salvarCadastroCompletoFrota = async function(){
+     try{
+       const codigo = document.getElementById('cadCompletoCodigoFrota').value.trim().toUpperCase();
+       const eixos = parseInt(document.getElementById('numeroEixos').value || '0', 10);
+       const pneus = parseInt(document.getElementById('pneusPorEixo').value || '0', 10);
+       if(!codigo || !eixos || !pneus){
+         return window.showModal('Dados incompletos','Informe frota, número de eixos e pneus por eixo.', null, true);
+       }
+       const estrutura = [];
+       for(let i=1;i<=eixos;i++){
+         estrutura.push({eixo:i, posicoes: Array.from({length:pneus}, (_,idx)=>({pos:idx+1}))});
+       }
+       await setDoc(doc(db,'frotas', codigo), { codigo }, { merge: true });
+       await setDoc(doc(db,'frotas', codigo, 'config', 'pneus'), { eixos, pneusPorEixo: pneus, estrutura }, { merge: true });
+       window.showModal('Sucesso','Configuração de pneus salva para a frota '+codigo);
+     }catch(err){
+       console.error('Erro ao salvar cadastro completo:', err);
+       window.showModal('Erro','Falha ao salvar configuração.', null, true);
+     }
+   }
+
+   window.renderMapaPneus = async function(codigoFrota){
+     const cont = document.getElementById('mapaPneusContainer');
+     cont.innerHTML='';
+     if(!codigoFrota){ cont.innerHTML='<p>Selecione uma frota.</p>'; return; }
+     try{
+       const cfgSnap = await getDoc(doc(db,'frotas', codigoFrota, 'config', 'pneus'));
+       if(!cfgSnap.exists()) { cont.innerHTML = '<p>Esta frota não possui configuração de eixos/pneus.</p>'; return; }
+       const cfg = cfgSnap.data();
+       const eixos = cfg.eixos;
+       const pneus = cfg.pneusPorEixo;
+       for(let i=1;i<=eixos;i++){
+         const eixoCard = document.createElement('div');
+         eixoCard.className = 'card mt-2';
+         eixoCard.innerHTML = `<h5>Eixo ${i}</h5>`;
+         const slots = document.createElement('div');
+         slots.className = 'grid grid-cols-2 sm:grid-cols-3 gap-2';
+         for(let j=1;j<=pneus;j++){
+           const slot = document.createElement('div');
+           slot.className = 'card p-2';
+           const slotId = `${i}-${j}`;
+           slot.innerHTML = `
+             <div class="field"><label>Pneu</label><input type="text" id="pneu_${slotId}" placeholder="Código do Pneu"></div>
+             <div class="field"><label>Horímetro Instalação</label><input type="number" id="instHor_${slotId}"></div>
+             <div class="field"><label>Data Início</label><input type="date" id="instData_${slotId}"></div>
+             <div class="field"><label>Horímetro Retirada</label><input type="number" id="retHor_${slotId}"></div>
+             <div class="field"><label>Data Retirada</label><input type="date" id="retData_${slotId}"></div>
+             <div class="flex gap-2 mt-2">
+               <button class="btn dark-primary" type="button" onclick="window.salvarAlocacaoPneu('${codigoFrota}', ${i}, ${j})">Salvar</button>
+               <button class="btn dark-primary" type="button" onclick="window.removerAlocacaoPneu('${codigoFrota}', ${i}, ${j})">Remover</button>
+             </div>
+           `;
+           slots.appendChild(slot);
+         }
+         eixoCard.appendChild(slots);
+         cont.appendChild(eixoCard);
+       }
+       await window.preencherAlocacoesExistentes(codigoFrota);
+     }catch(err){
+       console.error('Erro ao renderizar mapa de pneus:', err);
+       cont.innerHTML = '<p>Falha ao carregar mapa.</p>';
+     }
+   }
+
+   window.preencherAlocacoesExistentes = async function(codigoFrota){
+     try{
+       const alocSnap = await getDocs(collection(db,'frotas', codigoFrota, 'alocacoes'));
+       alocSnap.forEach(docu => {
+         const a = docu.data();
+         const slotId = `${a.eixo}-${a.pos}`;
+         const pneuEl = document.getElementById('pneu_'+slotId);
+         if(pneuEl){
+           pneuEl.value = a.pneu || '';
+           document.getElementById('instHor_'+slotId).value = a.instHor||'';
+           document.getElementById('instData_'+slotId).value = a.instData||'';
+           document.getElementById('retHor_'+slotId).value = a.retHor||'';
+           document.getElementById('retData_'+slotId).value = a.retData||'';
+         }
+       });
+     }catch(err){
+       console.error('Erro ao preencher alocações existentes:', err);
+     }
+   }
+
+   window.salvarAlocacaoPneu = async function(codigoFrota, eixo, pos){
+     try{
+       const slotId = `${eixo}-${pos}`;
+       const dados = {
+         frota: codigoFrota,
+         eixo,
+         pos,
+         pneu: document.getElementById('pneu_'+slotId).value.trim().toUpperCase(),
+         instHor: parseFloat(document.getElementById('instHor_'+slotId).value || '0'),
+         instData: document.getElementById('instData_'+slotId).value || '',
+         retHor: parseFloat(document.getElementById('retHor_'+slotId).value || '0'),
+         retData: document.getElementById('retData_'+slotId).value || ''
+       };
+       await setDoc(doc(db,'frotas', codigoFrota, 'alocacoes', slotId), dados, { merge: true });
+       window.showModal('Sucesso', `Alocação salva (Eixo ${eixo}, Posição ${pos}).`);
+     }catch(err){
+       console.error('Erro ao salvar alocação:', err);
+       window.showModal('Erro','Falha ao salvar alocação.', null, true);
+     }
+   }
+
+   window.removerAlocacaoPneu = async function(codigoFrota, eixo, pos){
+     try{
+       const slotId = `${eixo}-${pos}`;
+       await setDoc(doc(db,'frotas', codigoFrota, 'alocacoes', slotId), {
+         frota: codigoFrota, eixo, pos, pneu: '', instHor: '', instData: '', retHor: '', retData: ''
+       }, { merge: true });
+       document.getElementById('pneu_'+slotId).value = '';
+       document.getElementById('instHor_'+slotId).value = '';
+       document.getElementById('instData_'+slotId).value = '';
+       document.getElementById('retHor_'+slotId).value = '';
+       document.getElementById('retData_'+slotId).value = '';
+       window.showModal('Sucesso', `Alocação removida (Eixo ${eixo}, Posição ${pos}).`);
+     }catch(err){
+       console.error('Erro ao remover alocação:', err);
+       window.showModal('Erro','Falha ao remover alocação.', null, true);
+     }
+   }
+
    window.limparFormulario = function(formId) {
      const form = document.getElementById(formId);
      if (!form) return;
@@ -1489,6 +2135,112 @@
            return false;
        }
        return true;
+   }
+
+   // Validação de Horímetro com mínimo e limite por turno
+   window.validateHorimetro = async function(fieldId, frotaFieldId) {
+       try {
+           const input = document.getElementById(fieldId);
+           if (!input) return true;
+           const frotaInput = document.getElementById(frotaFieldId);
+           const valor = parseFloat(input.value);
+           if (isNaN(valor)) return true; // Deixe a validação principal do formulário tratar campos vazios
+
+           // Carrega configuração (se existir)
+           let limitePorTurno = 16; // padrão em horas
+           let minimo = 0; // padrão mínimo
+           try {
+               const cfgRef = doc(db, 'configuracoes', 'horimetro');
+               const cfgSnap = await getDoc(cfgRef);
+               if (cfgSnap.exists()) {
+                   const cfg = cfgSnap.data();
+                   if (typeof cfg.limitePorTurno === 'number') limitePorTurno = cfg.limitePorTurno;
+                   if (typeof cfg.minimo === 'number') minimo = cfg.minimo;
+               }
+           } catch(e) { /* silencioso */ }
+
+           if (valor < minimo) {
+               window.showModal('Horímetro inválido', `O valor do horímetro deve ser maior ou igual a ${minimo.toFixed(2)}.`, null, true);
+               input.value = '';
+               input.focus();
+               return false;
+           }
+
+           const isFim = fieldId === 'horimetroFim';
+           if (isFim) {
+               const inicialDataset = parseFloat(input.dataset.horimetroInicial);
+               const horimetroInicialVal = isNaN(inicialDataset) ? null : inicialDataset;
+               if (horimetroInicialVal !== null) {
+                   const diff = valor - horimetroInicialVal;
+                   if (diff <= 0) {
+                       window.showModal('Horímetro inválido', 'O horímetro final deve ser maior que o inicial.', null, true);
+                       input.value = '';
+                       input.focus();
+                       return false;
+                   }
+                   if (diff > limitePorTurno) {
+                       const frota = frotaInput ? frotaInput.value : '';
+                       window.showModal('Limite por turno excedido', `O incremento de horímetro (${diff.toFixed(2)}h) para a frota ${frota || ''} excede o limite por turno de ${limitePorTurno} horas.`, null, true);
+                       input.value = '';
+                       input.focus();
+                       return false;
+                   }
+               }
+           }
+
+           return true;
+       } catch (error) {
+           console.warn('Falha na validação de horímetro:', error);
+           return true; // Não bloquear em caso de erro inesperado
+       }
+   }
+
+   // Avalia obrigatoriedade do checklist: exigido somente na primeira atividade do dia para a frota
+   window.evaluateChecklistRequirement = async function() {
+       try {
+           const frota = document.getElementById('frotaInicio')?.value || '';
+           const data = document.getElementById('dataInicial')?.value || '';
+           if (!frota || !data) return; // aguardar preenchimento
+
+           let existeHoje = false;
+           try {
+               // Atividades em andamento da mesma frota no dia
+               const qAtiv = query(collection(db, 'atividadesEmAndamento'), where('frota', '==', frota));
+               const snapAtiv = await getDocs(qAtiv);
+               const hasRunningToday = snapAtiv.docs.some(d => {
+                   const x = d.data();
+                   return x.dataInicial === data; // comparação de string yyyy-MM-dd
+               });
+               // Histórico da mesma frota com data inicial/final no dia
+               const qHist = query(collection(db, 'historicoAtividades'), where('frota', '==', frota), limit(50));
+               const snapHist = await getDocs(qHist);
+               const hasHistoryToday = snapHist.docs.some(d => {
+                   const x = d.data();
+                   return x.dataInicial === data || x.dataFinal === data;
+               });
+               existeHoje = hasRunningToday || hasHistoryToday;
+           } catch(e) { console.warn('Erro ao avaliar checklist por dia:', e); }
+
+           const radios = document.querySelectorAll('#safetyChecklist input[type="radio"]');
+           radios.forEach(r => { r.required = !existeHoje; });
+
+           const checklistTitle = document.querySelector('#safetyChecklist h4');
+           if (checklistTitle) {
+               const noteId = 'checklist-note';
+               let note = document.getElementById(noteId);
+               if (!note) {
+                   note = document.createElement('div');
+                   note.id = noteId;
+                   note.className = 'text-xs text-gray-600 text-center mt-1';
+                   checklistTitle.insertAdjacentElement('afterend', note);
+               }
+               note.textContent = (!existeHoje)
+                   ? 'Checklist obrigatório (primeira atividade do dia para esta frota).'
+                   : 'Checklist opcional (já há atividade registrada hoje para esta frota).';
+           }
+       } catch (error) {
+           console.warn('Falha ao configurar obrigatoriedade do checklist:', error);
+       }
    }
 
    // --- MODAL FUNCTIONS ---
@@ -1594,14 +2346,21 @@
    }
 
    window.mostrarCadastro = function(subpanel) {
-       ['cadastroOperador', 'cadastroFrota', 'cadastroSetor', 'cadastroAtividade', 'cadastroImplemento', 'associarAtividadeSetor'].forEach(p => {
-           document.getElementById(p).style.display = p === subpanel ? 'block' : 'none';
+       ['cadastroOperador', 'cadastroFrota', 'cadastroSetor', 'cadastroAtividade', 'cadastroImplemento', 'associarAtividadeSetor', 'cadastroCompletoFrota'].forEach(p => {
+           const el = document.getElementById(p);
+           if(el) el.style.display = p === subpanel ? 'block' : 'none';
        });
        if (subpanel === 'cadastroImplemento') {
            populateModelosSelect('modeloImplemento');
        }
        if (subpanel === 'associarAtividadeSetor') {
             populateSetorParaAssociacao();
+       }
+       if (subpanel === 'cadastroCompletoFrota') {
+           // Pré-preencher frota se houver no formulário de frota
+           const codigo = document.getElementById('codigoFrota').value.trim().toUpperCase();
+           document.getElementById('cadCompletoCodigoFrota').value = codigo;
+           window.renderEstruturaEixos();
        }
    }
 
@@ -1829,6 +2588,29 @@
 
        // Main form validation logic... (omitted for brevity, assume it passes)
 
+       // Checklist requirement: se algum radio está com required, validar seleção e relatos
+       const radiosReq = document.querySelectorAll('#safetyChecklist input[type="radio"][required]');
+       const requireChecklist = radiosReq.length > 0;
+       if (requireChecklist) {
+           const grupos = new Set(Array.from(radiosReq).map(r => r.name));
+           for (const name of grupos) {
+               const ok = document.querySelector(`#safetyChecklist input[name="${name}"][value="OK"]`);
+               const nc = document.querySelector(`#safetyChecklist input[name="${name}"][value="NÃO CONFORME"]`);
+               if (!ok.checked && !nc.checked) {
+                   window.showModal('Checklist obrigatório', 'Selecione OK ou NÃO CONFORME para todos os itens do checklist.', null, true);
+                   return;
+               }
+               if (nc.checked) {
+                   const taId = nc.dataset.targetTextarea;
+                   const ta = document.getElementById(taId);
+                   if (ta && !ta.value.trim()) {
+                       window.showModal('Checklist obrigatório', 'Informe o relato para cada item marcado como NÃO CONFORME.', null, true);
+                       return;
+                   }
+               }
+           }
+       }
+
        const cracha = document.getElementById('crachaInicio').value;
        const frota = document.getElementById('frotaInicio').value;
 
@@ -1839,6 +2621,28 @@
                window.showModal('Erro', `A frota ${frota} já está em atividade.`, null, true);
                return;
            }
+
+           // Coleta respostas do checklist
+           function getChecklistItem(name, relatoId) {
+               const value = (document.querySelector(`#safetyChecklist input[name="${name}"]:checked`) || {}).value || 'OK';
+               const relato = document.getElementById(relatoId)?.value || '';
+               return { status: value, relato };
+           }
+           const checklistData = {
+               OleoMotor: getChecklistItem('status_OleoMotor','relato_OleoMotor'),
+               FiltroAr: getChecklistItem('status_FiltroAr','relato_FiltroAr'),
+               LiquidoRefrigerante: getChecklistItem('status_LiquidoRefrigerante','relato_LiquidoRefrigerante'),
+               Freios: getChecklistItem('status_Freios','relato_Freios'),
+               Direcao: getChecklistItem('status_Direcao','relato_Direcao'),
+               Pneus: getChecklistItem('status_Pneus','relato_Pneus'),
+               Iluminacao: getChecklistItem('status_Iluminacao','relato_Iluminacao'),
+               AvisoSonoro: getChecklistItem('status_AvisoSonoro','relato_AvisoSonoro'),
+               Hidraulico: getChecklistItem('status_Hidraulico','relato_Hidraulico'),
+               Assento: getChecklistItem('status_Assento','relato_Assento'),
+               Cintos: getChecklistItem('status_Cintos','relato_Cintos'),
+               Vidro: getChecklistItem('status_Vidro','relato_Vidro'),
+               ParteEletrica: getChecklistItem('status_ParteEletrica','relato_ParteEletrica')
+           };
 
            const dados = {
                cracha,
@@ -1852,7 +2656,8 @@
                atividade: document.getElementById('atividadeInicio').value,
                implemento: document.getElementById('implementoInicio').value,
                relatoProblema: document.getElementById('relatoProblema').value,
-               checklist: {} // You can populate this from the form
+               observacoes: document.getElementById('observacoesInicio').value,
+               checklist: checklistData
            };
 
            await addDoc(collection(db, "atividadesEmAndamento"), dados);
@@ -1922,7 +2727,7 @@
        const atividadeAbertaRef = doc(db, "atividadesEmAndamento", atividadeId);
       
        try {
-           const atividadeAbertaSnap = await getDoc(docRef);
+           const atividadeAbertaSnap = await getDoc(atividadeAbertaRef);
            if (!atividadeAbertaSnap.exists()) {
                window.showModal("Erro", "Atividade em andamento não encontrada. Pode já ter sido finalizada.", null, true);
                return;
@@ -2445,17 +3250,38 @@ window.showOperatorSearchModal = async function(targetCrachaId) {
     const titleEl = document.getElementById('listModalTitle');
     const contentEl = document.getElementById('listModalContent');
 
-    titleEl.textContent = 'Selecionar Operador';
+    const isFim = targetCrachaId === 'crachaFim';
+    titleEl.textContent = isFim ? 'Selecionar Operador (com atividade em andamento)' : 'Selecionar Operador';
     contentEl.innerHTML = '<p>Carregando...</p>';
     modal.style.display = 'flex';
 
     try {
-        const snapshot = await getDocs(collection(db, 'operadores'));
-        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-        if (!data || data.length === 0) {
-            contentEl.innerHTML = '<p class="text-gray-600">Nenhum operador cadastrado.</p>';
-            return;
+        let data = [];
+        if (isFim) {
+            // Listar apenas operadores que iniciaram atividades (em andamento)
+            const snapshot = await getDocs(collection(db, 'atividadesEmAndamento'));
+            const byCracha = new Map();
+            snapshot.docs.forEach(docSnap => {
+                const d = docSnap.data();
+                const cracha = String(d.cracha ?? '').toUpperCase();
+                const nome = String(d.operador ?? '').toUpperCase();
+                if (cracha) {
+                    if (!byCracha.has(cracha)) byCracha.set(cracha, { cracha, nome });
+                }
+            });
+            data = Array.from(byCracha.values());
+            if (!data || data.length === 0) {
+                contentEl.innerHTML = '<p class="text-gray-600">Nenhuma atividade em andamento.</p>';
+                return;
+            }
+        } else {
+            // Listar todos os operadores (para Início, OS, etc.)
+            const snapshot = await getDocs(collection(db, 'operadores'));
+            data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            if (!data || data.length === 0) {
+                contentEl.innerHTML = '<p class="text-gray-600">Nenhum operador cadastrado.</p>';
+                return;
+            }
         }
 
         contentEl.innerHTML = '';
@@ -2465,16 +3291,18 @@ window.showOperatorSearchModal = async function(targetCrachaId) {
         const tbody = table.querySelector('tbody');
 
         data.forEach(item => {
+            const cracha = String((item.cracha ?? '')).toUpperCase();
+            const nome = String((item.nome ?? item.operador ?? '')).toUpperCase();
             const row = tbody.insertRow();
             row.innerHTML = `
-                <td><input type="checkbox" class="operator-select-checkbox" data-cracha="${item.cracha}"></td>
-                <td data-label="Crachá">${item.cracha}</td>
-                <td data-label="Nome">${item.nome}</td>
+                <td><input type="checkbox" class="operator-select-checkbox" data-cracha="${cracha}"></td>
+                <td data-label="Crachá">${cracha}</td>
+                <td data-label="Nome">${nome}</td>
             `;
             row.querySelector('.operator-select-checkbox').onchange = (e) => {
                  if (e.target.checked) {
                     const crachaInput = document.getElementById(targetCrachaId);
-                    crachaInput.value = item.cracha;
+                    crachaInput.value = cracha;
                     crachaInput.dispatchEvent(new Event('input', { bubbles: true }));
                     modal.style.display = 'none';
                  }
@@ -2497,7 +3325,7 @@ window.showOperatorSearchModal = async function(targetCrachaId) {
        // PWA Service Worker Registration
        if ('serviceWorker' in navigator) {
          window.addEventListener('load', () => {
-             navigator.serviceWorker.register('/sw.js').then(registration => {
+             navigator.serviceWorker.register('./sw.js').then(registration => {
                  console.log('ServiceWorker registration successful with scope: ', registration.scope);
              }, err => {
                  console.log('ServiceWorker registration failed: ', err);
@@ -2516,8 +3344,153 @@ window.showOperatorSearchModal = async function(targetCrachaId) {
    window.salvarOrcamento = () => window.showModal('Em Desenvolvimento', 'A gestão de Orçamentos está sendo atualizada.', null, false);
    window.consultarOrcamentos = () => window.showModal('Em Desenvolvimento', 'A gestão de Orçamentos está sendo atualizada.', null, false);
    window.consultarHistoricoManutencao = () => window.showModal('Em Desenvolvimento', 'A gestão de Histórico está sendo atualizada.', null, false);
-   window.salvarAbastecimento = () => window.showModal('Em Desenvolvimento', 'A gestão de Abastecimento está sendo atualizada.', null, false);
-   window.salvarCompraCombustivel = () => window.showModal('Em Desenvolvimento', 'A gestão de Abastecimento está sendo atualizada.', null, false);
+
+   // Busca de produto por código e preenchimento do nome
+   window.buscarProduto = async function(codigo, nomeFieldId) {
+       const nomeInput = document.getElementById(nomeFieldId);
+       if (!codigo) { if (nomeInput) nomeInput.value = ''; return null; }
+       try {
+           const produtoRef = doc(db, 'produtos', codigo);
+           const produtoSnap = await getDoc(produtoRef);
+           if (produtoSnap.exists()) {
+               const produto = produtoSnap.data();
+               if (nomeInput) nomeInput.value = produto.nome || produto.descricao || 'Produto cadastrado';
+               return produto;
+           } else {
+               if (nomeInput) nomeInput.value = 'Produto não encontrado';
+               return null;
+           }
+       } catch (error) {
+           console.error('Erro ao buscar produto:', error);
+           if (nomeInput) nomeInput.value = 'Erro na busca';
+           return null;
+       }
+   }
+
+   // Mostrar/ocultar e calcular Volume Restante (para abastecimento interno)
+   window.toggleVolumeRestante = async function(local) {
+       const field = document.getElementById('volumeRestanteField');
+       const input = document.getElementById('volumeRestante');
+       if (!field || !input) return;
+
+       if (local === 'interno') {
+           field.style.display = 'flex';
+           try {
+               const codigo = (document.getElementById('abastecimentoCodProduto')?.value || '').trim().toUpperCase();
+               let totalComprado = 0;
+               let totalConsumido = 0;
+
+               const comprasSnap = await getDocs(collection(db, 'comprasCombustivel'));
+               comprasSnap.forEach(docSnap => {
+                   const data = docSnap.data();
+                   if (!codigo || (data.codProduto || '').toUpperCase() === codigo) {
+                       const vol = parseFloat(data.volume ?? data.compraVolume ?? 0) || 0;
+                       totalComprado += vol;
+                   }
+               });
+
+               const abastecimentosSnap = await getDocs(collection(db, 'abastecimentos'));
+               abastecimentosSnap.forEach(docSnap => {
+                   const data = docSnap.data();
+                   if (!codigo || (data.codProduto || '').toUpperCase() === codigo) {
+                       const vol = parseFloat(data.volume ?? 0) || 0; // Ainda não há campo de volume no formulário de abastecimento
+                       totalConsumido += vol;
+                   }
+               });
+
+               const restante = totalComprado - totalConsumido;
+               input.value = isNaN(restante) ? '-' : `${restante.toFixed(2)} L`;
+           } catch (err) {
+               console.error('Erro ao calcular volume restante:', err);
+               input.value = 'N/D';
+           }
+       } else {
+           field.style.display = 'none';
+           input.value = '';
+       }
+   }
+
+   // Salvar Abastecimento
+   window.salvarAbastecimento = async function() {
+       const frota = document.getElementById('abastecimentoFrota').value.trim().toUpperCase();
+       const documento = document.getElementById('abastecimentoDoc').value.trim();
+       const empresa = document.getElementById('abastecimentoEmpresa').value.trim();
+       const horimetro = parseFloat(document.getElementById('abastecimentoHorimetro').value);
+       const data = document.getElementById('abastecimentoData').value;
+       const hora = document.getElementById('abastecimentoHora').value;
+       const motoristaCracha = document.getElementById('abastecimentoMotorista').value.trim().toUpperCase();
+       const motoristaNome = document.getElementById('nomeMotorista').value.trim();
+       const frentistaCracha = document.getElementById('abastecimentoFrentista').value.trim().toUpperCase();
+       const frentistaNome = document.getElementById('nomeFrentista').value.trim();
+       const codProduto = document.getElementById('abastecimentoCodProduto').value.trim().toUpperCase();
+       const local = document.getElementById('abastecimentoLocal').value;
+
+       if (!frota || !documento || !empresa || isNaN(horimetro) || !data || !hora || !motoristaCracha || !frentistaCracha || !codProduto) {
+           window.showModal('Campos Obrigatórios', 'Preencha todos os campos do abastecimento.', null, true);
+           return;
+       }
+
+       if (!window.validateDateTime('abastecimentoData', 'abastecimentoHora')) return;
+
+       try {
+           await addDoc(collection(db, 'abastecimentos'), {
+               frota,
+               documento,
+               empresa,
+               horimetro,
+               data,
+               hora,
+               motoristaCracha,
+               motoristaNome,
+               frentistaCracha,
+               frentistaNome,
+               codProduto,
+               local,
+               interno: local === 'interno',
+               createdAt: Date.now()
+           });
+           window.showModal('Sucesso', 'Abastecimento registrado com sucesso!');
+           document.getElementById('abastecimentoForm').reset();
+           document.getElementById('abastecimentoModelo').value = '';
+           document.getElementById('nomeMotorista').value = '';
+           document.getElementById('nomeFrentista').value = '';
+           document.getElementById('nomeProduto').value = '';
+           window.populateCurrentDateTime('abastecimentoData', 'abastecimentoHora');
+           window.toggleVolumeRestante(local);
+       } catch (error) {
+           console.error('Erro ao salvar abastecimento:', error);
+           window.showModal('Erro', 'Não foi possível salvar o abastecimento.', null, true);
+       }
+   }
+
+   // Salvar Compra de Combustível
+   window.salvarCompraCombustivel = async function() {
+       const codProduto = document.getElementById('compraCodProduto').value.trim().toUpperCase();
+       const empresa = document.getElementById('compraEmpresa').value.trim();
+       const volume = parseFloat(document.getElementById('compraVolume').value);
+       const valor = parseFloat(document.getElementById('compraValor').value);
+
+       if (!codProduto || !empresa || isNaN(volume) || isNaN(valor)) {
+           window.showModal('Campos Obrigatórios', 'Preencha todos os campos da compra de combustível.', null, true);
+           return;
+       }
+
+       try {
+           await addDoc(collection(db, 'comprasCombustivel'), {
+               codProduto,
+               empresa,
+               volume,
+               valor,
+               createdAt: Date.now()
+           });
+           window.showModal('Sucesso', 'Compra registrada com sucesso!');
+           document.getElementById('compraCombustivelForm').reset();
+           window.toggleVolumeRestante(document.getElementById('abastecimentoLocal').value);
+       } catch (error) {
+           console.error('Erro ao salvar compra de combustível:', error);
+           window.showModal('Erro', 'Não foi possível salvar a compra de combustível.', null, true);
+       }
+   }
   
 </script>
 </body>
