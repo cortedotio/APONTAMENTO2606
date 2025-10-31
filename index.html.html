@@ -504,6 +504,10 @@
 #abastecimentoPanel .abastecimento-content { width: 100%; max-width: 1250px; }
 @media (max-width: 768px) { #abastecimentoPanel .abastecimento-layout { grid-template-columns: 1fr; } }
 #abastecimentoPanel { max-width: 1250px; }
+#pneusPanel .pneus-layout { display: grid; grid-template-columns: 260px 1fr; gap: 16px; align-items: start; margin-top: 12px; }
+#pneusPanel .pneus-content { width: 100%; max-width: 1250px; }
+@media (max-width: 768px) { #pneusPanel .pneus-layout { grid-template-columns: 1fr; } }
+#pneusPanel { max-width: 1250px; }
     /* Cores dos botões principais de Status de Atividade */
     #btnDisponibilidade { background-color: #DAA520; color: #fff; }
     #btnDisponibilidade:hover { filter: brightness(0.95); }
@@ -522,7 +526,7 @@
     #cadastro { display: grid; grid-template-columns: 260px 1fr; gap: 24px; }
     #cadastro h3 { grid-column: 1 / span 2; }
     #cadastro > .menu-vertical { grid-column: 1; position: sticky; top: 12px; align-self: start; }
-    #cadastro > div[id] { grid-column: 2; }
+    #cadastro > div[id] { grid-column: 2; width: 100%; max-width: 1250px; }
 
     /* Títulos das seções centralizados e maiores */
     h3 { text-align: center; font-size: 2rem; }
@@ -863,7 +867,7 @@
        <button class="btn" onclick="window.mostrarCadastro('cadastroImplemento')">Implemento</button>
        <button class="btn" onclick="window.mostrarCadastro('cadastroSetor')">Setor</button>
        <button class="btn" onclick="window.mostrarCadastro('cadastroAtividade')">Atividade</button>
-       <button class="btn" onclick="window.mostrarCadastro('associarAtividadeSetor')">Associar Atividade/Setor</button>
+
      </div>
      <div id="cadastroOperador" style="display:none; margin-top:10px;">
       <h4>Cadastro de Operador</h4>
@@ -1187,12 +1191,14 @@
              <button class="btn dark-primary !p-2 !m-0" onclick="window.appLogout()">Sair</button>
          </div>
      </div>
-   <div class="menu-vertical mb-6">
+   <div class="pneus-layout">
+     <div class="menu-vertical mb-6">
        <button class="btn" onclick="window.mostrarPneusSubpanel('formCadastroPneu')">Cadastrar Pneu</button>
        <button class="btn" onclick="window.mostrarPneusSubpanel('consultarPneus')">Consultar Pneus</button>
        <button class="btn" onclick="window.mostrarPneusSubpanel('alocarPneusPanel')">Alocar Pneu</button>
-   </div>
-   <div id="formCadastroPneu" style="display:none;">
+     </div>
+     <div class="pneus-content">
+       <div id="formCadastroPneu" style="display:none;">
          <h4>Cadastro de Pneu</h4>
          <form id="pneuForm">
              <div class="field"><label for="pneuId">ID do Pneu (DOT)</label><input type="text" id="pneuId" required></div>
@@ -1203,19 +1209,21 @@
              <div class="field"><label for="pneuPosicao">Posição</label><input type="text" id="pneuPosicao" placeholder="Ex: Dianteiro Esquerdo"></div>
              <button class="btn dark-primary mt-4" type="button" onclick="window.salvarPneu()">Salvar Pneu</button>
          </form>
-     </div>
-     <div id="consultarPneus" style="display:none;">
+       </div>
+       <div id="consultarPneus" style="display:none;">
          <h4>Pneus Cadastrados</h4>
          <div id="pneusListContainer"></div>
-     </div>
-     <div id="alocarPneusPanel" style="display:none;">
+       </div>
+       <div id="alocarPneusPanel" style="display:none;">
          <h4>Alocar Pneu</h4>
          <div class="field">
              <label for="alocacaoFrota">Selecione a Frota</label>
              <select id="alocacaoFrota" onchange="window.renderMapaPneus(this.value)"></select>
          </div>
          <div id="mapaPneusContainer" class="mt-4"></div>
+       </div>
      </div>
+   </div>
 </div>
 
 <!-- Confirmation Modal -->
