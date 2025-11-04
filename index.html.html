@@ -2464,8 +2464,46 @@
        }
      } catch (err) {
        console.error('Falha ao popular filtros do dashboard:', err);
-     }
-   }
+    }
+  }
+
+  // Carrega atividades por setor para o select de início
+  window.populateAtividadesPorSetor = async function(setorNome, targetSelectId) {
+    const selectEl = document.getElementById(targetSelectId);
+    if (!selectEl) return;
+    const setor = String(setorNome || '').toUpperCase().trim();
+    selectEl.innerHTML = '';
+    if (!setor) {
+      selectEl.innerHTML = '<option value="">Selecione um setor primeiro</option>';
+      return;
+    }
+    try {
+      const snapshot = await getDocs(collection(db, 'atividades'));
+      const atividades = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const list = atividades.filter(a => {
+        const setoresAssoc = Array.isArray(a.setoresAssociados) ? a.setoresAssociados.map(s => String(s || '').toUpperCase()) : [];
+        const setorCampo = String(a.setor || '').toUpperCase();
+        return setoresAssoc.includes(setor) || setorCampo === setor;
+      })
+      .map(a => String(a.nome || '').toUpperCase())
+      .filter(n => n && n.trim().length > 0)
+      .sort((a, b) => a.localeCompare(b));
+
+      if (list.length === 0) {
+        selectEl.innerHTML = '<option value="">Nenhuma atividade para este setor</option>';
+      } else {
+        selectEl.innerHTML = '<option value="">Selecione...</option>';
+        list.forEach(nome => {
+          const opt = document.createElement('option');
+          opt.value = nome; opt.textContent = nome;
+          selectEl.appendChild(opt);
+        });
+      }
+    } catch (err) {
+      console.error('Falha ao carregar atividades por setor:', err);
+      selectEl.innerHTML = '<option value="">Falha ao carregar atividades</option>';
+    }
+  }
   
    // --- Gestão de Pneus & Cadastro Completo de Frota ---
    window.populateFrotasSelect = async function(selectId){
@@ -3980,7 +4018,7 @@ window.showOperatorSearchModal = async function(targetCrachaId) {
                     if (!byCracha.has(cracha)) byCracha.set(cracha, { cracha, nome });
                 }
             });
-            data = Array.from(byCracha.values());
+            data = Array.from(byCracha.values()).sort((a, b) => String(a.nome || '').localeCompare(String(b.nome || '')));
             if (!data || data.length === 0) {
                 contentEl.innerHTML = '<p class="text-gray-600">Nenhuma atividade em andamento.</p>';
                 return;
@@ -3988,7 +4026,12 @@ window.showOperatorSearchModal = async function(targetCrachaId) {
         } else {
             // Listar todos os operadores (para Início, OS, etc.)
             const snapshot = await getDocs(collection(db, 'operadores'));
-            data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+                   .sort((a, b) => {
+                       const an = String((a.nome ?? a.operador ?? '')).toUpperCase();
+                       const bn = String((b.nome ?? b.operador ?? '')).toUpperCase();
+                       return an.localeCompare(bn);
+                   });
             if (!data || data.length === 0) {
                 contentEl.innerHTML = '<p class="text-gray-600">Nenhum operador cadastrado.</p>';
                 return;
