@@ -2790,7 +2790,7 @@
        return true;
    }
 
-   // Validação de Horímetro com mínimo e limite por turno
+   // Validação de Horímetro com mínimo e limite por turno + confirmações
    window.validateHorimetro = async function(fieldId, frotaFieldId) {
        try {
            const input = document.getElementById(fieldId);
@@ -2820,16 +2820,50 @@
            }
 
            const isFim = fieldId === 'horimetroFim';
+           const isInicio = fieldId === 'horimetroInicial';
+
+           // Confirmação: horímetro inicial diferente do último apontado
+           if (isInicio) {
+               const ultimo = parseFloat(input.dataset.horimetroInicial);
+               if (!isNaN(ultimo) && Math.abs(valor - ultimo) > 0.01) {
+                   const frota = frotaInput ? frotaInput.value : '';
+                   const cancelBtn = document.getElementById('modalCancelBtn');
+                   const onCancel = () => {
+                       input.value = ultimo.toFixed(2);
+                       input.focus();
+                       cancelBtn.removeEventListener('click', onCancel);
+                   };
+                   cancelBtn.addEventListener('click', onCancel, { once: true });
+                   window.showModal(
+                       'Horímetro divergente',
+                       `O último horímetro da frota ${frota || ''} foi <b>${ultimo.toFixed(2)}</b>.<br>` +
+                       `Você informou <b>${valor.toFixed(2)}</b>.<br>` +
+                       'Deseja continuar com o horímetro informado?',
+                       () => { /* Prosseguir sem alterações */ },
+                       true
+                   );
+               }
+           }
            if (isFim) {
                const inicialDataset = parseFloat(input.dataset.horimetroInicial);
                const horimetroInicialVal = isNaN(inicialDataset) ? null : inicialDataset;
                if (horimetroInicialVal !== null) {
                    const diff = valor - horimetroInicialVal;
                    if (diff <= 0) {
-                       window.showModal('Horímetro inválido', 'O horímetro final deve ser maior que o inicial.', null, true);
-                       input.value = '';
-                       input.focus();
-                       return false;
+                       const cancelBtn = document.getElementById('modalCancelBtn');
+                       const onCancel = () => {
+                           input.value = '';
+                           input.focus();
+                           cancelBtn.removeEventListener('click', onCancel);
+                       };
+                       cancelBtn.addEventListener('click', onCancel, { once: true });
+                       window.showModal(
+                           'Horímetro menor que o inicial',
+                           `O horímetro final (${valor.toFixed(2)}) é menor que o inicial (${horimetroInicialVal.toFixed(2)}).<br>` +
+                           'Deseja continuar mesmo assim?',
+                           () => { /* Prosseguir sem alterações; será marcado como inconsistente no histórico */ },
+                           true
+                       );
                    }
                    if (diff > limitePorTurno) {
                        const frota = frotaInput ? frotaInput.value : '';
@@ -3472,7 +3506,8 @@
          await batch.commit();
          window.showModal("Sucesso", "Atividade finalizada com sucesso!");
          window.limparFormulario('formFim');
-         window.mostrar('disponibilidade');
+         // Voltar ao início da tela de Encerramento de Atividade
+         window.mostrar('fim');
      } catch (error) {
          console.error("Error ending activity:", error);
          window.showModal('Erro', `Não foi possível finalizar a atividade: ${error.message}`, null, true);
@@ -3624,8 +3659,8 @@
                            statusText = 'EM USO';
                            statusClass = 'status-active';
                        }
-                       
-                       operadorText = `${atividade.operador} (${atividade.cracha})`;
+                       // Ocultar operador quando em manutenção
+                       operadorText = atividadeNomeUpper.includes('MANUTENÇÃO') ? '-' : `${atividade.operador} (${atividade.cracha})`;
                        inicioText = `${new Date(atividade.dataInicial + 'T' + atividade.horaInicial).toLocaleDateString('pt-BR')} ${atividade.horaInicial}`;
                        atividadeText = atividade.atividade;
                        setorText = atividade.setor || '-';
