@@ -937,6 +937,10 @@
      <div id="cadastroAtividade" style="display:none; margin-top:10px;">
       <h4>Cadastro de Atividade</h4>
        <div class="field"><label for="nomeAtividade">Atividade</label><input type="text" id="nomeAtividade" oninput="this.value = this.value.toUpperCase()"></div>
+       <div class="field">
+         <label for="setoresDaAtividade">Setores da Atividade</label>
+         <select id="setoresDaAtividade" multiple></select>
+       </div>
        <div class="flex justify-start gap-4 mt-6"><button class="btn dark-primary" type="button" onclick="window.salvarAtividade()">Salvar</button><button class="btn dark-primary" type="button" onclick="window.consultarAtividade()">Consultar</button></div></form>
      </div>
      <div id="cadastroCompletoFrota" style="display:none; margin-top:10px;">
@@ -1550,6 +1554,10 @@
            const operadorAtividades = {};
            const setorAtividades = {};
            const atividadeAtividades = {};
+           const frotaHorasHorimetro = {};
+           const frotaHorasApontadas = {};
+           const operadorHorasHorimetro = {};
+           const operadorHorasApontadas = {};
 
            // Pré-calcular série diária
            const days = [];
@@ -1565,6 +1573,7 @@
            const maintenancePerDay = Object.fromEntries(days.map(ds => [ds, 0]));
            const revisionPerDay = Object.fromEntries(days.map(ds => [ds, 0]));
            const activeFrotasPerDay = Object.fromEntries(days.map(ds => [ds, new Set()]));
+           const usedHoursPerDay = Object.fromEntries(days.map(ds => [ds, 0]));
 
            historicoSnap.forEach(docSnap => {
                const d = docSnap.data();
@@ -1572,9 +1581,15 @@
 
                const df = d.dataFinal || d.dataInicial;
                const hf = d.horaFinal || d.horaInicial;
+               const di2 = d.dataInicial;
+               const hi2 = d.horaInicial;
                let fimTs = NaN;
                if (df && hf) {
                    fimTs = new Date(`${df}T${hf}`).getTime();
+               }
+               let iniTs = NaN;
+               if (di2 && hi2) {
+                   iniTs = new Date(`${di2}T${hi2}`).getTime();
                }
 
                // Verificar janela temporal: usa período informado se presente; caso contrário, últimos 60 dias
@@ -1599,27 +1614,31 @@
                const operadorOk = operadorFilters.length === 0 ? true : operadorFilters.some(o => o && (operadorVal === o || operadorVal.includes(o)));
                if (!frotaOk || !operadorOk) return;
 
-               let horas = parseFloat(d.horasHorimetro);
-               if (isNaN(horas)) {
-                   const di = d.dataInicial, hi = d.horaInicial;
-                   const df2 = d.dataFinal, hf2 = d.horaFinal;
-                   if (di && hi && df2 && hf2) {
-                       const ts1 = new Date(`${di}T${hi}`).getTime();
-                       const ts2 = new Date(`${df2}T${hf2}`).getTime();
-                       horas = (ts2 - ts1) / 3600000; // horas por diferença de tempo
-                   } else {
-                       horas = 0;
-                   }
+               // Horas por horímetro (informadas) e horas apontadas (diferença de tempo)
+               let horasHorimetroVal = parseFloat(d.horasHorimetro);
+               if (isNaN(horasHorimetroVal)) horasHorimetroVal = 0;
+               let horasApontadasVal = 0;
+               const di = d.dataInicial, hi = d.horaInicial;
+               const df2 = d.dataFinal, hf2 = d.horaFinal;
+               if (di && hi && df2 && hf2) {
+                   const ts1 = new Date(`${di}T${hi}`).getTime();
+                   const ts2 = new Date(`${df2}T${hf2}`).getTime();
+                   horasApontadasVal = Math.max(0, (ts2 - ts1) / 3600000);
                }
 
-               frotaHoras[frotaVal] = (frotaHoras[frotaVal] || 0) + Math.max(0, horas);
+               frotaHorasHorimetro[frotaVal] = (frotaHorasHorimetro[frotaVal] || 0) + horasHorimetroVal;
+               frotaHorasApontadas[frotaVal] = (frotaHorasApontadas[frotaVal] || 0) + horasApontadasVal;
+               operadorHorasHorimetro[operadorVal] = (operadorHorasHorimetro[operadorVal] || 0) + horasHorimetroVal;
+               operadorHorasApontadas[operadorVal] = (operadorHorasApontadas[operadorVal] || 0) + horasApontadasVal;
+               // Mantém agregação geral para compatibilidade (soma das duas)
+               frotaHoras[frotaVal] = (frotaHoras[frotaVal] || 0) + Math.max(0, horasHorimetroVal + horasApontadasVal);
                operadorAtividades[operadorVal] = (operadorAtividades[operadorVal] || 0) + 1;
                const setorVal = (d.setor || '').toString().toUpperCase();
                const atividadeVal = (d.atividade || '').toString().toUpperCase();
                if (setorVal) setorAtividades[setorVal] = (setorAtividades[setorVal] || 0) + 1;
                if (atividadeVal) atividadeAtividades[atividadeVal] = (atividadeAtividades[atividadeVal] || 0) + 1;
 
-               // Séries diárias: manutenção e revisão
+               // Séries diárias: manutenção e revisão e horas utilizadas
                if (!isNaN(fimTs)) {
                    const dayStr = new Date(fimTs).toISOString().slice(0,10);
                    const atividadeNomeUpper = (d.atividade || '').toString().toUpperCase();
@@ -1633,20 +1652,54 @@
                        try { activeFrotasPerDay[dayStr].add(frotaVal); } catch(e){}
                    }
                }
+
+               // Acumular horas utilizadas por dia (qualquer atividade consome disponibilidade)
+               if (!isNaN(iniTs) && !isNaN(fimTs)) {
+                   const rangeStart = new Date(startForDays).getTime();
+                   const rangeEnd = new Date(endForDays).getTime() + 86400000; // incluir fim do último dia
+                   const start = Math.max(iniTs, rangeStart);
+                   const end = Math.min(fimTs, rangeEnd);
+                   if (end > start) {
+                       // Percorre dias e acumula interseção
+                       for (const ds of days) {
+                           const dayStart = new Date(`${ds}T00:00:00`).getTime();
+                           const dayEnd = dayStart + 86400000;
+                           const overlapMs = Math.max(0, Math.min(end, dayEnd) - Math.max(start, dayStart));
+                           if (overlapMs > 0) {
+                               usedHoursPerDay[ds] += overlapMs / 3600000;
+                           }
+                           // Otimização: se dayStart já passou do fim, podemos interromper laço
+                           if (dayStart > end) break;
+                       }
+                   }
+               }
            });
 
-           // Ordena e limita Top 10 para melhor legibilidade
-           const frotaEntries = Object.entries(frotaHoras).sort((a, b) => b[1] - a[1]).slice(0, 10);
-           const operatorEntries = Object.entries(operadorAtividades).sort((a, b) => b[1] - a[1]).slice(0, 10);
+           // Ordena e limita Top 10 por volume; exibe em ordem alfabética
+           let frotaEntries = Object.entries(frotaHoras).sort((a, b) => b[1] - a[1]).slice(0, 10);
+           frotaEntries = frotaEntries.sort((a, b) => a[0].localeCompare(b[0]));
+
+           const operadorTotaisHoras = {};
+           Object.entries(operadorHorasHorimetro).forEach(([op, h]) => { operadorTotaisHoras[op] = (operadorTotaisHoras[op] || 0) + h; });
+           Object.entries(operadorHorasApontadas).forEach(([op, h]) => { operadorTotaisHoras[op] = (operadorTotaisHoras[op] || 0) + h; });
+           let operatorEntries = Object.entries(operadorTotaisHoras).sort((a, b) => b[1] - a[1]).slice(0, 10);
+           operatorEntries = operatorEntries.sort((a, b) => a[0].localeCompare(b[0]));
 
            const utilLabels = frotaEntries.map(([f]) => f);
-           const utilData = frotaEntries.map(([_, h]) => parseFloat(h.toFixed(2)));
+           const utilDataHorimetro = utilLabels.map((f) => parseFloat(((frotaHorasHorimetro[f] || 0)).toFixed(2)));
+           const utilDataApontadas = utilLabels.map((f) => parseFloat(((frotaHorasApontadas[f] || 0)).toFixed(2)));
+           // Mantém compatibilidade de verificação de mensagem usando utilData
+           const utilData = utilDataApontadas;
 
            const opLabels = operatorEntries.map(([o]) => o);
-           const opData = operatorEntries.map(([_, c]) => c);
+           const operatorDataHorimetro = opLabels.map((o) => parseFloat(((operadorHorasHorimetro[o] || 0)).toFixed(2)));
+           const operatorDataApontadas = opLabels.map((o) => parseFloat(((operadorHorasApontadas[o] || 0)).toFixed(2)));
+           const opData = operatorDataApontadas;
 
-           const sectorEntries = Object.entries(setorAtividades).sort((a, b) => b[1] - a[1]).slice(0, 10);
-           const activityEntries = Object.entries(atividadeAtividades).sort((a, b) => b[1] - a[1]).slice(0, 10);
+           let sectorEntries = Object.entries(setorAtividades).sort((a, b) => b[1] - a[1]).slice(0, 10);
+           sectorEntries = sectorEntries.sort((a, b) => a[0].localeCompare(b[0]));
+           let activityEntries = Object.entries(atividadeAtividades).sort((a, b) => b[1] - a[1]).slice(0, 10);
+           activityEntries = activityEntries.sort((a, b) => a[0].localeCompare(b[0]));
            const sectorLabels = sectorEntries.map(([s]) => s);
            const sectorData = sectorEntries.map(([_, c]) => c);
            const activityLabels = activityEntries.map(([a]) => a);
@@ -1673,22 +1726,35 @@
            // Paleta de cores
            const palette = ['#1E88E5','#43A047','#FB8C00','#8E24AA','#E53935','#00ACC1','#7CB342','#FDD835','#3949AB','#6D4C41'];
 
-           // Gráfico de Utilização por Frota
+           // Gráfico de Utilização por Frota (Linhas: Horímetro vs Apontadas)
            utilizationChartInstance = new Chart(ctxUtil, {
-               type: 'bar',
+               type: 'line',
                data: {
                    labels: utilLabels,
-                   datasets: [{
-                       label: 'Horas',
-                       data: utilData,
-                       backgroundColor: utilLabels.map((_, i) => palette[i % palette.length])
-                   }]
+                   datasets: [
+                       {
+                           label: 'Horímetro (Horas)',
+                           data: utilDataHorimetro,
+                           borderColor: '#3949AB',
+                           backgroundColor: 'rgba(57,73,171,0.15)',
+                           tension: 0.25,
+                           fill: false
+                       },
+                       {
+                           label: 'Apontadas (Horas)',
+                           data: utilDataApontadas,
+                           borderColor: '#FB8C00',
+                           backgroundColor: 'rgba(251,140,0,0.15)',
+                           tension: 0.25,
+                           fill: false
+                       }
+                   ]
                },
                options: {
                    responsive: true,
                    plugins: {
-                       legend: { display: false },
-                       title: { display: true, text: 'Utilização da Frota (últimos 60 dias)' }
+                       legend: { display: true },
+                       title: { display: true, text: 'Utilização da Frota: Horímetro vs Apontadas (últimos 60 dias)' }
                    },
                    scales: {
                        y: { beginAtZero: true, ticks: { precision: 0 } }
@@ -1696,22 +1762,35 @@
                }
            });
 
-           // Gráfico de Atividades por Operador
+           // Gráfico de Desempenho por Operador (Linhas: Horímetro vs Apontadas)
            operatorChartInstance = new Chart(ctxOp, {
-               type: 'bar',
+               type: 'line',
                data: {
                    labels: opLabels,
-                   datasets: [{
-                       label: 'Atividades',
-                       data: opData,
-                       backgroundColor: opLabels.map((_, i) => palette[(i + 3) % palette.length])
-                   }]
+                   datasets: [
+                       {
+                           label: 'Horímetro (Horas)',
+                           data: operatorDataHorimetro,
+                           borderColor: '#8E24AA',
+                           backgroundColor: 'rgba(142,36,170,0.15)',
+                           tension: 0.25,
+                           fill: false
+                       },
+                       {
+                           label: 'Apontadas (Horas)',
+                           data: operatorDataApontadas,
+                           borderColor: '#E53935',
+                           backgroundColor: 'rgba(229,57,53,0.15)',
+                           tension: 0.25,
+                           fill: false
+                       }
+                   ]
                },
                options: {
                    responsive: true,
                    plugins: {
-                       legend: { display: false },
-                       title: { display: true, text: 'Atividades por Operador (últimos 60 dias)' }
+                       legend: { display: true },
+                       title: { display: true, text: 'Desempenho por Operador (Horas)' }
                    },
                    scales: {
                        y: { beginAtZero: true, ticks: { precision: 0 } }
@@ -1751,33 +1830,52 @@
                });
            }
 
-           // Gráfico de Máquinas Disponíveis (complemento de ativas por dia)
+           // Gráfico de Máquinas Disponíveis (horas por dia + percentual)
            if (ctxMachineAvail && days.length > 0) {
                const frotaSel = frotaFilters.length > 0 ? frotaFilters : frotasConsideradas;
                const totalFrotasConsideradas = frotaSel.length > 0 ? frotaSel.length : frotasConsideradas.length;
-               const disponiveisData = days.map(ds => {
-                   const ativos = activeFrotasPerDay[ds] ? activeFrotasPerDay[ds].size : 0;
-                   const total = totalFrotasConsideradas || ativos;
-                   const disponiveis = Math.max(0, total - ativos);
-                   return disponiveis;
+               const totalHorasDia = (totalFrotasConsideradas > 0 ? totalFrotasConsideradas : (frotasConsideradas.length || 0)) * 24;
+               const disponiveisHorasData = days.map(ds => {
+                   const usadas = usedHoursPerDay[ds] || 0;
+                   const disponiveisHoras = Math.max(0, totalHorasDia - usadas);
+                   return parseFloat(disponiveisHoras.toFixed(2));
+               });
+               const disponiveisPercentData = disponiveisHorasData.map(h => {
+                   const pct = totalHorasDia > 0 ? (h / totalHorasDia) * 100 : 0;
+                   return parseFloat(pct.toFixed(2));
                });
                machineAvailableLineChartInstance = new Chart(ctxMachineAvail, {
                    type: 'line',
                    data: {
                        labels: days,
-                       datasets: [{
-                           label: 'Máquinas Disponíveis (qtd por dia)',
-                           data: disponiveisData,
-                           borderColor: '#00ACC1',
-                           backgroundColor: 'rgba(0,172,193,0.15)',
-                           tension: 0.25,
-                           fill: true
-                       }]
+                       datasets: [
+                           {
+                               label: 'Disponíveis (horas por dia)',
+                               data: disponiveisHorasData,
+                               borderColor: '#00ACC1',
+                               backgroundColor: 'rgba(0,172,193,0.15)',
+                               tension: 0.25,
+                               fill: true,
+                               yAxisID: 'y'
+                           },
+                           {
+                               label: 'Disponibilidade (%)',
+                               data: disponiveisPercentData,
+                               borderColor: '#7CB342',
+                               backgroundColor: 'rgba(124,179,66,0.15)',
+                               tension: 0.25,
+                               fill: false,
+                               yAxisID: 'yPercent'
+                           }
+                       ]
                    },
                    options: {
                        responsive: true,
-                       plugins: { legend: { display: true }, title: { display: true, text: 'Máquinas Disponíveis - Tendência diária' } },
-                       scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+                       plugins: { legend: { display: true }, title: { display: true, text: 'Máquinas Disponíveis - Horas e Percentual diário' } },
+                       scales: {
+                           y: { beginAtZero: true, ticks: { precision: 0 } },
+                           yPercent: { type: 'linear', position: 'right', min: 0, max: 100, ticks: { callback: (v) => `${v}%` } }
+                       }
                    }
                });
            }
@@ -2858,6 +2956,25 @@
        }
    }
 
+    async function populateSetoresSelect(selectElementId, selectedValues = []) {
+        const selectEl = document.getElementById(selectElementId);
+        if (!selectEl) return;
+        selectEl.innerHTML = '';
+        try {
+            const snapshot = await getDocs(collection(db, 'setores'));
+            const setores = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+                .map(s => (s.nome || '').toString().toUpperCase())
+                .filter(n => n && n.trim().length > 0)
+                .sort((a, b) => a.localeCompare(b));
+            setores.forEach(nome => {
+                const isSelected = selectedValues.includes(nome) ? 'selected' : '';
+                selectEl.innerHTML += `<option value="${nome}" ${isSelected}>${nome}</option>`;
+            });
+        } catch (error) {
+            console.error('Error populating setores select:', error);
+        }
+    }
+
    window.mostrarCadastro = function(subpanel) {
        ['cadastroOperador', 'cadastroFrota', 'cadastroSetor', 'cadastroAtividade', 'cadastroImplemento', 'associarAtividadeSetor', 'cadastroCompletoFrota'].forEach(p => {
            const el = document.getElementById(p);
@@ -2869,6 +2986,9 @@
        if (subpanel === 'associarAtividadeSetor') {
             populateSetorParaAssociacao();
        }
+        if (subpanel === 'cadastroAtividade') {
+            populateSetoresSelect('setoresDaAtividade');
+        }
        if (subpanel === 'cadastroCompletoFrota') {
            // Pré-preencher frota se houver no formulário de frota
            const codigo = document.getElementById('codigoFrota').value.trim().toUpperCase();
@@ -2946,11 +3066,20 @@
 
    window.salvarAtividade = async function() {
        const nome = document.getElementById('nomeAtividade').value.trim();
+       const setoresSelect = document.getElementById('setoresDaAtividade');
+       const setoresAssociados = setoresSelect ? Array.from(setoresSelect.options).filter(o => o.selected).map(o => o.value) : [];
        if (!nome) { window.showModal('Campo Obrigatório', 'O nome da atividade é obrigatório.', null, true); return; }
        try {
-           await setDoc(doc(db, "atividades", nome), { nome });
+           const payload = { nome };
+           if (setoresAssociados && Array.isArray(setoresAssociados)) {
+               payload.setoresAssociados = setoresAssociados;
+           }
+           await setDoc(doc(db, "atividades", nome), payload);
            window.showModal('Sucesso', "Atividade salva com sucesso!");
            document.getElementById('nomeAtividade').value = '';
+           if (setoresSelect) {
+               Array.from(setoresSelect.options).forEach(o => o.selected = false);
+           }
            window.populateSelects();
        } catch (error) {
            console.error("Error saving atividade:", error);
@@ -3645,6 +3774,11 @@
                  input.id = `edit_${field}`;
                  input.multiple = true;
                  await populateModelosSelect(input.id, item[field] || []);
+             } else if (field === 'setoresAssociados') {
+                 input = document.createElement('select');
+                 input.id = `edit_${field}`;
+                 input.multiple = true;
+                 await populateSetoresSelect(input.id, item[field] || []);
              } else {
                  input = document.createElement('input');
                  input.id = `edit_${field}`;
@@ -3658,6 +3792,21 @@
                  }
              }
              fieldDiv.appendChild(input);
+             formEl.appendChild(fieldDiv);
+         }
+
+         // For atividades, ensure setoresAssociados is editable even if not present yet
+         if (storeName === 'atividades' && !fields.includes('setoresAssociados')) {
+             const fieldDiv = document.createElement('div');
+             fieldDiv.className = 'field';
+             const label = document.createElement('label');
+             label.textContent = 'Setores Associados';
+             fieldDiv.appendChild(label);
+             const select = document.createElement('select');
+             select.id = 'edit_setoresAssociados';
+             select.multiple = true;
+             await populateSetoresSelect(select.id, []);
+             fieldDiv.appendChild(select);
              formEl.appendChild(fieldDiv);
          }
 
@@ -3691,6 +3840,17 @@
                     } else {
                         updatedData[field] = inputEl.value;
                     }
+                 }
+             }
+
+             // Ensure setoresAssociados is captured for atividades even if not in original fields
+             if (storeName === 'atividades') {
+                 const setoresEl = document.getElementById('edit_setoresAssociados') || document.getElementById('edit_setoresAssociados'.replace('edit_', 'edit_')); // safety
+                 const targetEl = setoresEl || document.getElementById('edit_setoresAssociados');
+                 if (targetEl) {
+                     updatedData['setoresAssociados'] = [...targetEl.options]
+                         .filter(option => option.selected)
+                         .map(option => option.value);
                  }
              }
 
