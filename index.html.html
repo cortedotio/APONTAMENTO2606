@@ -941,6 +941,10 @@
          <label for="setoresDaAtividade">Setores da Atividade</label>
          <select id="setoresDaAtividade" multiple></select>
        </div>
+       <div class="field">
+         <label>Seleção de Setores (checkbox à direita)</label>
+         <div id="setoresChecklistCadastro" class="grid gap-2"></div>
+       </div>
        <div class="flex justify-start gap-4 mt-6"><button class="btn dark-primary" type="button" onclick="window.salvarAtividade()">Salvar</button><button class="btn dark-primary" type="button" onclick="window.consultarAtividade()">Consultar</button></div></form>
      </div>
      <div id="cadastroCompletoFrota" style="display:none; margin-top:10px;">
@@ -2994,7 +2998,7 @@
        }
    }
 
-    async function populateSetoresSelect(selectElementId, selectedValues = []) {
+   async function populateSetoresSelect(selectElementId, selectedValues = []) {
         const selectEl = document.getElementById(selectElementId);
         if (!selectEl) return;
         selectEl.innerHTML = '';
@@ -3013,6 +3017,40 @@
         }
     }
 
+    async function renderSetoresChecklist(containerId, selectedValues = []) {
+        const cont = document.getElementById(containerId);
+        if (!cont) return;
+        cont.innerHTML = '';
+        try {
+            const snapshot = await getDocs(collection(db, 'setores'));
+            const setores = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+                .map(s => (s.nome || '').toString().toUpperCase())
+                .filter(n => n && n.trim().length > 0)
+                .sort((a, b) => a.localeCompare(b));
+            setores.forEach(nome => {
+                const row = document.createElement('div');
+                row.className = 'grid grid-cols-12 items-center';
+                const label = document.createElement('div');
+                label.className = 'col-span-10';
+                label.textContent = nome;
+                const chkWrap = document.createElement('div');
+                chkWrap.className = 'col-span-2 flex justify-end';
+                const chk = document.createElement('input');
+                chk.type = 'checkbox';
+                chk.className = 'setor-checkbox';
+                chk.dataset.setor = nome;
+                chk.checked = selectedValues.includes(nome);
+                chkWrap.appendChild(chk);
+                row.appendChild(label);
+                row.appendChild(chkWrap);
+                cont.appendChild(row);
+            });
+        } catch (err) {
+            console.error('Erro ao renderizar checklist de setores:', err);
+            cont.innerHTML = '<div class="text-red-600">Falha ao carregar setores</div>';
+        }
+    }
+
    window.mostrarCadastro = function(subpanel) {
        ['cadastroOperador', 'cadastroFrota', 'cadastroSetor', 'cadastroAtividade', 'cadastroImplemento', 'associarAtividadeSetor', 'cadastroCompletoFrota'].forEach(p => {
            const el = document.getElementById(p);
@@ -3024,9 +3062,10 @@
        if (subpanel === 'associarAtividadeSetor') {
             populateSetorParaAssociacao();
        }
-        if (subpanel === 'cadastroAtividade') {
-            populateSetoresSelect('setoresDaAtividade');
-        }
+       if (subpanel === 'cadastroAtividade') {
+           populateSetoresSelect('setoresDaAtividade');
+           renderSetoresChecklist('setoresChecklistCadastro', []);
+       }
        if (subpanel === 'cadastroCompletoFrota') {
            // Pré-preencher frota se houver no formulário de frota
            const codigo = document.getElementById('codigoFrota').value.trim().toUpperCase();
@@ -3106,6 +3145,12 @@
        const nome = document.getElementById('nomeAtividade').value.trim();
        const setoresSelect = document.getElementById('setoresDaAtividade');
        const setoresAssociados = setoresSelect ? Array.from(setoresSelect.options).filter(o => o.selected).map(o => o.value) : [];
+       // Coletar também do checklist (checkbox à direita)
+       const checklistCont = document.getElementById('setoresChecklistCadastro');
+       if (checklistCont) {
+           const marcados = Array.from(checklistCont.querySelectorAll('input.setor-checkbox:checked')).map(ch => ch.dataset.setor);
+           marcados.forEach(s => { if (!setoresAssociados.includes(s)) setoresAssociados.push(s); });
+       }
        if (!nome) { window.showModal('Campo Obrigatório', 'O nome da atividade é obrigatório.', null, true); return; }
        try {
            const payload = { nome };
@@ -3117,6 +3162,9 @@
            document.getElementById('nomeAtividade').value = '';
            if (setoresSelect) {
                Array.from(setoresSelect.options).forEach(o => o.selected = false);
+           }
+           if (checklistCont) {
+               Array.from(checklistCont.querySelectorAll('input.setor-checkbox')).forEach(ch => ch.checked = false);
            }
            window.populateSelects();
        } catch (error) {
@@ -3812,12 +3860,11 @@
                  input.id = `edit_${field}`;
                  input.multiple = true;
                  await populateModelosSelect(input.id, item[field] || []);
-             } else if (field === 'setoresAssociados') {
-                 input = document.createElement('select');
-                 input.id = `edit_${field}`;
-                 input.multiple = true;
-                 await populateSetoresSelect(input.id, item[field] || []);
-             } else {
+            } else if (field === 'setoresAssociados') {
+                input = document.createElement('select');
+                input.id = `edit_${field}`;
+                input.multiple = true;
+            } else {
                  input = document.createElement('input');
                  input.id = `edit_${field}`;
                  input.value = item[field] || '';
@@ -3840,11 +3887,22 @@
              const label = document.createElement('label');
              label.textContent = 'Setores Associados';
              fieldDiv.appendChild(label);
+             const search = document.createElement('input');
+             search.type = 'text';
+             search.id = 'edit_searchSetores';
+             search.placeholder = 'Digite para filtrar';
+             search.oninput = () => window.filterSelectOptions('edit_searchSetores','edit_setoresAssociados');
+             fieldDiv.appendChild(search);
              const select = document.createElement('select');
              select.id = 'edit_setoresAssociados';
              select.multiple = true;
-             await populateSetoresSelect(select.id, []);
              fieldDiv.appendChild(select);
+             await populateSetoresSelect(select.id, []);
+             const checklistDiv = document.createElement('div');
+             checklistDiv.id = 'edit_setoresChecklist';
+             checklistDiv.className = 'grid gap-2 mt-2';
+             fieldDiv.appendChild(checklistDiv);
+             await renderSetoresChecklist(checklistDiv.id, item['setoresAssociados'] || []);
              formEl.appendChild(fieldDiv);
          }
 
@@ -3883,12 +3941,13 @@
 
              // Ensure setoresAssociados is captured for atividades even if not in original fields
              if (storeName === 'atividades') {
-                 const setoresEl = document.getElementById('edit_setoresAssociados') || document.getElementById('edit_setoresAssociados'.replace('edit_', 'edit_')); // safety
-                 const targetEl = setoresEl || document.getElementById('edit_setoresAssociados');
-                 if (targetEl) {
-                     updatedData['setoresAssociados'] = [...targetEl.options]
-                         .filter(option => option.selected)
-                         .map(option => option.value);
+                 const targetEl = document.getElementById('edit_setoresAssociados');
+                 const selectedFromSelect = targetEl ? [...targetEl.options].filter(o => o.selected).map(o => o.value) : [];
+                 const checklistCont = document.getElementById('edit_setoresChecklist');
+                 const selectedFromChecklist = checklistCont ? [...checklistCont.querySelectorAll('input.setor-checkbox:checked')].map(ch => ch.dataset.setor) : [];
+                 const merged = Array.from(new Set([...(selectedFromSelect || []), ...(selectedFromChecklist || [])]));
+                 if (merged.length > 0) {
+                     updatedData['setoresAssociados'] = merged;
                  }
              }
 
@@ -3965,6 +4024,10 @@ window.showEditAtividadeModal = async function(atividadeId) {
             input.value = item[field] || '';
             fieldDiv.appendChild(input);
             formEl.appendChild(fieldDiv);
+            // Popular setores após inserir o select no DOM
+            if (field === 'setoresAssociados') {
+                await populateSetoresSelect(input.id, item[field] || []);
+            }
         }
 
         document.getElementById('editModalSaveBtn').onclick = async () => {
