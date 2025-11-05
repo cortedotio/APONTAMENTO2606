@@ -673,8 +673,8 @@
      </div>
      <div class="grid grid-cols-1 gap-8 mb-8">
          <div>
-             <h3 class="text-center">Máquinas Disponíveis (por dia)</h3>
-             <canvas id="machineAvailableLineChart"></canvas>
+            <h3 class="text-center">Máquinas Disponíveis</h3>
+            <canvas id="machineAvailableLineChart"></canvas>
          </div>
      </div>
 </div>
@@ -1574,10 +1574,14 @@
                days.push(d.toISOString().slice(0,10));
            }
 
+           // Removido seletor de dia: o gráfico acompanha o período selecionado
+
            const maintenancePerDay = Object.fromEntries(days.map(ds => [ds, 0]));
            const revisionPerDay = Object.fromEntries(days.map(ds => [ds, 0]));
            const activeFrotasPerDay = Object.fromEntries(days.map(ds => [ds, new Set()]));
            const usedHoursPerDay = Object.fromEntries(days.map(ds => [ds, 0]));
+           // Acúmulo por Frota e por Dia, segmentado por tipo (manutenção, revisão, trabalho)
+           const perFrotaDayHours = Object.fromEntries(days.map(ds => [ds, {}]));
 
            historicoSnap.forEach(docSnap => {
                const d = docSnap.data();
@@ -1639,13 +1643,13 @@
                operadorAtividades[operadorVal] = (operadorAtividades[operadorVal] || 0) + 1;
                const setorVal = (d.setor || '').toString().toUpperCase();
                const atividadeVal = (d.atividade || '').toString().toUpperCase();
+               const atividadeNomeUpper = atividadeVal;
                if (setorVal) setorAtividades[setorVal] = (setorAtividades[setorVal] || 0) + 1;
                if (atividadeVal) atividadeAtividades[atividadeVal] = (atividadeAtividades[atividadeVal] || 0) + 1;
 
                // Séries diárias: manutenção e revisão e horas utilizadas
                if (!isNaN(fimTs)) {
                    const dayStr = new Date(fimTs).toISOString().slice(0,10);
-                   const atividadeNomeUpper = (d.atividade || '').toString().toUpperCase();
                    if (dayStr in maintenancePerDay && atividadeNomeUpper.includes('MANUTEN')) {
                        maintenancePerDay[dayStr] += 1;
                    }
@@ -1670,7 +1674,20 @@
                            const dayEnd = dayStart + 86400000;
                            const overlapMs = Math.max(0, Math.min(end, dayEnd) - Math.max(start, dayStart));
                            if (overlapMs > 0) {
-                               usedHoursPerDay[ds] += overlapMs / 3600000;
+                               const overlapH = overlapMs / 3600000;
+                               usedHoursPerDay[ds] += overlapH;
+                               // Acumular por frota e por tipo
+                               const byFrota = perFrotaDayHours[ds];
+                               if (!byFrota[frotaVal]) {
+                                   byFrota[frotaVal] = { manutencao: 0, revisao: 0, trabalho: 0 };
+                               }
+                               if (atividadeNomeUpper.includes('MANUTEN')) {
+                                   byFrota[frotaVal].manutencao += overlapH;
+                               } else if (atividadeNomeUpper.includes('REVISA')) {
+                                   byFrota[frotaVal].revisao += overlapH;
+                               } else {
+                                   byFrota[frotaVal].trabalho += overlapH;
+                               }
                            }
                            // Otimização: se dayStart já passou do fim, podemos interromper laço
                            if (dayStart > end) break;
@@ -1834,51 +1851,49 @@
                });
            }
 
-           // Gráfico de Máquinas Disponíveis (horas por dia + percentual)
+           // Gráfico de Máquinas Disponíveis - Barras empilhadas por frota no período
            if (ctxMachineAvail && days.length > 0) {
                const frotaSel = frotaFilters.length > 0 ? frotaFilters : frotasConsideradas;
-               const totalFrotasConsideradas = frotaSel.length > 0 ? frotaSel.length : frotasConsideradas.length;
-               const totalHorasDia = (totalFrotasConsideradas > 0 ? totalFrotasConsideradas : (frotasConsideradas.length || 0)) * 24;
-               const disponiveisHorasData = days.map(ds => {
-                   const usadas = usedHoursPerDay[ds] || 0;
-                   const disponiveisHoras = Math.max(0, totalHorasDia - usadas);
-                   return parseFloat(disponiveisHoras.toFixed(2));
+               const totalHorasPeriodo = days.length * 24;
+               const acumuladoPorFrota = frotaSel.map(f => {
+                   const acc = { manutencao: 0, revisao: 0, trabalho: 0 };
+                   for (const ds of days) {
+                       const byFrota = perFrotaDayHours[ds] || {};
+                       const rec = byFrota[f];
+                       if (rec) {
+                           acc.manutencao += rec.manutencao || 0;
+                           acc.revisao += rec.revisao || 0;
+                           acc.trabalho += rec.trabalho || 0;
+                       }
+                   }
+                   return acc;
                });
-               const disponiveisPercentData = disponiveisHorasData.map(h => {
-                   const pct = totalHorasDia > 0 ? (h / totalHorasDia) * 100 : 0;
-                   return parseFloat(pct.toFixed(2));
+               const manutencaoData = acumuladoPorFrota.map(acc => parseFloat(acc.manutencao.toFixed(2)));
+               const revisaoData = acumuladoPorFrota.map(acc => parseFloat(acc.revisao.toFixed(2)));
+               const trabalhoData = acumuladoPorFrota.map(acc => parseFloat(acc.trabalho.toFixed(2)));
+               const disponivelData = acumuladoPorFrota.map(acc => {
+                   const total = acc.manutencao + acc.revisao + acc.trabalho;
+                   const avail = Math.max(0, totalHorasPeriodo - total);
+                   return parseFloat(avail.toFixed(2));
                });
                machineAvailableLineChartInstance = new Chart(ctxMachineAvail, {
-                   type: 'line',
+                   type: 'bar',
                    data: {
-                       labels: days,
+                       labels: frotaSel,
                        datasets: [
-                           {
-                               label: 'Disponíveis (horas por dia)',
-                               data: disponiveisHorasData,
-                               borderColor: '#00ACC1',
-                               backgroundColor: 'rgba(0,172,193,0.15)',
-                               tension: 0.25,
-                               fill: true,
-                               yAxisID: 'y'
-                           },
-                           {
-                               label: 'Disponibilidade (%)',
-                               data: disponiveisPercentData,
-                               borderColor: '#7CB342',
-                               backgroundColor: 'rgba(124,179,66,0.15)',
-                               tension: 0.25,
-                               fill: false,
-                               yAxisID: 'yPercent'
-                           }
+                           { label: 'Manutenção', data: manutencaoData, backgroundColor: '#D32F2F' },
+                           { label: 'Revisão', data: revisaoData, backgroundColor: '#3F51B5' },
+                           { label: 'Trabalho', data: trabalhoData, backgroundColor: '#00ACC1' },
+                           { label: 'Disponível', data: disponivelData, backgroundColor: '#7CB342' }
                        ]
                    },
                    options: {
                        responsive: true,
-                       plugins: { legend: { display: true }, title: { display: true, text: 'Máquinas Disponíveis - Horas e Percentual diário' } },
+                       indexAxis: 'y',
+                       plugins: { legend: { display: true }, title: { display: true, text: 'Máquinas Disponíveis – Barras Empilhadas por Frota' } },
                        scales: {
-                           y: { beginAtZero: true, ticks: { precision: 0 } },
-                           yPercent: { type: 'linear', position: 'right', min: 0, max: 100, ticks: { callback: (v) => `${v}%` } }
+                           x: { stacked: true, beginAtZero: true, ticks: { precision: 0 } },
+                           y: { stacked: true }
                        }
                    }
                });
